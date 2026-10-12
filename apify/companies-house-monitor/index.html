@@ -1,0 +1,102 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Companies House Monitor: UK Company Change Alerts</title><meta name="description" content="Get alerts when UK companies change: new filings, directors, PSC, charges, liquidation, address. Schedule it, send to Slack or webhook. Pay per alert."><link rel="canonical" href="https://skillmerc.github.io/apify/companies-house-monitor/"><meta property="og:title" content="Companies House Monitor: UK Company Change Alerts"><meta property="og:description" content="Get alerts when UK companies change: new filings, directors, PSC, charges, liquidation, address. Schedule it, send to Slack or webhook. Pay per alert."><meta property="og:url" content="https://skillmerc.github.io/apify/companies-house-monitor/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-ZfOMOaE1d47VO03WH-f2oGhOtTMU-icon.png" alt=""><h1>Companies House Monitor - UK Filing, Director &amp; PSC Alerts</h1><p>Watch UK companies and officers on Companies House. Get one row, webhook or Slack message per change: new filings, director moves, PSC, charges, status, address, name. $0.02 per alert.</p><p class="price">USD 20 per 1,000 alerts on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/companies-house-monitor">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/companies-house-monitor/examples/watch-uk-companies-for-director-changes">Example: Watch UK companies for director and owner changes</a></p><hr><p>Watch a list of UK companies and get told only when something changes. Each run compares the live Companies House register against the snapshot from the previous run and writes one row per change: a new filing, a director appointed or resigned, a new person with significant control, a charge registered or satisfied, a status change such as liquidation or dissolution, a registered office move, or a name change.</p>
+<p>Nothing changed? The run writes nothing and you pay almost nothing. Data comes from the official Companies House REST API, not from scraped HTML. A built-in API key is included, so there is no setup.</p>
+<h2>Common uses</h2>
+<ul>
+<li>Credit control: know the day a customer or supplier files for liquidation or has a charge registered.</li>
+<li>Portfolio and competitor watching: new filings, director changes and ownership changes across a list.</li>
+<li>Compliance: track changes in persons with significant control for KYC refreshes.</li>
+</ul>
+<h2>What it watches</h2>
+<p>| Watch option | Alert types produced |
+| - -| - -|
+| <code>new_filings</code> | <code>new_filing</code> (any document added to the filing history, with a PDF link) |
+| <code>officers</code> | <code>officer_appointed</code>, <code>officer_resigned</code> |
+| <code>psc</code> | <code>psc_added</code>, <code>psc_ceased</code>, <code>psc_changed</code> (natures of control changed) |
+| <code>status</code> | <code>status_change</code> (active, liquidation, administration, dissolved, receivership and so on) |
+| <code>registered_office</code> | <code>registered_office_change</code> |
+| <code>charges</code> | <code>charge_created</code>, <code>charge_status_change</code> (for example outstanding to fully-satisfied) |
+| <code>name_change</code> | <code>name_change</code> |</p>
+<p>You can also watch people. Add Companies House officer IDs in <code>officerIds</code> and you get <code>officer_new_appointment</code> and <code>officer_appointment_resigned</code> alerts whenever that person joins or leaves the board of any company.</p>
+<h2>How to schedule it</h2>
+<ol>
+<li>Run the actor once with your company numbers and a <code>watchlistName</code>. The first run saves a baseline and reports nothing, unless you set <code>initialLookbackDays</code> (see below).</li>
+<li>In Apify Console open the actor, click Schedule, and pick an interval. Daily is enough for most watchlists; Companies House updates the register during UK working hours. Hourly works too.</li>
+<li>Optional: put a Slack incoming webhook URL or your own HTTPS endpoint in the input to receive each run&#39;s alerts as a push message.</li>
+</ol>
+<p>Every scheduled run reuses the same <code>watchlistName</code>, so it always compares against the previous run. The snapshot lives in a key-value store named <code>companies-house-monitor-&lt;watchlistName&gt;</code> in your account. Delete that store to start over.</p>
+<p>If you leave <code>watchlistName</code> empty, the name is derived from the list of company numbers. That means editing the list starts a fresh baseline, so naming the watchlist is better.</p>
+<h2>Initial lookback</h2>
+<p>Set <code>initialLookbackDays</code> to a number such as 30 and the first run also reports everything dated within that window: filings, appointments, resignations, PSC notifications, charges, dissolutions and past name changes. This gives you a useful first result straight away and lets you check the output format before scheduling. Later runs ignore this setting and report only what is new since the previous run.</p>
+<h2>Input</h2>
+<p>| Field | Type | Default | Description |
+| - -| - -| - -| - -|
+| <code>companyNumbers</code> | array | | Company numbers to watch, for example <code>00102498</code>. |
+| <code>officerIds</code> | array | <code>[]</code> | Optional officer IDs (the part after <code>/officers/</code> in a Companies House URL). |
+| <code>watch</code> | array | all | Which change types raise alerts. |
+| <code>initialLookbackDays</code> | integer | <code>0</code> | On the first run, also report changes dated within this many days. |
+| <code>watchlistName</code> | string | | Name of the watchlist. Keeps the snapshot between runs. |
+| <code>webhookUrl</code> | string | | HTTPS endpoint that receives a JSON POST per run with the summary and alerts. |
+| <code>slackWebhookUrl</code> | string | | Slack incoming webhook. One message per run. |
+| <code>maxAlertsPerRun</code> | integer | <code>500</code> | Upper bound on alerts delivered and charged in a single run. |
+| <code>apiKey</code> | string | | Optional. Your own Companies House API key if you want your own rate limit. |</p>
+<h2>Output</h2>
+<p>One dataset row per change. Example (a real row from a test run):</p>
+<pre><code class="language-json">{
+  &quot;watchlist&quot;: &quot;my-portfolio&quot;,
+  &quot;company_number&quot;: &quot;00102498&quot;,
+  &quot;company_name&quot;: &quot;BP P.L.C.&quot;,
+  &quot;company_url&quot;: &quot;https://find-and-update.company-information.service.gov.uk/company/00102498&quot;,
+  &quot;change_type&quot;: &quot;new_filing&quot;,
+  &quot;summary&quot;: &quot;New filing SH04: capital sale or transfer treasury shares with date currency capital figure&quot;,
+  &quot;before&quot;: null,
+  &quot;after&quot;: {
+    &quot;type&quot;: &quot;SH04&quot;,
+    &quot;category&quot;: &quot;capital&quot;,
+    &quot;date&quot;: &quot;2026-10-02&quot;,
+    &quot;description&quot;: &quot;capital sale or transfer treasury shares with date currency capital figure&quot;
+  },
+  &quot;filing_type&quot;: &quot;SH04&quot;,
+  &quot;filing_date&quot;: &quot;2026-10-02&quot;,
+  &quot;filing_url&quot;: &quot;https://find-and-update.company-information.service.gov.uk/company/00102498/filing-history/MzU0NjI4NTM1MmFkaXF6a2N4/document?format=pdf&amp;download=0&quot;,
+  &quot;detected_at&quot;: &quot;2026-10-06T07:02:24.569Z&quot;,
+  &quot;run_id&quot;: &quot;abc123&quot;
+}
+</code></pre>
+<p>An officer change looks like this:</p>
+<pre><code class="language-json">{
+  &quot;company_number&quot;: &quot;00102498&quot;,
+  &quot;company_name&quot;: &quot;BP P.L.C.&quot;,
+  &quot;change_type&quot;: &quot;officer_resigned&quot;,
+  &quot;summary&quot;: &quot;Officer resigned: ASHDOWN, Hannah (secretary) on 2020-05-31&quot;,
+  &quot;before&quot;: { &quot;name&quot;: &quot;ASHDOWN, Hannah&quot;, &quot;role&quot;: &quot;secretary&quot;, &quot;appointed_on&quot;: &quot;2018-01-01&quot;, &quot;resigned_on&quot;: null },
+  &quot;after&quot;: { &quot;name&quot;: &quot;ASHDOWN, Hannah&quot;, &quot;role&quot;: &quot;secretary&quot;, &quot;appointed_on&quot;: &quot;2018-01-01&quot;, &quot;resigned_on&quot;: &quot;2020-05-31&quot; },
+  &quot;filing_date&quot;: &quot;2020-05-31&quot;
+}
+</code></pre>
+<p><code>before</code> and <code>after</code> hold the old and new values for the thing that changed. <code>filing_url</code> is present for filing alerts and opens the document on the Companies House website.</p>
+<p>The run also stores a summary in the <code>OUTPUT</code> record of the run&#39;s key-value store:</p>
+<pre><code class="language-json">{
+  &quot;watchlist&quot;: &quot;my-portfolio&quot;,
+  &quot;baseline&quot;: false,
+  &quot;companies_checked&quot;: 4,
+  &quot;not_found&quot;: [],
+  &quot;changes_detected&quot;: 3,
+  &quot;alerts_delivered&quot;: 3,
+  &quot;alerts_skipped&quot;: 0
+}
+</code></pre>
+<h2>Webhook payloads</h2>
+<p><code>webhookUrl</code> receives one POST per run: the summary above plus <code>run_id</code> and an <code>alerts</code> array of the rows. Nothing is sent when a run has no alerts (except the first baseline run, which sends the summary).</p>
+<p><code>slackWebhookUrl</code> receives a short message listing up to 20 changes with document links.</p>
+<h2>Pricing</h2>
+<p>You pay per alert, not per company. Each change row written to the dataset costs USD 0.02. Each run also costs USD 0.001 to start, which covers checking your whole list when nothing changed. Platform usage is included.</p>
+<p>Example: a daily schedule watching 50 companies that together produce 10 changes a month costs about USD 0.20 for the alerts plus USD 0.03 for the 30 runs. The first baseline run writes no alert rows and is charged only the start fee, unless you use <code>initialLookbackDays</code>.</p>
+<h2>Limits and notes</h2>
+<ul>
+<li>Filing history is compared on the latest 100 entries per company. If a company files more than 100 documents between two runs, older ones in that batch are not reported.</li>
+<li>Companies House allows 600 API calls per 5 minutes on the built-in key. A company with all watch types enabled uses about 5 calls, so a few hundred companies per run is comfortable. The actor pauses automatically when the limit is near.</li>
+<li>Status, address and name changes are detected by comparing snapshots, so they appear on the run after the register changes. On the first run with a lookback, dissolutions and past name changes are reported from their dates; address changes have no date and are not reported on a baseline run.</li>
+<li>If a company number is not found it is listed in <code>not_found</code> in the summary and skipped.</li>
+<li>If the Companies House API is down for a company, its previous snapshot is kept so nothing is missed on the next run.</li>
+</ul>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/companies-house-monitor">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

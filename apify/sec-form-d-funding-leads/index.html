@@ -1,0 +1,100 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SEC Form D Scraper: Startup Funding Leads from EDGAR</title><meta name="description" content="Newly funded companies from SEC Form D: amount raised, investors, executives, phone, address. Filter by state, industry, size. Daily monitor mode."><link rel="canonical" href="https://skillmerc.github.io/apify/sec-form-d-funding-leads/"><meta property="og:title" content="SEC Form D Scraper: Startup Funding Leads from EDGAR"><meta property="og:description" content="Newly funded companies from SEC Form D: amount raised, investors, executives, phone, address. Filter by state, industry, size. Daily monitor mode."><meta property="og:url" content="https://skillmerc.github.io/apify/sec-form-d-funding-leads/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-ZJekdiHEYDn8L0upC-RIN21bTHgf-icon.png" alt=""><h1>SEC Form D Funding Leads - Newly Funded Companies</h1><p>Find companies that just raised money from SEC Form D filings: amount raised, offering size, investors, executives, phone and address. Filter by state, industry and amount, skip funds, or monitor new filings daily.</p><p class="price">USD 5 per 1,000 funding leads on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/sec-form-d-funding-leads">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/sec-form-d-funding-leads/examples/startups-that-raised-1m-this-week">Example: Companies That Raised $1M+ This Week (SEC Form D)</a></p><hr><p>Get a list of companies that just raised money, straight from the SEC. When a US company sells shares or notes in a private round (a seed round, a Series A, a real estate syndication), it has to file a <strong>Form D</strong> with the SEC within 15 days of the first sale. This actor reads those filings from EDGAR and turns each one into a clean lead row: who raised, how much, from how many investors, who runs the company, and how to reach it.</p>
+<p>Run it for a date range, or switch on <strong>monitor mode</strong> and schedule it daily to get only the filings that are new since the last run.</p>
+<h2>What you get for each filing</h2>
+<ul>
+<li><strong>Company:</strong> name, CIK, entity type, state and year of incorporation, and whether it was incorporated in the last five years</li>
+<li><strong>Contact:</strong> street address, city, state, zip and the business phone number from the filing</li>
+<li><strong>The raise:</strong> total offering size, amount already sold, amount remaining, minimum investment, number of investors, date of first sale, and whether non-accredited investors took part</li>
+<li><strong>Classification:</strong> Form D industry group (for example Biotechnology, Other Technology, Commercial Real Estate), revenue range, exemption (Rule 506(b), 506(c), 504 and others), and the types of securities sold</li>
+<li><strong>People:</strong> every related person listed on the filing (executive officers, directors, promoters) with their roles, plus a short <code>executives</code> list and the name and title of the person who signed</li>
+<li><strong>Links:</strong> the SEC filing index page, the raw Form D XML and the company&#39;s list of Form D filings</li>
+</ul>
+<h2>Filters</h2>
+<ul>
+<li><strong>Issuer states:</strong> for example <code>CA</code>, <code>NY</code>, <code>TX</code></li>
+<li><strong>Industry groups:</strong> match on words such as <code>Technology</code>, <code>Health</code>, <code>Biotechnology</code>, <code>Real Estate</code></li>
+<li><strong>Exemptions:</strong> for example <code>06c</code> for Rule 506(c) offerings</li>
+<li><strong>Minimum amount raised</strong> and <strong>minimum offering size</strong> in USD</li>
+<li><strong>Skip investment funds</strong> (on by default): drops hedge, VC, PE and real estate fund filings so you get operating companies</li>
+<li><strong>Skip amendments</strong> (on by default): original filings only, no Form D/A</li>
+<li><strong>Only companies incorporated in the last 5 years:</strong> a quick startup filter</li>
+</ul>
+<h2>Common uses</h2>
+<ul>
+<li><strong>Sales prospecting:</strong> companies that just closed a round are buying software, hiring and signing vendors. Reach them in the weeks after the raise.</li>
+<li><strong>VC and deal research:</strong> track who is raising in your sector and state, how big the rounds are and who sits on the board.</li>
+<li><strong>Fintech, banking and insurance:</strong> find newly funded companies that need business accounts, payroll, insurance or treasury services.</li>
+<li><strong>Recruiting and agencies:</strong> spot companies with fresh capital before they post jobs.</li>
+<li><strong>Market maps:</strong> count raises by industry, state and size over a period.</li>
+</ul>
+<h2>Input example</h2>
+<pre><code class="language-json">{
+  &quot;lookbackDays&quot;: 3,
+  &quot;states&quot;: [&quot;CA&quot;, &quot;NY&quot;],
+  &quot;industries&quot;: [&quot;Technology&quot;, &quot;Health&quot;],
+  &quot;minAmountSold&quot;: 500000,
+  &quot;excludePooledFunds&quot;: true,
+  &quot;excludeAmendments&quot;: true,
+  &quot;monitorMode&quot;: true,
+  &quot;monitorName&quot;: &quot;ca-ny-tech-health&quot;
+}
+</code></pre>
+<h2>Output example</h2>
+<pre><code class="language-json">{
+  &quot;company_name&quot;: &quot;Hard Pill To Swallow, Inc.&quot;,
+  &quot;cik&quot;: &quot;2159842&quot;,
+  &quot;accession_number&quot;: &quot;0002159842-26-000001&quot;,
+  &quot;form_type&quot;: &quot;D&quot;,
+  &quot;filing_date&quot;: &quot;2026-10-09&quot;,
+  &quot;entity_type&quot;: &quot;Corporation&quot;,
+  &quot;jurisdiction_of_incorporation&quot;: &quot;Delaware&quot;,
+  &quot;year_of_incorporation&quot;: 2026,
+  &quot;incorporated_within_five_years&quot;: true,
+  &quot;street&quot;: &quot;13157 Mindanao Way #391&quot;,
+  &quot;city&quot;: &quot;Marina Del Rey&quot;,
+  &quot;state&quot;: &quot;CA&quot;,
+  &quot;zip&quot;: &quot;90292&quot;,
+  &quot;phone&quot;: &quot;8455056767&quot;,
+  &quot;industry_group&quot;: &quot;Manufacturing&quot;,
+  &quot;revenue_range&quot;: &quot;No Revenues&quot;,
+  &quot;exemptions&quot;: [&quot;06b&quot;],
+  &quot;exemption_labels&quot;: [&quot;Rule 506(b)&quot;],
+  &quot;is_amendment&quot;: false,
+  &quot;date_of_first_sale&quot;: &quot;2026-09-24&quot;,
+  &quot;securities_offered&quot;: [&quot;equity&quot;],
+  &quot;minimum_investment&quot;: 10000,
+  &quot;total_offering_amount&quot;: 1500000,
+  &quot;total_amount_sold&quot;: 30000,
+  &quot;total_remaining&quot;: 1470000,
+  &quot;number_of_investors&quot;: 2,
+  &quot;has_non_accredited_investors&quot;: false,
+  &quot;signer_name&quot;: &quot;Daniel Ari Smith&quot;,
+  &quot;signer_title&quot;: &quot;CEO&quot;,
+  &quot;related_persons&quot;: [
+    { &quot;name&quot;: &quot;Daniel Ari Smith&quot;, &quot;roles&quot;: [&quot;Executive Officer&quot;, &quot;Director&quot;, &quot;Promoter&quot;], &quot;city&quot;: &quot;Marina Del Rey&quot;, &quot;state&quot;: &quot;CA&quot; }
+  ],
+  &quot;executives&quot;: [&quot;Daniel Ari Smith&quot;],
+  &quot;filing_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/2159842/000215984226000001/0002159842-26-000001-index.htm&quot;,
+  &quot;form_d_xml_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/2159842/000215984226000001/primary_doc.xml&quot;,
+  &quot;company_filings_url&quot;: &quot;https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=2159842&amp;type=D&quot;
+}
+</code></pre>
+<p>Amounts are in US dollars. An offering marked &quot;Indefinite&quot; on the form has <code>total_offering_amount: null</code> and <code>offering_amount_indefinite: true</code>.</p>
+<h2>Pricing</h2>
+<p>You pay per lead delivered, plus a tiny start fee. Platform usage is included.</p>
+<ul>
+<li><strong>$0.005 per lead</strong> (one filing that passed your filters)</li>
+<li><strong>$0.001 per run start</strong></li>
+</ul>
+<p>Filings removed by your filters are not charged. In monitor mode, a daily run that finds nothing new costs only the start fee. A typical weekday has a few hundred Form D filings in total, and fewer after filters.</p>
+<h2>How it works</h2>
+<p>The actor uses the SEC&#39;s public EDGAR full-text search to list Form D filings for each day in the range, then downloads each filing&#39;s Form D XML from sec.gov. It identifies itself to the SEC and stays under the SEC&#39;s limit of 10 requests per second. No API key, login or proxy is needed.</p>
+<h2>Limits</h2>
+<ul>
+<li>Data is exactly what the company filed. Form D has no email address and no website field, so neither is included. The phone number is the one on the form.</li>
+<li>Executive names come from the related persons section. Some filings list only a fund manager or a promoter.</li>
+<li>Filing dates follow EDGAR, which uses US Eastern time.</li>
+<li>A single run covers up to 92 days. Split longer periods into several runs.</li>
+<li>Not affiliated with or endorsed by the SEC. Form D data is public information.</li>
+</ul>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/sec-form-d-funding-leads">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

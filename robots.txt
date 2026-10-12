@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skillmerc.github.io/sitemap.xml

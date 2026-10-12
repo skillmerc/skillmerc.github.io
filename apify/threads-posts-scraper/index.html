@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Threads Scraper: Posts by Keyword, Hashtag &amp; Profile</title><meta name="description" content="Extract public Threads posts with likes, replies, reposts, author and media URLs. Search keywords and hashtags or scrape profiles. No login needed."><link rel="canonical" href="https://skillmerc.github.io/apify/threads-posts-scraper/"><meta property="og:title" content="Threads Scraper: Posts by Keyword, Hashtag &amp; Profile"><meta property="og:description" content="Extract public Threads posts with likes, replies, reposts, author and media URLs. Search keywords and hashtags or scrape profiles. No login needed."><meta property="og:url" content="https://skillmerc.github.io/apify/threads-posts-scraper/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-Go93WBSUy5lEqg829-fXdYvj53Ot-icon.png" alt=""><h1>Threads Scraper - Posts by Keyword, Hashtag or Profile</h1><p>Scrape public Threads posts by keyword, hashtag or profile. Text, author, likes, replies, reposts, timestamps and media URLs as JSON. No login. Platform usage included.</p><p class="price">USD 2 per 1,000 results on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/threads-posts-scraper">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/threads-posts-scraper/examples/threads-posts-by-keyword">Example: Threads Posts by Keyword</a></p><hr><p>Get public Threads posts as clean JSON: post text, author name and username, likes, replies, reposts, quotes, timestamp, image and video URLs, and the post link. Search by keyword or hashtag, or pull the latest posts from any public profile. No login and no Threads account needed.</p>
+<h2>What you get</h2>
+<p>One row per post:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>post_id</code></td>
+<td>Threads post ID</td>
+</tr>
+<tr>
+<td><code>post_url</code></td>
+<td>Link to the post on threads.com</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td>Author&#39;s handle</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>Author&#39;s display name (falls back to the handle if they have none)</td>
+</tr>
+<tr>
+<td><code>is_verified</code></td>
+<td>Whether the author has a verified badge</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>Full post text</td>
+</tr>
+<tr>
+<td><code>like_count</code>, <code>reply_count</code>, <code>repost_count</code>, <code>quote_count</code></td>
+<td>Engagement numbers at the time of the run</td>
+</tr>
+<tr>
+<td><code>timestamp</code></td>
+<td>When the post was published (ISO 8601, UTC)</td>
+</tr>
+<tr>
+<td><code>media_urls</code></td>
+<td>Image and video URLs attached to the post</td>
+</tr>
+<tr>
+<td><code>is_reply</code>, <code>parent_post_id</code></td>
+<td>Whether the post is a reply or part of a thread</td>
+</tr>
+<tr>
+<td><code>source</code>, <code>source_value</code></td>
+<td>Which search or profile the post came from</td>
+</tr>
+</tbody></table>
+<h2>Input example</h2>
+<pre><code class="language-json">{
+  &quot;searchQuery&quot;: &quot;AI&quot;,
+  &quot;searchQueries&quot;: [&quot;startup&quot;, &quot;#marketing&quot;],
+  &quot;profileUsernames&quot;: [&quot;zuck&quot;, &quot;https://www.threads.com/@mosseri&quot;],
+  &quot;maxResults&quot;: 100
+}
+</code></pre>
+<ul>
+<li><strong>Search query / More search queries</strong>: keywords or hashtags. Each search returns the top posts Threads shows to logged-out visitors, usually about 20.</li>
+<li><strong>Profile usernames</strong>: handles or profile URLs. Each profile returns its latest posts, usually about 10.</li>
+<li><strong>Max results</strong>: stop after this many posts in total (up to 1,000).</li>
+</ul>
+<p>To collect more posts in one run, add more search terms or profiles. Duplicates across searches are removed.</p>
+<h2>Output example</h2>
+<pre><code class="language-json">{
+  &quot;post_id&quot;: &quot;3992848258133212117&quot;,
+  &quot;post_url&quot;: &quot;https://www.threads.com/@zuck/post/DdpclX0ETvV&quot;,
+  &quot;username&quot;: &quot;zuck&quot;,
+  &quot;display_name&quot;: &quot;Mark Zuckerberg&quot;,
+  &quot;is_verified&quot;: true,
+  &quot;text&quot;: &quot;Lots of announcements coming today at Meta Connect...&quot;,
+  &quot;like_count&quot;: 981,
+  &quot;reply_count&quot;: 101,
+  &quot;repost_count&quot;: 73,
+  &quot;quote_count&quot;: 9,
+  &quot;timestamp&quot;: &quot;2026-09-23T23:03:45.000Z&quot;,
+  &quot;media_urls&quot;: [&quot;https://...&quot;],
+  &quot;is_reply&quot;: false,
+  &quot;parent_post_id&quot;: null,
+  &quot;source&quot;: &quot;profile&quot;,
+  &quot;source_value&quot;: &quot;zuck&quot;
+}
+</code></pre>
+<h2>Pricing</h2>
+<p>You pay per post returned, plus a small fee when the run starts. Platform usage is included, so there are no extra compute or proxy charges. Searches or profiles that return nothing cost nothing beyond the start fee.</p>
+<h2>Common uses</h2>
+<ul>
+<li>Track what people say about a brand, product or topic on Threads</li>
+<li>Collect posts for sentiment analysis or to feed an LLM or RAG pipeline</li>
+<li>Monitor competitors&#39; or creators&#39; latest posts and engagement</li>
+<li>Find active accounts and creators in a niche</li>
+</ul>
+<h2>Limits</h2>
+<ul>
+<li>Only public posts are returned. Private profiles return nothing.</li>
+<li>Without a login, Threads shows a limited first page: about 20 posts per search and about 10 per profile. Use several search terms or profiles for bigger runs.</li>
+<li>Search results are the &quot;Top&quot; results Threads picks, not a full chronological feed.</li>
+<li>Engagement numbers are a snapshot from the moment of the run.</li>
+</ul>
+<h2>Use it from code</h2>
+<p>Call it from the Apify API, the JavaScript or Python client, Make, Zapier, n8n, or an MCP client. Results are in the run&#39;s default dataset as JSON, CSV or Excel.</p>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/threads-posts-scraper">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

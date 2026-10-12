@@ -1,0 +1,264 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wayback Machine Scraper: Snapshots, Changes &amp; Page Text</title><meta name="description" content="Export Wayback Machine snapshots of any URL or domain with date, status and change filters and optional page text. Plus archive.org search. $0.50 per 1k."><link rel="canonical" href="https://skillmerc.github.io/apify/internet-archive-search-scraper/"><meta property="og:title" content="Wayback Machine Scraper: Snapshots, Changes &amp; Page Text"><meta property="og:description" content="Export Wayback Machine snapshots of any URL or domain with date, status and change filters and optional page text. Plus archive.org search. $0.50 per 1k."><meta property="og:url" content="https://skillmerc.github.io/apify/internet-archive-search-scraper/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-VJHyNbIogAZ90ws5O-XO94QDcbRE-icon.png" alt=""><h1>Internet Archive &amp; Wayback Machine Scraper - Snapshots &amp; Search</h1><p>List Wayback Machine snapshots of any URL or site with date, status and change filters and optional page text, or search archive.org item metadata. Official APIs, no key, $0.50 per 1,000 rows.</p><p class="price">USD 0.50 per 1,000 results on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/internet-archive-search-scraper">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/internet-archive-search-scraper/examples/wayback-machine-website-history-yearly">Example: Wayback Machine History of a Website, Yearly</a></p><hr><p>Two tools in one actor, both on archive.org&#39;s official public APIs, with no API key, no login and no browser:</p>
+<ul>
+<li><strong>Wayback Machine mode</strong> lists every archived snapshot of a page or a whole site: capture date, HTTP status, content type, content hash and a ready-to-open snapshot link. Filter by date, status and type, keep only content changes, and optionally download the archived page text.</li>
+<li><strong>Search mode</strong> exports <a href="https://archive.org">archive.org</a> item metadata for books, audio, video, software and web collections, with optional file lists.</li>
+</ul>
+<p>Price: <strong>$0.50 per 1,000 rows</strong> in either mode.</p>
+<h2>Common uses</h2>
+<ul>
+<li>See how a competitor&#39;s pricing page, homepage or terms changed over time (collapse = content changes only, with page text).</li>
+<li>Recover the text of a page or site that is now offline.</li>
+<li>Check a domain&#39;s history before buying it: first and last capture, gaps, redirects and what it used to host.</li>
+<li>Find every archived URL on a site for SEO migrations, redirect maps or broken link recovery.</li>
+<li>Build reading lists or text corpora from public domain books, or export a collection&#39;s catalogue to a spreadsheet.</li>
+</ul>
+<h2>Quick start: Wayback Machine</h2>
+<pre><code class="language-json">{
+  &quot;mode&quot;: &quot;wayback&quot;,
+  &quot;urls&quot;: [&quot;example.com&quot;, &quot;https://www.python.org/&quot;],
+  &quot;collapse&quot;: &quot;year&quot;,
+  &quot;from&quot;: &quot;2015&quot;,
+  &quot;to&quot;: &quot;2020&quot;,
+  &quot;statusFilter&quot;: &quot;200&quot;,
+  &quot;maxSnapshotsPerUrl&quot;: 50,
+  &quot;fetchContent&quot;: true
+}
+</code></pre>
+<h3>Wayback inputs</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mode</code></td>
+<td><code>search</code></td>
+<td>Set to <code>wayback</code> for this mode.</td>
+</tr>
+<tr>
+<td><code>urls</code></td>
+<td></td>
+<td>URLs or domains, for example <code>example.com</code> or <code>https://site.com/pricing</code>.</td>
+</tr>
+<tr>
+<td><code>matchType</code></td>
+<td><code>exact</code></td>
+<td><code>exact</code> (this URL only), <code>prefix</code> (every URL that starts with it), <code>host</code> (every page on the host), <code>domain</code> (the domain and all subdomains).</td>
+</tr>
+<tr>
+<td><code>from</code>, <code>to</code></td>
+<td>empty</td>
+<td>Date range as <code>YYYY</code>, <code>YYYY-MM</code> or <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr>
+<td><code>collapse</code></td>
+<td><code>none</code></td>
+<td><code>day</code>, <code>month</code> or <code>year</code> keep at most one capture per URL per period. <code>digest</code> keeps content changes only: a capture is dropped when its content is identical to the capture before it.</td>
+</tr>
+<tr>
+<td><code>statusFilter</code></td>
+<td>empty</td>
+<td>HTTP status, as a regular expression: <code>200</code>, <code>3..</code> for redirects.</td>
+</tr>
+<tr>
+<td><code>mimeFilter</code></td>
+<td>empty</td>
+<td>Content type, as a regular expression: <code>text/html</code>, <code>application/pdf</code>.</td>
+</tr>
+<tr>
+<td><code>maxSnapshotsPerUrl</code></td>
+<td><code>100</code></td>
+<td>Stop after this many snapshots for each URL or domain (up to 100,000).</td>
+</tr>
+<tr>
+<td><code>fetchContent</code></td>
+<td><code>false</code></td>
+<td>Download each archived page and add <code>page_title</code>, <code>text</code> and <code>text_length</code>.</td>
+</tr>
+<tr>
+<td><code>maxContentChars</code></td>
+<td><code>20000</code></td>
+<td>Cut long page text to this many characters (0 = no cut).</td>
+</tr>
+</tbody></table>
+<h3>Wayback output</h3>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;wayback_snapshot&quot;,
+  &quot;input_url&quot;: &quot;https://www.python.org/&quot;,
+  &quot;original_url&quot;: &quot;https://www.python.org/&quot;,
+  &quot;urlkey&quot;: &quot;org,python)/&quot;,
+  &quot;timestamp&quot;: &quot;20150101032028&quot;,
+  &quot;captured_at&quot;: &quot;2015-01-01T03:20:28Z&quot;,
+  &quot;status_code&quot;: 200,
+  &quot;mimetype&quot;: &quot;text/html&quot;,
+  &quot;digest&quot;: &quot;CWG5GMVD...&quot;,
+  &quot;length&quot;: 6411,
+  &quot;snapshot_url&quot;: &quot;https://web.archive.org/web/20150101032028/https://www.python.org/&quot;,
+  &quot;raw_snapshot_url&quot;: &quot;https://web.archive.org/web/20150101032028id_/https://www.python.org/&quot;,
+  &quot;page_title&quot;: &quot;Welcome to Python.org&quot;,
+  &quot;text&quot;: &quot;Skip to content ...&quot;,
+  &quot;text_length&quot;: 6678,
+  &quot;content_error&quot;: null
+}
+</code></pre>
+<p><code>page_title</code>, <code>text</code>, <code>text_length</code> and <code>content_error</code> appear only when <code>fetchContent</code> is on. <code>raw_snapshot_url</code> opens the page exactly as archived, without the Wayback toolbar. <code>length</code> is the compressed size in the archive. Exact duplicate index entries are skipped and not charged. A per-target summary is saved to the run&#39;s <code>OUTPUT</code> record, and one failing URL does not stop the others.</p>
+<h2>Search mode</h2>
+<p>Search mode is the default, so existing inputs keep working unchanged.</p>
+<pre><code class="language-json">{ &quot;query&quot;: &quot;mediatype:texts AND subject:python&quot;, &quot;sort&quot;: &quot;downloads desc&quot;, &quot;maxItems&quot;: 100 }
+</code></pre>
+<h3>Search inputs</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>query</code></td>
+<td>string</td>
+<td><code>mediatype:texts AND subject:python</code></td>
+<td>Archive.org search query (Lucene syntax). Supports field-scoped queries: <code>creator:tolkien</code>, <code>subject:jazz</code>, <code>collection:librivoxaudio</code>.</td>
+</tr>
+<tr>
+<td><code>mediatype</code></td>
+<td>string</td>
+<td><em>(empty)</em></td>
+<td>Narrow to a media type: <code>texts</code>, <code>audio</code>, <code>movies</code>, <code>software</code>, <code>image</code>, <code>web</code>, <code>data</code>.</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td>string</td>
+<td><code>downloads desc</code></td>
+<td>Sort order. Examples: <code>date desc</code>, <code>titleSorter asc</code>, <code>avg_rating desc</code>.</td>
+</tr>
+<tr>
+<td><code>maxItems</code></td>
+<td>integer</td>
+<td><code>100</code></td>
+<td>Maximum items to return. Hard cap: 10,000.</td>
+</tr>
+<tr>
+<td><code>includeFiles</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>Also fetch the file manifest for each item. Makes one extra request per item, significantly slower for large result sets.</td>
+</tr>
+</tbody></table>
+<h4>Query syntax</h4>
+<p>Archive.org uses Lucene syntax. Some useful patterns:</p>
+<pre><code>subject:jazz AND mediatype:audio
+creator:&quot;Ernest Hemingway&quot;
+collection:gutenberg AND language:english
+date:[2020-01-01 TO 2023-12-31]
+</code></pre>
+<h3>Search output fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>identifier</code></td>
+<td>string</td>
+<td>Unique Archive.org item ID</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Item title</td>
+</tr>
+<tr>
+<td><code>creator</code></td>
+<td>array</td>
+<td>Author(s) or creator(s)</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>Item description</td>
+</tr>
+<tr>
+<td><code>mediatype</code></td>
+<td>string</td>
+<td><code>texts</code>, <code>audio</code>, <code>movies</code>, <code>software</code>, <code>image</code>, etc.</td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td>array</td>
+<td>Subject tags</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>string</td>
+<td>Original publication date</td>
+</tr>
+<tr>
+<td><code>year</code></td>
+<td>integer</td>
+<td>Publication year</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>array</td>
+<td>Language(s)</td>
+</tr>
+<tr>
+<td><code>downloads</code></td>
+<td>integer</td>
+<td>Total download count</td>
+</tr>
+<tr>
+<td><code>item_size</code></td>
+<td>integer</td>
+<td>Total size in bytes</td>
+</tr>
+<tr>
+<td><code>collection</code></td>
+<td>array</td>
+<td>Collections the item belongs to</td>
+</tr>
+<tr>
+<td><code>publicdate</code></td>
+<td>string</td>
+<td>Date added to Archive.org (ISO 8601)</td>
+</tr>
+<tr>
+<td><code>item_url</code></td>
+<td>string</td>
+<td>Direct URL to the item page</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td>array</td>
+<td>File manifest (only when <code>includeFiles: true</code>)</td>
+</tr>
+</tbody></table>
+<h3>Search sample output</h3>
+<p>Result from query <code>mediatype:texts AND subject:python</code>, sorted by <code>downloads desc</code>:</p>
+<pre><code class="language-json">{&quot;identifier&quot;:&quot;python_ebooks_2020&quot;,&quot;title&quot;:&quot;Python Ebooks&quot;,&quot;creator&quot;:[&quot;strugglez&quot;],&quot;description&quot;:&quot;Python Ebooks&quot;,&quot;mediatype&quot;:&quot;texts&quot;,&quot;subject&quot;:[&quot;python&quot;],&quot;date&quot;:null,&quot;year&quot;:null,&quot;language&quot;:[&quot;Latin&quot;],&quot;downloads&quot;:257128,&quot;item_size&quot;:49856126105,&quot;collection&quot;:[&quot;booksbylanguage_latin&quot;,&quot;booksbylanguage&quot;],&quot;publicdate&quot;:&quot;2020-09-27T09:24:26Z&quot;,&quot;item_url&quot;:&quot;https://archive.org/details/python_ebooks_2020&quot;,&quot;files&quot;:null}
+</code></pre>
+<h2>Pricing</h2>
+<p>Pay per result: <strong>$0.50 per 1,000 rows</strong>, the same in both modes, plus Apify&#39;s tiny start fee. 100 snapshots cost $0.05. Downloading page text or file lists does not raise the per-row price, it only makes the run take longer.</p>
+<h2>Limitations</h2>
+<ul>
+<li>Wayback mode lists what the Internet Archive has captured. Pages it never archived, and sites that asked to be excluded, will return no rows.</li>
+<li><code>collapse: digest</code> compares each capture with the one before it in the index, so it removes repeats in a row, not every duplicate across years.</li>
+<li>Page text is plain text extracted from the archived HTML. It does not run JavaScript, so pages that load their content with scripts may come back mostly empty. Images, PDFs and other non-text files are listed but their content is not downloaded (<code>content_error</code> says <code>not_text</code>).</li>
+<li>With <code>fetchContent</code> on, each snapshot takes about 1.5 seconds, because the actor waits between requests to stay polite to archive.org. Use <code>collapse</code> or a small <code>maxSnapshotsPerUrl</code> for long histories.</li>
+<li>Archive.org caps search mode at 10,000 items per query. Split larger jobs by date or subject.</li>
+<li>Some search fields (<code>date</code>, <code>year</code>, <code>language</code>) are not consistently filled in by contributors, and <code>collection</code> includes personal favourites (prefixed <code>fav-</code>).</li>
+</ul>
+<h2>Rate limits</h2>
+<p>Requests run one at a time: 1 second between Wayback index pages, 1.5 seconds between page downloads, 500 ms between search pages and 600 ms between file list requests, with automatic backoff on HTTP 429 and 5xx responses.</p>
+<h2>Legal</h2>
+<p>Both modes use archive.org&#39;s public endpoints, which need no authentication. Only publicly archived data is returned. Respect the copyright of the archived pages you download.</p>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/internet-archive-search-scraper">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

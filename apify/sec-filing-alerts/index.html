@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SEC Filing Alerts: 8-K &amp; Form 4 Monitor to Slack</title><meta name="description" content="Monitor SEC EDGAR for new filings from your tickers: 8-K items, Form 4 insider trades, 13D/G, 10-K, 10-Q. Alerts to Slack or webhook. $0.01 per alert."><link rel="canonical" href="https://skillmerc.github.io/apify/sec-filing-alerts/"><meta property="og:title" content="SEC Filing Alerts: 8-K &amp; Form 4 Monitor to Slack"><meta property="og:description" content="Monitor SEC EDGAR for new filings from your tickers: 8-K items, Form 4 insider trades, 13D/G, 10-K, 10-Q. Alerts to Slack or webhook. $0.01 per alert."><meta property="og:url" content="https://skillmerc.github.io/apify/sec-filing-alerts/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-HTi2kYeyZfbR1EoyA-Uytvs9AT6t-icon.png" alt=""><h1>SEC Filing Alerts - 8-K, Form 4, 13D &amp; 10-K Monitor</h1><p>Get alerted when your tickers file with the SEC: 8-K items, Form 4 insider trades, 13D/13G, 10-K, 10-Q, S-1. Runs on a schedule, sends to Slack or a webhook, $0.01 per new filing.</p><p class="price">USD 10 per 1,000 alerts on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/sec-filing-alerts">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/sec-filing-alerts/examples/insider-trading-form-4-alerts">Example: Insider trading alerts (SEC Form 4)</a></p><hr><p>Watch a list of tickers or CIKs on SEC EDGAR and get told only when a new filing appears. Each run reads the official submissions feed for every company, compares it against the snapshot from the previous run, and writes one row per new filing that matches your filters: form types such as 8-K, 10-K, 10-Q, Form 4, SC 13D, SC 13G, S-1 or DEF 14A, and optionally specific 8-K items such as 5.02 (officer and director changes) or keywords.</p>
+<p>Nothing new was filed? The run writes nothing and you pay almost nothing. Data comes from <code>data.sec.gov</code>, the SEC&#39;s official JSON API. No API key, no login.</p>
+<h2>Common uses</h2>
+<ul>
+<li>Event trading and research: hear about 8-K items such as 5.02 (executive changes) or 1.01 (material agreements) soon after filing.</li>
+<li>Insider activity: Form 4 filings for the companies you follow.</li>
+<li>Activist watch: new SC 13D and 13G filings on your holdings.</li>
+</ul>
+<h2>How to schedule it</h2>
+<ol>
+<li>Run the actor once with your companies, form types and a <code>watchlistName</code>. The first run saves a baseline and reports nothing, unless you set <code>initialLookbackDays</code> (see below).</li>
+<li>In Apify Console open the actor, click Schedule, and pick an interval. EDGAR accepts filings on business days from 6:00 to 22:00 US Eastern time. Every 30 or 60 minutes during that window catches 8-Ks the same day; once a day is fine for periodic reports.</li>
+<li>Optional: put a Slack incoming webhook URL or your own HTTPS endpoint in the input to receive each run&#39;s alerts as a push message.</li>
+</ol>
+<p>Every scheduled run reuses the same <code>watchlistName</code>, so it always compares against the previous run. The snapshot lives in a key-value store named <code>sec-filing-alerts-&lt;watchlistName&gt;</code> in your account. Delete that store to start over.</p>
+<p>If you leave <code>watchlistName</code> empty, the name is derived from the list of companies, so editing the list starts a fresh baseline. Naming the watchlist is better.</p>
+<h2>Initial lookback</h2>
+<p>Set <code>initialLookbackDays</code> to a number such as 30 and the first run also reports filings dated within that window that match your filters. This gives you a useful first result immediately and lets you check the output before scheduling. Later runs ignore the setting and report only filings that are new since the previous run.</p>
+<h2>Filters</h2>
+<ul>
+<li><code>formTypes</code>: exact form names as EDGAR uses them. <code>4</code> is Form 4, <code>SC 13D</code> and <code>SC 13G</code> are the ownership schedules; <code>13D/G</code> is accepted as shorthand for both. Empty means every form.</li>
+<li><code>includeAmendments</code>: when true (default), <code>10-K/A</code> is reported if <code>10-K</code> is selected, and so on.</li>
+<li><code>items8K</code>: item numbers that an 8-K must contain, for example <code>5.02</code>, <code>1.01</code>, <code>2.02</code>, <code>8.01</code>. Only 8-K filings are affected; other forms pass through.</li>
+<li><code>keywords</code>: case-insensitive words matched against the form type, the 8-K item list and the primary document description.</li>
+</ul>
+<p>The snapshot always stores the full filing list, so changing filters later never resurfaces old filings as new.</p>
+<h2>Input</h2>
+<p>| Field | Type | Default | Description |
+| - -| - -| - -| - -|
+| <code>companies</code> | array | | Tickers (<code>AAPL</code>) or CIK numbers (<code>320193</code>). |
+| <code>formTypes</code> | array | <code>[]</code> (all) | Form types to alert on. |
+| <code>includeAmendments</code> | boolean | <code>true</code> | Also report <code>/A</code> amendments of selected forms. |
+| <code>items8K</code> | array | <code>[]</code> | 8-K item numbers to require. |
+| <code>keywords</code> | array | <code>[]</code> | Keywords to require. |
+| <code>initialLookbackDays</code> | integer | <code>0</code> | On the first run, also report filings dated within this many days. |
+| <code>watchlistName</code> | string | | Name of the watchlist. Keeps the snapshot between runs. |
+| <code>webhookUrl</code> | string | | HTTPS endpoint that receives a JSON POST per run with the summary and alerts. |
+| <code>slackWebhookUrl</code> | string | | Slack incoming webhook. One message per run. |
+| <code>maxAlertsPerRun</code> | integer | <code>500</code> | Upper bound on alerts delivered and charged in a single run. |</p>
+<h2>Output</h2>
+<p>One dataset row per new filing. Example (a real row from a test run):</p>
+<pre><code class="language-json">{
+  &quot;watchlist&quot;: &quot;my-watchlist&quot;,
+  &quot;change_type&quot;: &quot;new_filing&quot;,
+  &quot;cik&quot;: &quot;1318605&quot;,
+  &quot;ticker&quot;: &quot;TSLA&quot;,
+  &quot;company_name&quot;: &quot;Tesla, Inc.&quot;,
+  &quot;form_type&quot;: &quot;8-K&quot;,
+  &quot;filing_date&quot;: &quot;2026-10-02&quot;,
+  &quot;accepted_at&quot;: &quot;2026-10-02T13:04:26.000Z&quot;,
+  &quot;report_date&quot;: &quot;2026-10-02&quot;,
+  &quot;items&quot;: [&quot;2.02&quot;, &quot;9.01&quot;],
+  &quot;description&quot;: &quot;8-K&quot;,
+  &quot;summary&quot;: &quot;TSLA: new 8-K (items 2.02, 9.01) filed 2026-10-02 - 8-K&quot;,
+  &quot;accession_number&quot;: &quot;0001628280-26-064366&quot;,
+  &quot;filing_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/1318605/000162828026064366/&quot;,
+  &quot;document_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/1318605/000162828026064366/tsla-20261002.htm&quot;,
+  &quot;size&quot;: 156965,
+  &quot;detected_at&quot;: &quot;2026-10-06T07:05:04.956Z&quot;,
+  &quot;run_id&quot;: &quot;abc123&quot;
+}
+</code></pre>
+<p>If a registrant changes its name between runs you also get a <code>name_change</code> row with <code>before</code> and <code>after</code>.</p>
+<p>The run stores a summary in the <code>OUTPUT</code> record of the run&#39;s key-value store: <code>companies_checked</code>, <code>changes_detected</code>, <code>alerts_delivered</code>, <code>alerts_skipped</code>, <code>not_found</code> and whether the run was a baseline.</p>
+<h2>Webhook payloads</h2>
+<p><code>webhookUrl</code> receives one POST per run: the summary plus <code>run_id</code> and an <code>alerts</code> array of the rows. Nothing is sent when a run has no alerts (except the first baseline run, which sends the summary).</p>
+<p><code>slackWebhookUrl</code> receives a short message listing up to 20 filings with document links.</p>
+<h2>Pricing</h2>
+<p>You pay per alert, not per company. Each new filing row written to the dataset costs USD 0.01. Each run also costs USD 0.001 to start, which covers checking your whole list when nothing new was filed. Platform usage is included.</p>
+<p>Example: a watchlist of 20 companies on 8-K, 10-K and 10-Q, checked hourly on business days (about 350 runs a month), with 40 new filings a month, costs about USD 0.40 for the alerts plus USD 0.35 for the runs. Form 4 adds volume: large companies file several insider forms a week, so budget for that if you include it.</p>
+<h2>Limits and notes</h2>
+<ul>
+<li>The SEC&#39;s submissions feed lists the latest 1,000 filings per company. The comparison uses that list, so a company would need more than 1,000 filings between two runs for anything to be missed.</li>
+<li>The actor stays under the SEC&#39;s 10 requests per second guidance and identifies itself with a contact address as the SEC requires. One request per company per run plus one for the ticker list.</li>
+<li>Tickers are resolved with the SEC&#39;s official ticker list. Delisted or very new tickers may not be in it; use the CIK instead. Unresolved entries are listed in <code>not_found</code> in the summary.</li>
+<li>If EDGAR is unreachable for a company, its previous snapshot is kept so nothing is missed on the next run.</li>
+<li>New filings usually appear in the submissions feed within a few minutes of acceptance. The feed is not a real-time stream; schedule frequency sets your delay.</li>
+</ul>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/sec-filing-alerts">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

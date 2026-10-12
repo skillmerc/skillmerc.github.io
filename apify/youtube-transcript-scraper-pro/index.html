@@ -1,0 +1,187 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YouTube Transcript Scraper: Subtitles to Text in Bulk</title><meta name="description" content="Extract YouTube transcripts and subtitles in bulk from videos, Shorts, playlists and channels. JSON with timestamps. $2 per 1,000; failed videos are free."><link rel="canonical" href="https://skillmerc.github.io/apify/youtube-transcript-scraper-pro/"><meta property="og:title" content="YouTube Transcript Scraper: Subtitles to Text in Bulk"><meta property="og:description" content="Extract YouTube transcripts and subtitles in bulk from videos, Shorts, playlists and channels. JSON with timestamps. $2 per 1,000; failed videos are free."><meta property="og:url" content="https://skillmerc.github.io/apify/youtube-transcript-scraper-pro/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-5HpQ7CK3huXPLHLkc-C9bV4YVcdE-icon.png" alt=""><h1>YouTube Transcript &amp; Subtitles Scraper - Bulk &amp; Channels</h1><p>Get YouTube transcripts and subtitles as clean text with timestamps, from videos, Shorts, playlists or whole channels. Any language. $2 per 1,000, and videos without captions are never charged.</p><p class="price">USD 2 per 1,000 results on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro/examples/youtube-channel-transcripts-to-text">Example: YouTube Channel Transcripts to Plain Text</a></p><hr><p>Turn YouTube videos into text. Paste video, Shorts, playlist or channel URLs and get back one JSON row per video with the full transcript, timestamped segments and video details. Works with any caption language, manual or auto-generated.</p>
+<p><strong>$2 per 1,000 transcripts. Videos that have no captions, or that fail, are never charged.</strong></p>
+<h2>What you get</h2>
+<p>For each video:</p>
+<ul>
+<li>The full transcript as one clean string, ready for an LLM, a search index or a document</li>
+<li>Timestamped segments (<code>start</code>, <code>duration</code>, <code>text</code>) for subtitles, quotes and chapter work</li>
+<li>Title, channel, channel ID, duration and view count</li>
+<li>Which caption language you got, whether it was auto-generated, and every language the video offers</li>
+</ul>
+<h2>Quick start</h2>
+<ol>
+<li>Paste one or more YouTube links into <strong>Video URLs or IDs</strong>.</li>
+<li>Set <strong>Language</strong> to the caption language you want (for example <code>en</code>, <code>es</code>, <code>de</code>, <code>pt</code>, <code>ko</code>).</li>
+<li>Click <strong>Start</strong>. Download the results as JSON, CSV, Excel or HTML, or read them through the Apify API.</li>
+</ol>
+<h3>Input example</h3>
+<pre><code class="language-json">{
+  &quot;videoUrls&quot;: [
+    &quot;https://www.youtube.com/watch?v=dQw4w9WgXcQ&quot;,
+    &quot;https://youtu.be/jNQXAC9IVRw&quot;,
+    &quot;https://www.youtube.com/shorts/VIDEO_ID&quot;,
+    &quot;https://www.youtube.com/playlist?list=PLAYLIST_ID&quot;,
+    &quot;https://www.youtube.com/@3blue1brown&quot;
+  ],
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;preferManual&quot;: true,
+  &quot;includeTimestamps&quot;: true,
+  &quot;plainText&quot;: true,
+  &quot;expandPlaylists&quot;: true,
+  &quot;maxItems&quot;: 200
+}
+</code></pre>
+<p>Accepted links: <code>watch?v=</code>, <code>youtu.be/</code>, <code>/shorts/</code>, <code>/embed/</code>, <code>/live/</code> and bare 11-character video IDs. Playlist links (<code>?list=</code>) and channel links (<code>/@handle</code> or <code>/channel/UC...</code>) are expanded into their videos when <strong>Expand Playlists</strong> is on.</p>
+<h2>Input options</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>videoUrls</code></td>
+<td>one sample video</td>
+<td>Video links or IDs. Playlist and channel links when <code>expandPlaylists</code> is on</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td><code>en</code></td>
+<td>Preferred caption language code</td>
+</tr>
+<tr>
+<td><code>preferManual</code></td>
+<td><code>true</code></td>
+<td>Use human-written captions before auto-generated ones</td>
+</tr>
+<tr>
+<td><code>includeTimestamps</code></td>
+<td><code>true</code></td>
+<td>Return the timestamped <code>segments</code> list</td>
+</tr>
+<tr>
+<td><code>plainText</code></td>
+<td><code>true</code></td>
+<td>Return the whole transcript as one string in <code>transcript_text</code></td>
+</tr>
+<tr>
+<td><code>expandPlaylists</code></td>
+<td><code>false</code></td>
+<td>Expand playlist and channel links into individual videos</td>
+</tr>
+<tr>
+<td><code>maxItems</code></td>
+<td><code>100</code></td>
+<td>Maximum number of videos per run (up to 10,000)</td>
+</tr>
+</tbody></table>
+<h2>Output example</h2>
+<pre><code class="language-json">{
+  &quot;video_id&quot;: &quot;dQw4w9WgXcQ&quot;,
+  &quot;video_url&quot;: &quot;https://www.youtube.com/watch?v=dQw4w9WgXcQ&quot;,
+  &quot;title&quot;: &quot;Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)&quot;,
+  &quot;channel&quot;: &quot;Rick Astley&quot;,
+  &quot;channel_id&quot;: &quot;UCuAXFkgsw1L7xaCfnd5JJOw&quot;,
+  &quot;duration_seconds&quot;: 213,
+  &quot;view_count&quot;: 1815620592,
+  &quot;published_at&quot;: null,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;is_auto_generated&quot;: false,
+  &quot;available_languages&quot;: [&quot;en&quot;, &quot;en (auto)&quot;, &quot;de-DE&quot;],
+  &quot;transcript_text&quot;: &quot;[music] We&#39;re no strangers to love You know the rules and so do I ...&quot;,
+  &quot;segments&quot;: [
+    { &quot;start&quot;: 0.0, &quot;duration&quot;: 2.4, &quot;text&quot;: &quot;[music]&quot; },
+    { &quot;start&quot;: 18.88, &quot;duration&quot;: 3.28, &quot;text&quot;: &quot;We&#39;re no strangers to love&quot; }
+  ],
+  &quot;word_count&quot;: 487,
+  &quot;route&quot;: &quot;direct&quot;,
+  &quot;error&quot;: null
+}
+</code></pre>
+<h3>Output fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>video_id</code>, <code>video_url</code></td>
+<td>The video</td>
+</tr>
+<tr>
+<td><code>title</code>, <code>channel</code>, <code>channel_id</code></td>
+<td>Video and channel details</td>
+</tr>
+<tr>
+<td><code>duration_seconds</code>, <code>view_count</code></td>
+<td>Length and views</td>
+</tr>
+<tr>
+<td><code>is_live</code></td>
+<td>True for live streams and past live streams</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>Language code of the transcript you received</td>
+</tr>
+<tr>
+<td><code>is_auto_generated</code></td>
+<td>True if YouTube generated the captions automatically</td>
+</tr>
+<tr>
+<td><code>available_languages</code></td>
+<td>Every caption track on the video, auto tracks marked <code>(auto)</code></td>
+</tr>
+<tr>
+<td><code>transcript_text</code></td>
+<td>Full transcript as one string (null if <code>plainText</code> is off)</td>
+</tr>
+<tr>
+<td><code>segments</code></td>
+<td>List of <code>{start, duration, text}</code> (null if <code>includeTimestamps</code> is off)</td>
+</tr>
+<tr>
+<td><code>word_count</code></td>
+<td>Number of words in the transcript</td>
+</tr>
+<tr>
+<td><code>route</code></td>
+<td>Network route used for the video (<code>direct</code>, <code>datacenter</code> or <code>residential</code>)</td>
+</tr>
+<tr>
+<td><code>published_at</code></td>
+<td>Always null. YouTube&#39;s mobile API does not return it</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>Always null in the results. Failed videos go to a separate free list (see below)</td>
+</tr>
+</tbody></table>
+<h2>Pricing</h2>
+<p>You pay $2.00 per 1,000 transcripts delivered, which is $0.002 per video. There is also a start fee of $0.00005 per GB of run memory, which is a fraction of a cent per run.</p>
+<p>You are only charged for rows in the results dataset. Videos that can&#39;t be transcribed (no captions, private, deleted, age-restricted, or blocked by YouTube after every retry) are never written there. Instead they are listed with the reason in the run&#39;s <code>OUTPUT</code> record and in a separate <code>failed-videos</code> dataset, at no charge.</p>
+<h2>Use cases</h2>
+<ul>
+<li><strong>LLM and RAG pipelines.</strong> Feed clean transcript text into ChatGPT, Claude or a vector database to summarise videos or answer questions about them.</li>
+<li><strong>Content repurposing.</strong> Turn videos and podcasts into blog posts, newsletters, show notes and social posts.</li>
+<li><strong>Research.</strong> Pull every talk from a channel or playlist and search, quote or analyse what was said.</li>
+<li><strong>Subtitles and quotes.</strong> Use the timestamped segments to find the exact moment something was said.</li>
+<li><strong>SEO and competitor research.</strong> See what topics and keywords other channels cover.</li>
+</ul>
+<h2>How it works</h2>
+<p>Transcripts come from YouTube&#39;s own caption tracks through its mobile player API, not from scraping the web page. YouTube often blocks cloud servers, so when a request is refused the actor retries that video through fresh proxy IPs (datacenter first, then residential). Retries are included in the price.</p>
+<p>In tests on 27 September 2026 it delivered 30 of 33 random videos across 7 languages. The 3 misses had no captions at all. A 3.5-hour podcast came back at 29,466 words, and transcripts matched YouTube&#39;s own transcript view at about 97%.</p>
+<h2>Limitations</h2>
+<ul>
+<li>Videos with no captions at all can&#39;t be transcribed. This is common for music videos and sports highlights. They are reported free of charge.</li>
+<li>If the language you ask for isn&#39;t available, you get the best track the video has (manual first, then auto-generated). The <code>language</code> field tells you which one you got.</li>
+<li>Channel links return the channel&#39;s latest uploads from its Videos tab.</li>
+<li>A link that contains both a video and a playlist (<code>watch?v=...&amp;list=...</code>) is treated as that single video. Use the <code>playlist?list=</code> link to get the whole playlist.</li>
+</ul>
+<h2>Calling it from code or AI agents</h2>
+<p>Run it from the Apify API, the JavaScript or Python clients, Make, Zapier or n8n, or from AI agents through Apify&#39;s MCP server. Each run returns a dataset you can read as JSON or CSV.</p>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

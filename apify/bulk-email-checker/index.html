@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bulk Email Checker: MX, Disposable &amp; Typo Check</title><meta name="description" content="Check email lists in bulk: syntax, domain and MX records, disposable and role addresses, free providers and typo fixes. $0.30 per 1,000 emails."><link rel="canonical" href="https://skillmerc.github.io/apify/bulk-email-checker/"><meta property="og:title" content="Bulk Email Checker: MX, Disposable &amp; Typo Check"><meta property="og:description" content="Check email lists in bulk: syntax, domain and MX records, disposable and role addresses, free providers and typo fixes. $0.30 per 1,000 emails."><meta property="og:url" content="https://skillmerc.github.io/apify/bulk-email-checker/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-2UgiapwJlfT2P2dVj-GqIU59BQYw-icon.png" alt=""><h1>Bulk Email Checker - Syntax, MX, Disposable &amp; Typo Check</h1><p>Clean email lists fast: syntax, domain and MX checks, disposable and role account detection, free provider flag and typo fixes like gmial.com to gmail.com. $0.30 per 1,000. No mailbox pinging.</p><p class="price">USD 0.30 per 1,000 checked emails on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/bulk-email-checker">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/bulk-email-checker/examples/clean-email-list-invalid-disposable">Example: Clean an Email List: Invalid, Disposable and Typo Emails</a></p><hr><p>Clean an email list before you send to it. For every address this actor checks the format, whether the domain exists and can receive mail (MX records), whether it is a disposable or temporary address, whether it is a role account such as info@ or sales@, and whether it is a free provider such as Gmail. It also catches common typos and suggests the fix, for example <code>jane@gmial.com</code> to <code>jane@gmail.com</code>.</p>
+<p>Each email gets one clear status, a recommended action and the reasons behind it.</p>
+<p><strong>Price: $0.30 per 1,000 checked emails</strong>, plus $0.0005 per run. Duplicates are removed first and are not charged.</p>
+<h2>What it checks</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Format</td>
+<td>Practical address rules: one @, allowed characters, no leading, trailing or double dots, length limits, valid domain labels and TLD. International domains are supported.</td>
+</tr>
+<tr>
+<td>Domain exists</td>
+<td>DNS lookup. Domains that do not exist are marked invalid.</td>
+</tr>
+<tr>
+<td>Can receive mail</td>
+<td>MX records. A domain with no MX but an A record is flagged as risky (mail may still arrive through the A record). A domain that publishes a &quot;null MX&quot; (it explicitly refuses mail, like example.com) is invalid.</td>
+</tr>
+<tr>
+<td>Disposable</td>
+<td>Matched against the community maintained <a href="https://github.com/disposable-email-domains/disposable-email-domains">disposable-email-domains</a> list (about 9,200 domains, public domain CC0), including subdomains of listed domains.</td>
+</tr>
+<tr>
+<td>Role account</td>
+<td>info@, sales@, support@, admin@, noreply@, hr@ and about 80 more shared inbox names.</td>
+</tr>
+<tr>
+<td>Free provider</td>
+<td>Gmail, Yahoo, Outlook, Hotmail, iCloud, AOL, Proton, GMX, Yandex, Mail.ru and others. Shown as a flag only.</td>
+</tr>
+<tr>
+<td>Typo</td>
+<td>Close misspellings of popular providers (gmial.com, yahooo.com, hotmial.com) and wrong endings (gmail.con). Returns <code>suggested_email</code>.</td>
+</tr>
+</tbody></table>
+<p>Each domain is looked up once per run, so lists with many addresses on the same domains run very fast.</p>
+<h2>What it does not do</h2>
+<p><strong>It does not ping mailboxes.</strong> There is no SMTP check, so it cannot tell you whether a specific mailbox like <code>john@company.com</code> exists, and it does not detect catch-all domains. A <code>valid_format_and_domain</code> result means the address is well formed and its domain is set up to receive mail. If you need mailbox-level verification, run this first to remove the obvious bad addresses cheaply, then send only the survivors to a mailbox verifier.</p>
+<h2>Statuses</h2>
+<table>
+<thead>
+<tr>
+<th>status</th>
+<th>recommendation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>valid_format_and_domain</code></td>
+<td><code>send</code></td>
+<td>Well formed, domain exists and has mail servers, not disposable, not a role account, no typo.</td>
+</tr>
+<tr>
+<td><code>risky</code></td>
+<td><code>review</code> or <code>remove</code></td>
+<td>Deliverable domain but something to look at: role account, possible typo, no MX record (A record only), or a DNS lookup that failed twice. Disposable addresses are <code>risky</code> with <code>remove</code>.</td>
+</tr>
+<tr>
+<td><code>invalid</code></td>
+<td><code>remove</code></td>
+<td>Bad format, domain does not exist, domain refuses mail, or no mail server at all.</td>
+</tr>
+</tbody></table>
+<h2>Input</h2>
+<p>Use any mix of these:</p>
+<pre><code class="language-json">{
+  &quot;emails&quot;: [&quot;john.doe@gmail.com&quot;, &quot;jane@gmial.com&quot;, &quot;Sales Team &lt;sales@acme.com&gt;&quot;],
+  &quot;fileUrl&quot;: &quot;https://example.com/leads.csv&quot;,
+  &quot;datasetId&quot;: &quot;aBcD1234&quot;,
+  &quot;datasetField&quot;: &quot;email&quot;,
+  &quot;maxEmails&quot;: 0
+}
+</code></pre>
+<ul>
+<li><code>emails</code>: one per line, or several separated by commas or semicolons.</li>
+<li><code>fileUrl</code>: a CSV or text file. A column named <code>email</code> is used if present, otherwise every email-like string in the file is checked. A Google Sheets &quot;publish to web as CSV&quot; link works.</li>
+<li><code>datasetId</code>: the output of another Apify actor, such as a lead or contact scraper. <code>datasetField</code> names the field that holds the email (arrays of emails are fine).</li>
+</ul>
+<h2>Output</h2>
+<p>One row per unique email:</p>
+<pre><code class="language-json">{
+  &quot;email&quot;: &quot;jane@gmial.com&quot;,
+  &quot;input&quot;: &quot;jane@gmial.com&quot;,
+  &quot;status&quot;: &quot;risky&quot;,
+  &quot;recommendation&quot;: &quot;remove&quot;,
+  &quot;reasons&quot;: [&quot;disposable_domain&quot;, &quot;possible_typo&quot;, &quot;no_mx_record_uses_a_record&quot;],
+  &quot;is_valid_syntax&quot;: true,
+  &quot;domain&quot;: &quot;gmial.com&quot;,
+  &quot;domain_exists&quot;: true,
+  &quot;has_mx&quot;: false,
+  &quot;mail_server_fallback&quot;: true,
+  &quot;is_disposable&quot;: true,
+  &quot;is_role_account&quot;: false,
+  &quot;is_free_provider&quot;: false,
+  &quot;suggested_email&quot;: &quot;jane@gmail.com&quot;,
+  &quot;mx_records&quot;: [],
+  &quot;mailbox_checked&quot;: false
+}
+</code></pre>
+<p>Possible <code>reasons</code>: <code>missing_at_sign</code>, <code>multiple_at_signs</code>, <code>missing_local_part</code>, <code>missing_domain</code>, <code>contains_whitespace</code>, <code>too_long</code>, <code>local_part_too_long</code>, <code>bad_dots_in_local_part</code>, <code>invalid_characters_in_local_part</code>, <code>invalid_domain</code>, <code>domain_has_no_tld</code>, <code>invalid_tld</code>, <code>ip_literal_domain_not_supported</code>, <code>domain_not_found</code>, <code>domain_does_not_accept_mail</code>, <code>no_mail_server</code>, <code>no_mx_record_uses_a_record</code>, <code>disposable_domain</code>, <code>role_account</code>, <code>possible_typo</code>, <code>dns_lookup_failed_&lt;code&gt;</code>.</p>
+<p>A run summary (counts per status, duplicates removed, domains looked up, duration) is saved as <code>OUTPUT</code> in the key-value store.</p>
+<h2>Common uses</h2>
+<ul>
+<li>Clean a lead list before a cold email campaign to cut bounces and protect your sender reputation.</li>
+<li>Check sign-up emails from a form or CRM export and block disposable addresses.</li>
+<li>Fix typos in customer emails before sending receipts or onboarding mail.</li>
+<li>Cheap first pass before a paid mailbox verifier, so you only pay that verifier for addresses worth checking.</li>
+<li>Validate the output of contact or lead scrapers straight from their Apify dataset.</li>
+</ul>
+<h2>Pricing</h2>
+<p>Pay per event, platform usage included:</p>
+<ul>
+<li>$0.0003 per checked email ($0.30 per 1,000)</li>
+<li>$0.0005 per run at the default 512 MB memory (Apify charges the start event once per GB, minimum one)</li>
+</ul>
+<p>Duplicates are removed before checking and are not charged. You can cap spend with the run&#39;s maximum total charge setting; the actor stops cleanly when it is reached.</p>
+<h2>API and integrations</h2>
+<p>Call it from the Apify API, the JavaScript or Python client, Make, Zapier, n8n or any MCP client like other Apify actors, and chain it after a scraper with an Apify integration so new leads are checked automatically.</p>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/bulk-email-checker">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

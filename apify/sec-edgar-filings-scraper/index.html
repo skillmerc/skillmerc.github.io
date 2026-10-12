@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SEC EDGAR Scraper: 10-K, 10-Q &amp; 8-K Filings by Ticker</title><meta name="description" content="Export SEC EDGAR filings for any ticker, CIK or company: form type, filing and report dates, accession number and document URLs. $1 per 1,000 filings."><link rel="canonical" href="https://skillmerc.github.io/apify/sec-edgar-filings-scraper/"><meta property="og:title" content="SEC EDGAR Scraper: 10-K, 10-Q &amp; 8-K Filings by Ticker"><meta property="og:description" content="Export SEC EDGAR filings for any ticker, CIK or company: form type, filing and report dates, accession number and document URLs. $1 per 1,000 filings."><meta property="og:url" content="https://skillmerc.github.io/apify/sec-edgar-filings-scraper/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-bWXBi74EfjiKfNeUH-xG5dmdU7di-icon.png" alt=""><h1>SEC EDGAR Filings Scraper - 10-K, 10-Q, 8-K by Ticker</h1><p>Get SEC filings by ticker, CIK or company name: 10-K, 10-Q, 8-K, S-1, 13F, DEF 14A and any other form, with document links, dates and company details. Official EDGAR API, $1 per 1,000.</p><p class="price">USD 1 per 1,000 results on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/sec-edgar-filings-scraper">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/sec-edgar-filings-scraper/examples/big-tech-10k-and-10q-filings">Example: Big Tech 10-K and 10-Q filings from SEC EDGAR</a></p><hr><p>Pulls company filings (10-K, 10-Q, 8-K, S-1, 13F, DEF 14A, and any other form type) from the official SEC EDGAR system. Input a list of tickers, CIK numbers, or company names; get back structured filing records with direct links to the documents. No API key required.</p>
+<p>Data comes from the official SEC EDGAR JSON API (<code>data.sec.gov</code>), not HTML scraping, so it is reliable and structured.</p>
+<ul>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2>Common uses</h2>
+<ul>
+<li>Pull the latest 10-K and 10-Q links for a list of tickers into a spreadsheet or an LLM pipeline.</li>
+<li>Build a filing history for one company, filtered by form type and date.</li>
+<li>Feed document URLs into your own parser for financial or text analysis.</li>
+</ul>
+<h2>Inputs</h2>
+<p>| Name | Type | Default | Description |
+| - -| - -| - -| - -|
+| <code>companies</code> | array of strings | <code>[&quot;AAPL&quot;, &quot;TSLA&quot;]</code> | Tickers, CIK numbers, or company names. Mix and match. |
+| <code>formTypes</code> | array of strings | <code>[&quot;10-K&quot;, &quot;10-Q&quot;, &quot;8-K&quot;]</code> | Form types to include. Leave empty for all types. |
+| <code>since</code> | string (YYYY-MM-DD) | <code>&quot;2025-01-01&quot;</code> | Only return filings on or after this date. Leave empty for all history. |
+| <code>maxFilingsPerCompany</code> | integer | <code>50</code> | Cap on filings returned per company (max 1000). |</p>
+<p><strong>Company resolution order:</strong> CIK number (exact) &gt; ticker symbol (exact, case-insensitive) &gt; company name (prefix match).</p>
+<ul>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2>Output fields</h2>
+<p>Each dataset item is one filing:</p>
+<p>| Field | Type | Description |
+| - -| - -| - -|
+| <code>cik</code> | string | SEC CIK number |
+| <code>ticker</code> | string | Exchange ticker symbol (if available) |
+| <code>company_name</code> | string | Company name from EDGAR |
+| <code>form_type</code> | string | Filing form type (10-K, 10-Q, 8-K, ...) |
+| <code>filing_date</code> | string | Date the filing was submitted (YYYY-MM-DD) |
+| <code>report_date</code> | string | Period of report end date (YYYY-MM-DD) |
+| <code>accession_number</code> | string | EDGAR accession number (unique filing ID) |
+| <code>primary_document</code> | string | Filename of the primary document |
+| <code>filing_url</code> | string | URL to the filing index on EDGAR |
+| <code>document_url</code> | string | Direct URL to the primary document |
+| <code>description</code> | string | Short description of the filing |
+| <code>size</code> | integer | File size in bytes |
+| <code>sic</code> | string | SIC industry code |
+| <code>state_of_incorporation</code> | string | State of incorporation |
+| <code>fiscal_year_end</code> | string | Fiscal year end (MMDD) |</p>
+<ul>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2>Output example</h2>
+<p>Real item from a test run against AAPL and TSLA:</p>
+<pre><code class="language-json">{
+  &quot;cik&quot;: &quot;320193&quot;,
+  &quot;ticker&quot;: &quot;AAPL&quot;,
+  &quot;company_name&quot;: &quot;Apple Inc.&quot;,
+  &quot;form_type&quot;: &quot;10-Q&quot;,
+  &quot;filing_date&quot;: &quot;2026-07-31&quot;,
+  &quot;report_date&quot;: &quot;2026-06-27&quot;,
+  &quot;accession_number&quot;: &quot;0000320193-26-000020&quot;,
+  &quot;primary_document&quot;: &quot;aapl-20260627.htm&quot;,
+  &quot;filing_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/&quot;,
+  &quot;document_url&quot;: &quot;https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/aapl-20260627.htm&quot;,
+  &quot;description&quot;: &quot;10-Q&quot;,
+  &quot;size&quot;: 5946811,
+  &quot;sic&quot;: &quot;3571&quot;,
+  &quot;state_of_incorporation&quot;: &quot;CA&quot;,
+  &quot;fiscal_year_end&quot;: &quot;0926&quot;
+}
+</code></pre>
+<ul>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2>Pricing</h2>
+<p>Pay-per-result: $1.00 per 1,000 filings returned. A run pulling 10-K, 10-Q and 8-K filings for 10 companies since 2024 typically returns 200-400 items and costs under $0.50.</p>
+<ul>
+<li><ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li>Company name matching uses prefix search. Ambiguous names (e.g. &quot;Apple&quot; could match several entities) will match the first result alphabetically. Use a ticker or CIK when precision matters.</li>
+<li>EDGAR&#39;s <code>recent</code> submissions JSON covers approximately the most recent 1,000 filings per company. Older history is fetched from additional files, but very old filings (pre-1993) may not be available in machine-readable form.</li>
+<li>SEC policy requires max 10 requests per second. The actor self-throttles to 8 req/s. Large batches of companies take proportionally longer.</li>
+<li>The <code>document_url</code> points to the primary document declared by the filer. Some older filings list a <code>.txt</code> container rather than an HTML file.</li>
+<li>No login, no paywalls, no residential proxy needed. All data is public.</li>
+</ul>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/sec-edgar-filings-scraper">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

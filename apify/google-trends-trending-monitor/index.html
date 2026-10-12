@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Google Trends Trending Now Monitor: New Trend Alerts</title><meta name="description" content="Get an alert for each new Google Trends trending search by country, with volume, start time and news links. Only new trends are charged. Slack and webhooks."><link rel="canonical" href="https://skillmerc.github.io/apify/google-trends-trending-monitor/"><meta property="og:title" content="Google Trends Trending Now Monitor: New Trend Alerts"><meta property="og:description" content="Get an alert for each new Google Trends trending search by country, with volume, start time and news links. Only new trends are charged. Slack and webhooks."><meta property="og:url" content="https://skillmerc.github.io/apify/google-trends-trending-monitor/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><img class="icon" src="https://apify-image-uploads-prod.s3.us-east-1.amazonaws.com/S8TcNWu5h8sqcwDOw-actor-8YBSBb2AZK7A6FLW6-tbTlqbGmcc-icon.png" alt=""><h1>Google Trends Trending Now Monitor - New Trend Alerts</h1><p>Get an alert for every new Google Trends trending search in the countries you pick, with search volume, start time and news links. Only new trends are reported and charged. Webhook and Slack included.</p><p class="price">USD 5 per 1,000 alerts on Apify (pay per event)</p><p><a class="cta" href="https://apify.com/skillmerc/google-trends-trending-monitor">Open in Apify Store</a><a class="cta alt" href="https://apify.com/skillmerc/google-trends-trending-monitor/examples/daily-trending-searches-us-and-uk">Example: Daily trending searches alert for the US and UK</a></p><hr><p>Get one alert for every <strong>new</strong> trending search on Google Trends &quot;Trending Now&quot; in the countries you choose. Each alert has the search term, Google&#39;s approximate search volume, when the trend started, and the news articles Google links to it.</p>
+<p>Schedule it hourly and you get a running feed of what people suddenly started searching for, without repeats. A trend you were already alerted about is never reported or charged again.</p>
+<h2>Why this actor</h2>
+<ul>
+<li><strong>Reads Google&#39;s own Trending Now feed.</strong> No browser and no proxy, so runs are fast and cheap.</li>
+<li><strong>Only new trends.</strong> The actor remembers what it already reported (per monitor) and skips it next time.</li>
+<li><strong>Many countries in one run.</strong> US, GB, ZA, IN, AU, or any country code Google Trends supports.</li>
+<li><strong>Delivery built in.</strong> Dataset rows, plus an optional webhook (Make, Zapier, n8n) and an optional Slack message per run.</li>
+<li><strong>Filters.</strong> Minimum search volume and optional keywords, so you only hear about trends that matter to you.</li>
+</ul>
+<h2>Quick start</h2>
+<ol>
+<li>Enter the countries you want to watch.</li>
+<li>Run once to see what is trending now.</li>
+<li>Add a schedule (for example every hour). From then on each run returns only new trends.</li>
+</ol>
+<h2>Input example</h2>
+<pre><code class="language-json">{
+  &quot;countries&quot;: [&quot;US&quot;, &quot;GB&quot;, &quot;ZA&quot;, &quot;IN&quot;, &quot;AU&quot;],
+  &quot;includeNews&quot;: true,
+  &quot;minTraffic&quot;: 1000,
+  &quot;keywords&quot;: [],
+  &quot;monitorName&quot;: &quot;newsroom&quot;,
+  &quot;slackWebhookUrl&quot;: &quot;https://hooks.slack.com/services/...&quot;
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>countries</code></td>
+<td>Two-letter country codes. Default US, GB, ZA, IN, AU.</td>
+</tr>
+<tr>
+<td><code>includeNews</code></td>
+<td>Attach Google&#39;s related news articles to each trend. Default on.</td>
+</tr>
+<tr>
+<td><code>reportCurrentOnFirstRun</code></td>
+<td>On: the first run reports everything trending now. Off: the first run only saves a baseline and charges no alerts. Default on.</td>
+</tr>
+<tr>
+<td><code>minTraffic</code></td>
+<td>Only report trends with at least this approximate search volume (Google shows ranges like 200+, 2000+, 50K+). 0 = no filter.</td>
+</tr>
+<tr>
+<td><code>keywords</code></td>
+<td>Only report trends whose title or a news headline contains one of these words. Empty = everything.</td>
+</tr>
+<tr>
+<td><code>monitorName</code></td>
+<td>Names the memory of reported trends. Use different names to run independent monitors. If empty, the name comes from your countries, keywords and minimum volume.</td>
+</tr>
+<tr>
+<td><code>rememberDays</code></td>
+<td>A trend that has been gone from the feed this many days is forgotten (and reported again if it returns). Default 7.</td>
+</tr>
+<tr>
+<td><code>webhookUrl</code></td>
+<td>Receives one JSON POST per run that found new trends.</td>
+</tr>
+<tr>
+<td><code>slackWebhookUrl</code></td>
+<td>Posts one message per run listing the new trends.</td>
+</tr>
+<tr>
+<td><code>maxAlertsPerRun</code></td>
+<td>Hard cap on alerts delivered and charged in one run. Default 500.</td>
+</tr>
+</tbody></table>
+<h2>Output example</h2>
+<pre><code class="language-json">{
+  &quot;monitor&quot;: &quot;newsroom&quot;,
+  &quot;country&quot;: &quot;US&quot;,
+  &quot;title&quot;: &quot;scarlett johansson&quot;,
+  &quot;approx_traffic&quot;: &quot;500+&quot;,
+  &quot;traffic_min&quot;: 500,
+  &quot;started_at&quot;: &quot;2026-10-11T03:50:00.000Z&quot;,
+  &quot;first_seen&quot;: &quot;2026-10-11T05:02:11.000Z&quot;,
+  &quot;trends_url&quot;: &quot;https://trends.google.com/trends/explore?geo=US&amp;q=scarlett%20johansson&amp;date=now%201-d&quot;,
+  &quot;search_url&quot;: &quot;https://www.google.com/search?q=scarlett%20johansson&quot;,
+  &quot;picture&quot;: &quot;https://encrypted-tbn3.gstatic.com/images?q=...&quot;,
+  &quot;picture_source&quot;: &quot;The Hollywood Reporter&quot;,
+  &quot;top_news_title&quot;: &quot;&#39;The Exorcist: Martyrs&#39; Trailer Radically Reboots Franchise With Scarlett Johansson&quot;,
+  &quot;top_news_url&quot;: &quot;https://www.hollywoodreporter.com/movies/...&quot;,
+  &quot;top_news_source&quot;: &quot;The Hollywood Reporter&quot;,
+  &quot;news&quot;: [
+    { &quot;title&quot;: &quot;...&quot;, &quot;url&quot;: &quot;https://...&quot;, &quot;source&quot;: &quot;IGN&quot;, &quot;picture&quot;: &quot;https://...&quot; }
+  ],
+  &quot;detected_at&quot;: &quot;2026-10-11T05:02:11.000Z&quot;,
+  &quot;run_id&quot;: &quot;...&quot;
+}
+</code></pre>
+<p>The run&#39;s key-value store also holds an <code>OUTPUT</code> record with counts: trends seen in the feeds, new trends, alerts delivered, and any country whose feed failed.</p>
+<h2>Pricing</h2>
+<p>Pay per event, platform usage included:</p>
+<ul>
+<li><strong>$0.005 per new trend alert</strong> ($5 per 1,000).</li>
+<li><strong>$0.001 per run start.</strong></li>
+</ul>
+<p>A run that finds nothing new costs only the start fee. An hourly monitor on 5 countries typically costs a few cents a day, depending on how fast trends change. Use <code>maxAlertsPerRun</code> or the run&#39;s maximum charge to cap spend.</p>
+<h2>Use cases</h2>
+<ul>
+<li><strong>Content ideas:</strong> write posts, videos and newsletters on what is starting to trend, while it is still early.</li>
+<li><strong>Newsjacking and PR:</strong> spot stories relevant to your brand or clients the moment they take off.</li>
+<li><strong>Ad and SEO timing:</strong> launch campaigns, bid on terms or publish pages while search demand is rising.</li>
+<li><strong>Research and dashboards:</strong> build a history of trending searches per country in a dataset, sheet or database.</li>
+<li><strong>Alerts on a topic:</strong> use <code>keywords</code> to hear only about trends mentioning your company, product, team or industry.</li>
+</ul>
+<h2>Limits</h2>
+<ul>
+<li>Google&#39;s Trending Now feed lists the top trending searches per country (usually about 10 at a time), with approximate volume ranges, not exact counts.</li>
+<li>This actor does not return interest-over-time charts or related queries.</li>
+<li>Country codes must be ones Google Trends supports. A country whose feed fails is skipped and listed in the run summary; the rest of the run continues.</li>
+</ul>
+<h2>Integrations</h2>
+<p>Call it from the Apify API, schedules, Make, Zapier, n8n, or any MCP client that can run Apify actors. The webhook payload contains the run summary plus the full list of alerts.</p>
+<hr><p><a class="cta" href="https://apify.com/skillmerc/google-trends-trending-monitor">Run it on Apify</a> Apify's free plan includes monthly platform credit, so small runs cost little or nothing to try.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
