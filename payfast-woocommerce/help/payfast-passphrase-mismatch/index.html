@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PayFast salt passphrase: where to set it and how to fix a mismatch</title><meta name="description" content="Where to find and set the PayFast salt passphrase, why it must match your WooCommerce plugin exactly, and when it is required (subscriptions, refunds, tokenization)."><link rel="canonical" href="https://skillmerc.github.io/payfast-woocommerce/help/payfast-passphrase-mismatch/"><meta property="og:title" content="PayFast salt passphrase: where to set it and how to fix a mismatch"><meta property="og:description" content="Where to find and set the PayFast salt passphrase, why it must match your WooCommerce plugin exactly, and when it is required (subscriptions, refunds, tokenization)."><meta property="og:url" content="https://skillmerc.github.io/payfast-woocommerce/help/payfast-passphrase-mismatch/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>PayFast passphrase mismatch</h1>
+<p>The <strong>salt passphrase</strong> is a secret you choose in PayFast. PayFast adds it to the end of every signature it creates, and your store adds it when it checks the signature. If the two values are not identical, every payment notification fails with a signature error and orders stay pending.</p>
+<h2>Where to set it</h2>
+<ul>
+<li><strong>Live account:</strong> PayFast dashboard, Settings, field <strong>Salt Passphrase</strong>.</li>
+<li><strong>Sandbox:</strong> log in at sandbox.payfast.co.za with your own sandbox account and set <strong>Salt Passphrase</strong> in the account settings. The sandbox and live passphrases are separate.</li>
+</ul>
+<p>Then paste the same value into your WooCommerce PayFast plugin, in the passphrase field for the same mode.</p>
+<h2>When the passphrase is required</h2>
+<p>PayFast&#39;s developer docs say a passphrase is required for:</p>
+<ul>
+<li><strong>Subscriptions</strong> (recurring billing), including WooCommerce Subscriptions through PayFast;</li>
+<li><strong>Tokenization</strong> payments;</li>
+<li>the <strong>PayFast API</strong>, which plugins use for refunds from the WooCommerce order screen.</li>
+</ul>
+<p>For plain once-off payments it is optional, but setting one is recommended because it makes a forged notification much harder.</p>
+<h2>Checklist when it still mismatches</h2>
+<ol>
+<li>Reset the passphrase in PayFast instead of trusting the old one. Type a new one without spaces, save it.</li>
+<li>Paste it into the plugin and save. Check there is no leading or trailing space.</li>
+<li>Make sure you edited the right mode. Many plugins keep separate sandbox and live fields.</li>
+<li>Place a new test order. Old notifications were signed with the old passphrase and will still fail.</li>
+<li>If it still fails with a passphrase you are sure of, the plugin may build the signature string wrongly. See <a href="/payfast-woocommerce/help/payfast-itn-invalid-signature/">PayFast ITN invalid signature</a>.</li>
+</ol>
+<h2>Our plugin</h2>
+<p><a href="https://wordpress.org/plugins/skillmerc-payment-gateway-for-payfast/">Skillmerc Payment Gateway for PayFast</a> (free on WordPress.org) has separate sandbox and live passphrase fields, so switching modes never means retyping keys, and its debug log shows each notification received followed by the reason it was rejected. Independent, not made by PayFast.</p>
+<hr><h2>More PayFast and WooCommerce fixes</h2><ul><li><a href="/payfast-woocommerce/help/payfast-order-still-pending/">PayFast payment successful but WooCommerce order still pending: how to fix it</a></li><li><a href="/payfast-woocommerce/help/payfast-itn-invalid-signature/">PayFast ITN invalid signature in WooCommerce: causes and fix</a></li><li><a href="/payfast-woocommerce/help/payfast-refunds-woocommerce/">PayFast refunds in WooCommerce: dashboard refunds vs. refunding from the order</a></li><li><a href="/payfast-woocommerce/help/payfast-bad-source-ip-cloudflare/">PayFast ITN bad source IP behind Cloudflare: why it fails and how to fix it</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

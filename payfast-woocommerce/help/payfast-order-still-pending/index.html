@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PayFast payment successful but WooCommerce order still pending: how to fix it</title><meta name="description" content="The shopper paid on PayFast but the WooCommerce order stays pending or on hold. Why the ITN callback fails and how to find the exact cause in 10 minutes."><link rel="canonical" href="https://skillmerc.github.io/payfast-woocommerce/help/payfast-order-still-pending/"><meta property="og:title" content="PayFast payment successful but WooCommerce order still pending: how to fix it"><meta property="og:description" content="The shopper paid on PayFast but the WooCommerce order stays pending or on hold. Why the ITN callback fails and how to find the exact cause in 10 minutes."><meta property="og:url" content="https://skillmerc.github.io/payfast-woocommerce/help/payfast-order-still-pending/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>PayFast says paid, WooCommerce order still pending</h1>
+<p>The shopper paid, PayFast shows the money, but the order in WooCommerce is still <strong>Pending payment</strong> or <strong>On hold</strong>. This almost always means one thing: PayFast&#39;s payment notification (the ITN, Instant Transaction Notification) never reached your store, or it reached it and your PayFast plugin rejected it.</p>
+<p>WooCommerce does not learn about a PayFast payment from the shopper&#39;s browser. It learns from a server-to-server POST that PayFast sends to your store&#39;s notify URL. If that POST fails, the order never moves.</p>
+<h2>First: fix the order that is stuck</h2>
+<ol>
+<li>Log in to PayFast and confirm the payment really completed (the amount and the order number in the item description).</li>
+<li>In WooCommerce, open the order, set the status to <strong>Processing</strong> (or <strong>Completed</strong>), and add a private note with the PayFast payment ID. Stock is reduced and emails go out as normal.</li>
+</ol>
+<p>Then find the cause, or the next order gets stuck too.</p>
+<h2>Step 1: turn on your plugin&#39;s debug log</h2>
+<p>Most PayFast plugins for WooCommerce have a debug or log setting. Turn it on, place a small test order (sandbox mode is fine), then read <strong>WooCommerce &gt; Status &gt; Logs</strong> and pick the PayFast log for today.</p>
+<ul>
+<li><strong>No log entry at all for the notification:</strong> the ITN never arrived. Go to step 2.</li>
+<li><strong>An entry with an error:</strong> the ITN arrived and failed a security check. Go to step 3.</li>
+</ul>
+<h2>Step 2: the ITN never arrives</h2>
+<p>PayFast&#39;s own help centre lists the usual reasons:</p>
+<ul>
+<li><strong>The notify URL is not reachable from the internet.</strong> Staging sites, local sites, sites behind HTTP basic auth or a &quot;coming soon&quot; page. PayFast also rejects return, cancel and notify URLs that contain &quot;local&quot; or &quot;localhost&quot;.</li>
+<li><strong>The notify URL redirects.</strong> A 301 or 302 (to a login page, from http to https, from www to non-www) loses the POST body. Test it yourself:</li>
+</ul>
+<pre><code>curl -i -X POST &quot;https://yourstore.co.za/?wc-api=YOUR_GATEWAY_ID&quot; -d &quot;test=1&quot;
+</code></pre>
+<p>You want a 200 or a plain error from the plugin, not a 301, 302, 403 or a firewall challenge page. The exact URL is in your gateway&#39;s settings or documentation.</p>
+<ul>
+<li><strong>A firewall or security plugin blocks PayFast.</strong> Server firewalls (for example cPGuard on cPanel hosts), security plugins and Cloudflare bot rules can block the POST. Allow PayFast&#39;s IP ranges and ports listed in the PayFast developer docs.</li>
+<li><strong>A non-standard port.</strong> PayFast only sends ITNs on ports 80, 8080, 8081 and 443.</li>
+</ul>
+<p>PayFast retries a notification that does not get a 200 back: again immediately, then after 10 minutes, then at longer and longer intervals until it gives up. So once you fix the cause, recent stuck orders may update on their own. In the <strong>sandbox</strong>, notifications are sent only once, so a failed sandbox test will not retry.</p>
+<h2>Step 3: the ITN arrives but is rejected</h2>
+<p>The log message tells you which check failed:</p>
+<table>
+<thead>
+<tr>
+<th>Log message</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Invalid signature / signature mismatch</td>
+<td>The salt passphrase in PayFast and in the plugin differ</td>
+<td>See <a href="/payfast-woocommerce/help/payfast-itn-invalid-signature/">PayFast ITN invalid signature</a></td>
+</tr>
+<tr>
+<td>Bad source IP / invalid source</td>
+<td>Your site is behind Cloudflare or another proxy, so the request seems to come from the proxy</td>
+<td>See <a href="/payfast-woocommerce/help/payfast-bad-source-ip-cloudflare/">PayFast bad source IP behind Cloudflare</a></td>
+</tr>
+<tr>
+<td>Amount mismatch</td>
+<td>The order total changed after checkout (a plugin edited the order, or currency rounding)</td>
+<td>Check for plugins that change the order total after payment starts</td>
+</tr>
+<tr>
+<td>Bad access of page / validation failed</td>
+<td>Your server could not call PayFast back to confirm the data (outgoing HTTPS or cURL blocked)</td>
+<td>Ask your host to allow outgoing HTTPS to <a href="http://www.payfast.co.za">www.payfast.co.za</a></td>
+</tr>
+</tbody></table>
+<h2>If you want a plugin that tells you the reason</h2>
+<p>We make a free PayFast gateway, <a href="https://wordpress.org/plugins/skillmerc-payment-gateway-for-payfast/">Skillmerc Payment Gateway for PayFast</a>. It logs every rejected ITN with the exact reason (signature, amount, source host, server confirmation), has a reverse proxy setting for Cloudflare, supports the checkout block and HPOS, and does refunds from the order screen. It is independent and not made by PayFast. The fixes above work with any PayFast plugin.</p>
+<hr><h2>More PayFast and WooCommerce fixes</h2><ul><li><a href="/payfast-woocommerce/help/payfast-itn-invalid-signature/">PayFast ITN invalid signature in WooCommerce: causes and fix</a></li><li><a href="/payfast-woocommerce/help/payfast-passphrase-mismatch/">PayFast salt passphrase: where to set it and how to fix a mismatch</a></li><li><a href="/payfast-woocommerce/help/payfast-refunds-woocommerce/">PayFast refunds in WooCommerce: dashboard refunds vs. refunding from the order</a></li><li><a href="/payfast-woocommerce/help/payfast-bad-source-ip-cloudflare/">PayFast ITN bad source IP behind Cloudflare: why it fails and how to fix it</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
