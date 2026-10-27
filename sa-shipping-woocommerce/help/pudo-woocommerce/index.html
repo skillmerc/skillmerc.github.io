@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pudo locker shipping in WooCommerce: live rates and a locker picker</title><meta name="description" content="How to offer Pudo (The Courier Guy Locker) delivery in a WooCommerce store: what you need from Pudo, how box sizes are priced, and how customers choose a locker at checkout."><link rel="canonical" href="https://skillmerc.github.io/sa-shipping-woocommerce/help/pudo-woocommerce/"><meta property="og:title" content="Pudo locker shipping in WooCommerce: live rates and a locker picker"><meta property="og:description" content="How to offer Pudo (The Courier Guy Locker) delivery in a WooCommerce store: what you need from Pudo, how box sizes are priced, and how customers choose a locker at checkout."><meta property="og:url" content="https://skillmerc.github.io/sa-shipping-woocommerce/help/pudo-woocommerce/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Pudo locker shipping in WooCommerce</h1>
+<p>Pudo, now The Courier Guy Locker, delivers parcels to smart lockers across South Africa. For a WooCommerce store, offering it well takes two things: the right price for the parcel, and the customer&#39;s chosen locker on the order.</p>
+<h2>What you need from Pudo</h2>
+<ul>
+<li>A Pudo business account. A free sandbox account at sandbox.pudo.co.za lets you test with demo prices first.</li>
+<li>Your API key from the Pudo portal.</li>
+<li>Your sender (collection) address.</li>
+</ul>
+<h2>How Pudo prices a parcel</h2>
+<p>Pudo charges by locker box size, from XS up to XL. A correct quote depends on the parcel fitting a box by size and by weight, so your products need a weight and dimensions in WooCommerce (<strong>Product data &gt; Shipping</strong>). Products without them make every quote a guess.</p>
+<h2>Option 1: flat rates by hand</h2>
+<p>Add a <strong>Flat rate</strong> method called &quot;Pudo locker&quot; in your South Africa zone and ask customers to type the locker name in the order notes. It works, but the price does not follow the parcel size, and wrong or missing locker names come back to you to fix.</p>
+<h2>Option 2: live Pudo rates and a locker picker</h2>
+<p>Our free plugin, <a href="https://wordpress.org/plugins/skillmerc-shipping-courier-guy-pudo-paxi/">Skillmerc Shipping for The Courier Guy, Pudo and PAXI</a>, adds a &quot;Pudo locker&quot; shipping method:</p>
+<ul>
+<li>It asks the Pudo API for door to locker rates and quotes the smallest box (XS to XL) that fits the cart&#39;s size, volume and weight. If nothing fits the largest box, Pudo is not offered.</li>
+<li>A locker list appears under the shipping options. Lockers in the customer&#39;s postal code, town and province come first, and a search box filters the list.</li>
+<li>The chosen locker is checked against Pudo&#39;s locker list, saved on the order and shown in the admin, on the order received page and in order emails. The order cannot be placed without one.</li>
+<li>You can add a markup in rand or percent, a free shipping threshold, and a fallback flat rate that shows if the Pudo API is down, so customers never see &quot;no shipping method&quot;.</li>
+<li>It works on the Checkout block and the classic checkout.</li>
+</ul>
+<p>Version 0.1 quotes rates and records the locker. Book the shipment in your Pudo portal as usual. It is an independent plugin, not made by The Courier Guy or Pudo.</p>
+<h2>Setup in five minutes</h2>
+<ol>
+<li>Install the plugin from <strong>Plugins &gt; Add New</strong> (search for &quot;Skillmerc Shipping&quot;).</li>
+<li>Go to <strong>WooCommerce &gt; Settings &gt; Shipping</strong>, open your South Africa zone and add <strong>Pudo locker</strong>.</li>
+<li>Choose Sandbox or Live, paste your API key and fill in your sender address.</li>
+<li>Check the default parcel size and weight for products without dimensions, and set a fallback rate.</li>
+<li>Place a test order and pick a locker.</li>
+</ol>
+<p>Also sending door to door? See <a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy shows no shipping method at checkout</a>.</p>
+<hr><h2>More South African shipping guides for WooCommerce</h2><ul><li><a href="/sa-shipping-woocommerce/help/paxi-woocommerce/">PAXI on WooCommerce: how to let customers pick a PAXI point at checkout</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy not showing at WooCommerce checkout: causes and fixes</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

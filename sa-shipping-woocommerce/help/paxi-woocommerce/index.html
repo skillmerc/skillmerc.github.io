@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PAXI on WooCommerce: how to let customers pick a PAXI point at checkout</title><meta name="description" content="PAXI has no official WooCommerce integration. Three ways South African stores offer PAXI delivery today, from a manual flat rate to a PAXI point picker on the checkout."><link rel="canonical" href="https://skillmerc.github.io/sa-shipping-woocommerce/help/paxi-woocommerce/"><meta property="og:title" content="PAXI on WooCommerce: how to let customers pick a PAXI point at checkout"><meta property="og:description" content="PAXI has no official WooCommerce integration. Three ways South African stores offer PAXI delivery today, from a manual flat rate to a PAXI point picker on the checkout."><meta property="og:url" content="https://skillmerc.github.io/sa-shipping-woocommerce/help/paxi-woocommerce/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>PAXI on WooCommerce: letting customers pick a PAXI point</h1>
+<p>PAXI (the PEP parcel service) is often the cheapest way to send a small parcel across South Africa, and many customers already use it. The problem for WooCommerce stores: in October 2026 PAXI&#39;s own business FAQ answered &quot;Does the PAXI location map work on Shopify or WooCommerce sites?&quot; with &quot;Not at the moment&quot;. Their API needs a minimum monthly parcel volume, so most small shops cannot integrate directly.</p>
+<p>So the hard part is not the price. It is getting a valid PAXI point from the customer before the order is placed.</p>
+<h2>Option 1: flat rate plus a typed PAXI code (no plugin)</h2>
+<ol>
+<li>Go to <strong>WooCommerce &gt; Settings &gt; Shipping</strong>, open your South Africa zone and add a <strong>Flat rate</strong> method.</li>
+<li>Name it something clear, such as &quot;PAXI (collect at a PEP store)&quot;, and set the cost to your PAXI price.</li>
+<li>Ask the customer to type their PAXI point code in the order notes. Link to <a href="https://www.paxi.co.za/">the PAXI map</a> so they can look it up.</li>
+</ol>
+<p>This costs nothing, but customers forget the code or type the wrong one, and you only find out when you are standing in PEP with the parcel. Order notes are also easy to miss when you pack.</p>
+<h2>Option 2: a required checkout field</h2>
+<p>Use a checkout field plugin to add a required &quot;PAXI point code&quot; field. It stops empty codes, but it cannot check that the code is real, and on the Checkout block (the default for new WooCommerce stores) many field plugins only work with the older shortcode checkout.</p>
+<h2>Option 3: a PAXI point picker on the checkout</h2>
+<p>Our free plugin, <a href="https://wordpress.org/plugins/skillmerc-shipping-courier-guy-pudo-paxi/">Skillmerc Shipping for The Courier Guy, Pudo and PAXI</a>, adds a &quot;PAXI (collect at a PEP store)&quot; shipping method:</p>
+<ul>
+<li>When the customer selects PAXI, a &quot;Choose a PAXI point&quot; button opens the official PAXI map inside the checkout.</li>
+<li>The point they click (code, name and address) is filled in for them. The code must look like a real PAXI node code (a letter and digits, such as P1234), and the order cannot be placed without one.</li>
+<li>The point is saved on the order and shown on the admin order screen, the order received page and the order emails, so you see it when you pack.</li>
+<li>You set the Economy and Speed prices yourself (PAXI has no public rates API), plus an optional maximum cart weight and free shipping threshold.</li>
+<li>It works on both the Checkout block and the classic checkout.</li>
+</ul>
+<p>It does not book the parcel with PAXI. You still send it through your PAXI account or at a PEP store as usual. It is an independent plugin, not made by PAXI or Pepkor.</p>
+<h2>Which one to pick</h2>
+<ul>
+<li>A few PAXI orders a month: option 1 is fine.</li>
+<li>PAXI is a main delivery option for you: a picker saves you from wrong or missing codes.</li>
+</ul>
+<p>Using Pudo lockers as well? See <a href="/sa-shipping-woocommerce/help/pudo-woocommerce/">Pudo lockers in WooCommerce</a>.</p>
+<hr><h2>More South African shipping guides for WooCommerce</h2><ul><li><a href="/sa-shipping-woocommerce/help/pudo-woocommerce/">Pudo locker shipping in WooCommerce: live rates and a locker picker</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy not showing at WooCommerce checkout: causes and fixes</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
