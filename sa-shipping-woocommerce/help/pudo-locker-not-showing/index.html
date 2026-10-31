@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pudo locker option not showing at WooCommerce checkout: causes and fixes</title><meta name="description" content="The Pudo locker method is missing at checkout, or customers cannot pick a locker. The usual causes (zone, parcel too big or heavy for a locker box, API key mode, no locker found) and how to check each one."><link rel="canonical" href="https://skillmerc.github.io/sa-shipping-woocommerce/help/pudo-locker-not-showing/"><meta property="og:title" content="Pudo locker option not showing at WooCommerce checkout: causes and fixes"><meta property="og:description" content="The Pudo locker method is missing at checkout, or customers cannot pick a locker. The usual causes (zone, parcel too big or heavy for a locker box, API key mode, no locker found) and how to check each one."><meta property="og:url" content="https://skillmerc.github.io/sa-shipping-woocommerce/help/pudo-locker-not-showing/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Pudo locker not showing at WooCommerce checkout</h1>
+<p>You added Pudo (The Courier Guy Locker) to your store, but at checkout the option is missing, or it shows with the wrong price, or the customer cannot place the order. A live rate method hides itself when it cannot get a price, so the cause is nearly always one of the checks below. Most of them apply to any Pudo plugin. Where we describe exact behaviour, it is how our free plugin, <a href="https://wordpress.org/plugins/skillmerc-shipping-courier-guy-pudo-paxi/">Skillmerc Shipping</a>, works.</p>
+<h2>1. The address is not in your South Africa zone</h2>
+<p>WooCommerce only offers the methods in the shipping zone that matches the customer&#39;s address. Open <strong>WooCommerce &gt; Settings &gt; Shipping</strong>, check that your South Africa zone covers the address (watch for zones limited to some provinces or postcodes), and that <strong>Pudo locker</strong> is added to that zone and enabled. Our plugin only quotes Pudo for addresses in South Africa.</p>
+<h2>2. The cart does not fit a locker box</h2>
+<p>Lockers have fixed box sizes, so a parcel that is too big or too heavy cannot go by locker at all. Our plugin picks the smallest box that fits the cart&#39;s dimensions, volume and weight:</p>
+<table>
+<thead>
+<tr>
+<th>Box</th>
+<th>Size (cm)</th>
+<th>Max weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>XS</td>
+<td>60 x 17 x 8</td>
+<td>2 kg</td>
+</tr>
+<tr>
+<td>S</td>
+<td>60 x 41 x 8</td>
+<td>5 kg</td>
+</tr>
+<tr>
+<td>M</td>
+<td>60 x 41 x 19</td>
+<td>10 kg</td>
+</tr>
+<tr>
+<td>L</td>
+<td>60 x 41 x 41</td>
+<td>15 kg</td>
+</tr>
+<tr>
+<td>XL</td>
+<td>60 x 41 x 69</td>
+<td>20 kg</td>
+</tr>
+</tbody></table>
+<p>If nothing fits the XL box, Pudo is not offered for that cart, even if you set a fallback rate. That is on purpose: a locker cannot take the parcel. Offer a door to door method (The Courier Guy or Fastway) in the same zone so large orders still have an option.</p>
+<p>Also check your products under <strong>Product data &gt; Shipping</strong>. Products with no weight or dimensions use the plugin&#39;s default parcel size (1 kg and 20 x 15 x 10 cm unless you change it). A wrong default can push a cart into a bigger box or out of the locker sizes completely.</p>
+<h2>3. Sandbox key with Live mode, or the other way round</h2>
+<p>Pudo has a separate sandbox at sandbox.pudo.co.za with its own API keys. A sandbox key will not work against the live API, and a live key will not work in sandbox. In the Pudo locker settings, make sure <strong>Environment</strong> matches the key you pasted. Create live keys under Settings, API Keys in the Pudo customer portal.</p>
+<h2>4. The Pudo API did not answer</h2>
+<p>If the Pudo API is down, times out or returns no rate for the box, our plugin shows your <strong>Fallback rate</strong> instead (R90 by default), so customers can still check out. If you cleared the fallback field, the method hides instead. Keep a fallback set unless you would rather hide Pudo when its API is down.</p>
+<p>The same applies when no locker can be suggested for the address: the method shows the fallback rate instead of a live quote.</p>
+<h2>5. The customer did not pick a locker</h2>
+<p>The locker list appears under the shipping options once Pudo is selected. Lockers in the customer&#39;s postal code, town and province are listed first, and a search box filters the list. An order cannot be placed with Pudo until a locker is chosen; the customer sees &quot;Please choose a Pudo locker for delivery.&quot; If customers report this message, check that they can see the list on your theme (it works on the Checkout block and the classic checkout).</p>
+<h2>Still stuck?</h2>
+<p>Turn on <strong>WooCommerce &gt; Status &gt; Logs</strong> and place a test order with a full South African address. Then compare with the setup steps in <a href="/sa-shipping-woocommerce/help/pudo-woocommerce/">Pudo locker shipping in WooCommerce</a>. Sending door to door as well? See <a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy shows no shipping method at checkout</a>.</p>
+<p>Skillmerc Shipping quotes rates and records the chosen locker. Book the parcel in your Pudo portal as usual. It is an independent plugin, not made by The Courier Guy or Pudo.</p>
+<hr><h2>More South African shipping guides for WooCommerce</h2><ul><li><a href="/sa-shipping-woocommerce/help/paxi-woocommerce/">PAXI on WooCommerce: how to let customers pick a PAXI point at checkout</a></li><li><a href="/sa-shipping-woocommerce/help/pudo-woocommerce/">Pudo locker shipping in WooCommerce: live rates and a locker picker</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy not showing at WooCommerce checkout: causes and fixes</a></li><li><a href="/sa-shipping-woocommerce/help/fastway-woocommerce/">Fastway rates in WooCommerce: how to show live Fastway Couriers prices at checkout</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-rates-wrong/">The Courier Guy rates wrong in WooCommerce: why the price is too high or too low</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-waybill-woocommerce/">Print a The Courier Guy waybill from WooCommerce: three ways and the common problems</a></li></ul><div class="card"><h2>Pro: book The Courier Guy from your orders</h2><ul><li>Book a The Courier Guy shipment from the WooCommerce order screen</li><li>Download the label PDF</li><li>Tracking reference in the customer's completed order email and My Account</li><li>Book up to 50 orders at once from the orders list</li><li>Courier status column on the orders list</li></ul><p>Pudo and PAXI booking are not included yet. USD 49 a year for one site, 14-day money-back guarantee.</p><p><a class="cta" href="https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/">Get Pro</a></p></div></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
