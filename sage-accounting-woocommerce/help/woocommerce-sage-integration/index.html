@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WooCommerce and Sage integration: which option fits Sage Accounting, Sage 50, Sage 200, Sage 300 or Intacct</title><meta name="description" content="Sage&quot; covers several different products, and a WooCommerce integration only works with the one it was built for. How to tell which Sage you use, how each one connects to WooCommerce, and what to check before you pick a connector."><link rel="canonical" href="https://skillmerc.github.io/sage-accounting-woocommerce/help/woocommerce-sage-integration/"><meta property="og:title" content="WooCommerce and Sage integration: which option fits Sage Accounting, Sage 50, Sage 200, Sage 300 or Intacct"><meta property="og:description" content="Sage&quot; covers several different products, and a WooCommerce integration only works with the one it was built for. How to tell which Sage you use, how each one connects to WooCommerce, and what to check before you pick a connector."><meta property="og:url" content="https://skillmerc.github.io/sage-accounting-woocommerce/help/woocommerce-sage-integration/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>WooCommerce and Sage: which integration fits your Sage</h1>
+<p>Searching for a &quot;WooCommerce Sage integration&quot; turns up tools that look alike but work with completely different software. Sage sells several separate accounting products, and each has its own way of connecting to other systems. A connector built for one will not work with another. So the first question is not which plugin, but which Sage.</p>
+<h2>Step 1: find out which Sage you use</h2>
+<ul>
+<li><strong>You sign in through a web browser, and the product is called Sage Accounting</strong> (earlier names: Sage Business Cloud Accounting, Sage One). This is Sage&#39;s cloud product for small businesses. The UK and Ireland version and the South African version are separate products with separate APIs.</li>
+<li><strong>The software is installed on a Windows PC or a server.</strong> That is usually Sage 50 (small business) or Sage 200 (mid-sized, UK). Your accountant or IT person will know which.</li>
+<li><strong>Your company runs a larger finance or ERP system from Sage</strong>, such as Sage 300, Sage X3 or Sage Intacct. These are mid-market systems and integrations are normally set up as a project with a Sage partner.</li>
+</ul>
+<h2>Step 2: how each Sage connects to WooCommerce</h2>
+<table>
+<thead>
+<tr>
+<th>Your Sage</th>
+<th>How WooCommerce usually connects</th>
+<th>Where to look</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sage Accounting (UK and Ireland)</td>
+<td>A plugin or service that calls Sage&#39;s cloud Accounting API</td>
+<td>WordPress.org plugins, Zapier, and the E-Commerce category of the Sage UK Marketplace</td>
+</tr>
+<tr>
+<td>Sage Accounting (South Africa)</td>
+<td>A different API from the UK version, so UK connectors may not work</td>
+<td>Check that the tool names the South African product</td>
+</tr>
+<tr>
+<td>Sage 50 (desktop)</td>
+<td>A connector that runs next to the desktop install, or a sync service</td>
+<td>The &quot;Sage 50&quot; filter on the Sage UK or US Marketplace</td>
+</tr>
+<tr>
+<td>Sage 200, Sage 300, Sage X3</td>
+<td>Usually a partner-built or partner-installed integration</td>
+<td>The Sage Marketplace for your country, or your Sage partner</td>
+</tr>
+<tr>
+<td>Sage Intacct</td>
+<td>Its own app marketplace</td>
+<td>marketplace.intacct.com</td>
+</tr>
+</tbody></table>
+<p>The <a href="https://uk-marketplace.sage.com/">Sage UK Marketplace</a> lets you filter apps by Sage product. For example, it lists a Zapier route for Sage Accounting and WooCommerce, and separate WooCommerce tools for Sage 50.</p>
+<h2>Step 3: questions to ask any connector before you pay</h2>
+<ol>
+<li><strong>Which Sage product and country is it built for?</strong> &quot;Works with Sage&quot; is not enough.</li>
+<li><strong>What does it send, and which way?</strong> Orders to Sage as invoices, payments, stock levels back to WooCommerce, or all of these.</li>
+<li><strong>Does it keep VAT per line?</strong> A single total with VAT lumped together makes your VAT return harder.</li>
+<li><strong>What happens with refunds?</strong> Some tools create credit notes, some leave that to you.</li>
+<li><strong>What if Sage is down or a login token expires?</strong> Look for automatic retries that never create a second invoice for the same order.</li>
+<li><strong>Where does your data go?</strong> Some services pass every order through their own servers; a plugin can talk to Sage directly from your site.</li>
+<li><strong>Multi-currency.</strong> Many tools only handle orders in your Sage base currency.</li>
+</ol>
+<h2>Our free option for Sage Accounting UK</h2>
+<p>We make a free plugin for one of these cases: <a href="https://wordpress.org/plugins/skillmerc-sync-for-sage-accounting/">Skillmerc Sync for Sage Accounting</a>. It sends each paid WooCommerce order to Sage Accounting as a customer, a sales invoice with the VAT on each line, a shipping line and a payment, and retries in the background if Sage is unavailable. It connects with your own free Sage developer app, so nothing goes through our servers.</p>
+<p>Its limits in version 0.1, so you can rule it out quickly:</p>
+<ul>
+<li>Sage Accounting UK only. It does not work with Sage 50, Sage 200, Sage 300, Sage X3, Sage Intacct or the South African Sage Accounting.</li>
+<li>Orders must be in your Sage base currency.</li>
+<li>Refunds are not sent yet; record credit notes in Sage by hand.</li>
+<li>Orders paid before you install it are sent one by one with an order action.</li>
+</ul>
+<p>Setup takes about ten minutes: see <a href="/sage-accounting-woocommerce/help/send-woocommerce-orders-to-sage-accounting/">how to send WooCommerce orders to Sage Accounting</a>.</p>
+<p><a class="cta" href="https://wordpress.org/plugins/skillmerc-sync-for-sage-accounting/">Get it free on WordPress.org</a></p><hr><h2>More WooCommerce and Sage guides</h2><ul><li><a href="/sage-accounting-woocommerce/help/send-woocommerce-orders-to-sage-accounting/">How to send WooCommerce orders to Sage Accounting as invoices with VAT (step by step)</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

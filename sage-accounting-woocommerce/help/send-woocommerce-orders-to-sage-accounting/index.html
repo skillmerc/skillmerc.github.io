@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How to send WooCommerce orders to Sage Accounting as invoices with VAT (step by step)</title><meta name="description" content="Step-by-step setup for sending paid WooCommerce orders to Sage Accounting UK as a customer, a sales invoice with VAT per line and a payment, using a free plugin and your own Sage developer app. Plus what to do when a total does not match."><link rel="canonical" href="https://skillmerc.github.io/sage-accounting-woocommerce/help/send-woocommerce-orders-to-sage-accounting/"><meta property="og:title" content="How to send WooCommerce orders to Sage Accounting as invoices with VAT (step by step)"><meta property="og:description" content="Step-by-step setup for sending paid WooCommerce orders to Sage Accounting UK as a customer, a sales invoice with VAT per line and a payment, using a free plugin and your own Sage developer app. Plus what to do when a total does not match."><meta property="og:url" content="https://skillmerc.github.io/sage-accounting-woocommerce/help/send-woocommerce-orders-to-sage-accounting/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Send WooCommerce orders to Sage Accounting as invoices with VAT</h1>
+<p>If you type WooCommerce orders into Sage Accounting by hand, this guide sets up the free <a href="https://wordpress.org/plugins/skillmerc-sync-for-sage-accounting/">Skillmerc Sync for Sage Accounting</a> plugin so each paid order arrives in Sage on its own. It works with Sage Accounting UK. It does not work with Sage 50 desktop or the South African Sage Accounting (<a href="/sage-accounting-woocommerce/help/woocommerce-sage-integration/">which Sage do I have?</a>).</p>
+<h2>What ends up in Sage</h2>
+<p>When an order reaches Processing or Completed (you can choose the statuses), the plugin:</p>
+<ol>
+<li>Finds the customer in Sage by reference, or creates them with their billing address, email and phone.</li>
+<li>Creates a sales invoice with one line per product and fee, a separate shipping line, and the VAT WooCommerce charged on each line.</li>
+<li>Records the payment as a customer receipt in the bank account you pick, so the invoice shows as paid.</li>
+</ol>
+<p>The order notes show the Sage invoice number.</p>
+<h2>Before you start</h2>
+<ul>
+<li>WooCommerce running on WordPress 6.2 or later, PHP 7.4 or later.</li>
+<li>Your Sage Accounting login.</li>
+<li>About ten minutes.</li>
+</ul>
+<h2>Step 1: install the plugin</h2>
+<p>In WordPress go to <strong>Plugins &gt; Add New</strong>, search for &quot;Skillmerc Sync for Sage Accounting&quot;, install and activate it. Then open <strong>WooCommerce &gt; Settings &gt; Sage Sync</strong> and copy the callback URL shown there.</p>
+<h2>Step 2: create your own Sage developer app</h2>
+<p>The plugin uses your own free Sage app, so your keys stay in your site and nothing passes through our servers.</p>
+<ol>
+<li>Sign in at <a href="https://developerselfservice.sageone.com/">developerselfservice.sageone.com</a> with GitHub or email.</li>
+<li>Click <strong>Create App</strong>, give it a name and paste the callback URL from Step 1. Save.</li>
+<li>Copy the app&#39;s <strong>Client ID</strong> and <strong>Client Secret</strong> into the plugin settings and save.</li>
+</ol>
+<h2>Step 3: connect to Sage</h2>
+<p>Click <strong>Connect to Sage</strong>, sign in with the Sage login you use for your books, and allow access. You come back to the settings screen.</p>
+<h2>Step 4: pick accounts and VAT rates</h2>
+<p>After connecting, the plugin loads your Sage accounts and VAT rates. Choose:</p>
+<ul>
+<li>the sales ledger account for products and fees,</li>
+<li>the ledger account for shipping,</li>
+<li>the bank account where payments are recorded,</li>
+<li>the Sage VAT rate for taxed lines and for untaxed lines.</li>
+</ul>
+<p>If you charge more than one VAT rate (for example 5% reduced rate items), map each WooCommerce tax rate to its Sage VAT rate. Save.</p>
+<h2>Step 5: test with one order</h2>
+<p>Place a test order and move it to Processing. Open the order and check the notes for the Sage invoice number, then find that invoice in Sage.</p>
+<h2>Orders from before you installed</h2>
+<p>Older paid orders are not sent automatically. Open each one and use the <strong>Sync to Sage now</strong> order action.</p>
+<h2>When something goes wrong</h2>
+<ul>
+<li><strong>Sage is down or the login expired.</strong> The order is retried in the background up to 5 times (after 5 minutes, 30 minutes, 2 hours and 6 hours). A retry never creates a second invoice.</li>
+<li><strong>An order note says the Sage total differs from the order total.</strong> Usually a WooCommerce tax rate maps to the wrong Sage VAT rate. Fix the mapping in the settings, then correct that invoice in Sage.</li>
+<li><strong>An order was skipped because of its currency.</strong> Version 0.1 only sends orders in your Sage base currency.</li>
+<li><strong>A refund.</strong> Refunds are not sent yet, so record the credit note in Sage by hand.</li>
+<li><strong>Where to see errors.</strong> In the order notes, and under <strong>WooCommerce &gt; Status &gt; Logs</strong> with the source skillmerc-sync-for-sage-accounting. Turn on the debug log in the settings for more detail.</li>
+</ul>
+<p>The plugin works with the block checkout, the classic checkout and High-Performance Order Storage (HPOS). Questions: <a href="https://wordpress.org/support/plugin/skillmerc-sync-for-sage-accounting/">open a topic in the plugin&#39;s support forum</a>.</p>
+<p><a class="cta" href="https://wordpress.org/plugins/skillmerc-sync-for-sage-accounting/">Get it free on WordPress.org</a></p><hr><h2>More WooCommerce and Sage guides</h2><ul><li><a href="/sage-accounting-woocommerce/help/woocommerce-sage-integration/">WooCommerce and Sage integration: which option fits Sage Accounting, Sage 50, Sage 200, Sage 300 or Intacct</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
