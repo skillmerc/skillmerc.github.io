@@ -1,0 +1,49 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How to export a Wikipedia table to Excel, Google Sheets or CSV (3 free ways)</title><meta name="description" content="Three free ways to get a table from Wikipedia into a spreadsheet: copy and paste, Google Sheets IMPORTHTML, or a browser add-on that also keeps the article links. When to use each one."><link rel="canonical" href="https://skillmerc.github.io/list-table-scraper/help/wikipedia-table-to-excel/"><meta property="og:title" content="How to export a Wikipedia table to Excel, Google Sheets or CSV (3 free ways)"><meta property="og:description" content="Three free ways to get a table from Wikipedia into a spreadsheet: copy and paste, Google Sheets IMPORTHTML, or a browser add-on that also keeps the article links. When to use each one."><meta property="og:url" content="https://skillmerc.github.io/list-table-scraper/help/wikipedia-table-to-excel/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>How to export a Wikipedia table to Excel, Google Sheets or CSV</h1>
+<p>Wikipedia tables look simple, but pasting them into a spreadsheet often goes wrong: merged cells shift columns, footnote markers end up in the numbers, and the links to each article are lost. Here are three free ways to do it, from quickest to most complete.</p>
+<h2>1. Copy and paste (fine for small tables)</h2>
+<ol>
+<li>Select the table on the page, from the first header cell to the last cell.</li>
+<li>Copy, then paste into Excel or Google Sheets.</li>
+</ol>
+<p>This works for small, plain tables. Check the result for footnote markers like [1] inside numbers and for rows that moved when a cell spans several rows. Links are not kept as separate columns.</p>
+<h2>2. Google Sheets IMPORTHTML (live copy, no add-on)</h2>
+<p>Google Sheets can pull a table straight from the page with a formula:</p>
+<pre><code>=IMPORTHTML(&quot;https://en.wikipedia.org/wiki/List_of_largest_companies_by_revenue&quot;, &quot;table&quot;, 1)
+</code></pre>
+<ul>
+<li>The last number is which table on the page to import, counting from 1. If you get the wrong table, try 2, 3 and so on.</li>
+<li>The data refreshes from the page from time to time, so do not edit cells inside the imported range. Copy and &quot;paste values only&quot; somewhere else if you want a fixed copy.</li>
+<li>To get a CSV, use File, then Download, then Comma separated values.</li>
+</ul>
+<p>This is the best option when you only need the visible text of one table and want it to stay up to date.</p>
+<h2>3. A browser add-on (keeps the links, handles lists too)</h2>
+<p><a href="/list-table-scraper/">List &amp; Table Scraper</a> is a free Firefox add-on we make. Click its toolbar button on the Wikipedia page and it outlines the table it found and shows a preview. Real tables use their header cells as column names, and a column of links holds the full article addresses, which is handy if you want to open or scrape each article next.</p>
+<ul>
+<li>Wrong table? Click <strong>Try another</strong>.</li>
+<li>Rename a column by typing in its header, or remove it with the x.</li>
+<li>Download CSV, Excel (.xlsx) or JSON, or copy everything and paste into Google Sheets.</li>
+</ul>
+<p>It runs in your browser only: no account, and nothing is sent to a server.</p>
+<p><img src="/list-table-scraper/3-wikipedia-table.jpg" alt="A Wikipedia table with the List and Table Scraper preview"></p>
+<h2>Which one should I use?</h2>
+<table>
+<thead>
+<tr>
+<th>You want</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A quick one-off copy of a small table</td>
+<td>Copy and paste</td>
+</tr>
+<tr>
+<td>A copy in Google Sheets that stays up to date</td>
+<td>IMPORTHTML</td>
+</tr>
+<tr>
+<td>The links as well as the text, or a list that is not a real table</td>
+<td>List &amp; Table Scraper</td>
+</tr>
+</tbody></table>
+<p><a class="cta" href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">Add to Firefox (free)</a></p><hr><h2>More guides</h2><ul><li><a href="/list-table-scraper/help/scrape-multiple-pages-to-excel/">How to scrape a list from multiple pages into Excel or CSV without code</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
