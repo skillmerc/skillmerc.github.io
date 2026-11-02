@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How to send WooCommerce orders to FreeAgent as paid invoices with VAT (step by step)</title><meta name="description" content="Step-by-step setup for sending paid WooCommerce orders to FreeAgent as a contact, an invoice with the VAT rate per line and a payment explanation, using a free plugin and your own FreeAgent developer app."><link rel="canonical" href="https://skillmerc.github.io/freeagent-woocommerce/help/send-woocommerce-orders-to-freeagent/"><meta property="og:title" content="How to send WooCommerce orders to FreeAgent as paid invoices with VAT (step by step)"><meta property="og:description" content="Step-by-step setup for sending paid WooCommerce orders to FreeAgent as a contact, an invoice with the VAT rate per line and a payment explanation, using a free plugin and your own FreeAgent developer app."><meta property="og:url" content="https://skillmerc.github.io/freeagent-woocommerce/help/send-woocommerce-orders-to-freeagent/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Send WooCommerce orders to FreeAgent as paid invoices</h1>
+<p>If you copy WooCommerce orders into FreeAgent by hand, this guide sets up the free <a href="https://wordpress.org/plugins/skillmerc-sync-for-freeagent/">Skillmerc Sync for FreeAgent</a> plugin so each paid order turns into a FreeAgent invoice on its own. It takes about ten minutes.</p>
+<h2>What ends up in FreeAgent</h2>
+<p>When an order reaches Processing or Completed (you choose the statuses), the plugin:</p>
+<ol>
+<li>Finds the customer in FreeAgent by email, or creates a contact with their name, company, email, phone and billing address.</li>
+<li>Creates an invoice numbered WC-(order number), with one line per product and fee, a separate shipping line, and the VAT rate WooCommerce charged on each line.</li>
+<li>Marks the invoice as sent. FreeAgent does not email your customer.</li>
+<li>Explains a payment in the bank account you choose, so the invoice shows as paid.</li>
+</ol>
+<p>The order notes show the FreeAgent invoice number and the payment.</p>
+<h2>Before you start</h2>
+<ul>
+<li>WooCommerce on WordPress 6.2 or later and PHP 7.4 or later.</li>
+<li>Your FreeAgent login.</li>
+<li>Orders in the same currency as your FreeAgent company. Version 0.1 skips orders in other currencies and says so in an order note.</li>
+</ul>
+<h2>Step 1: install the plugin</h2>
+<p>In WordPress go to <strong>Plugins &gt; Add New</strong>, search for &quot;Skillmerc Sync for FreeAgent&quot;, then install and activate it. Open <strong>WooCommerce &gt; Settings &gt; FreeAgent Sync</strong> and copy the OAuth redirect URI shown at the top.</p>
+<h2>Step 2: create your own FreeAgent app</h2>
+<ol>
+<li>Sign in at <a href="https://dev.freeagent.com/">dev.freeagent.com</a> with a free developer account.</li>
+<li>Create an app and paste the redirect URI from step 1 into it. Save.</li>
+<li>Copy the app&#39;s OAuth identifier and OAuth secret.</li>
+</ol>
+<p>Why your own app? A secret cannot stay secret inside a plugin anyone can download. With your own app, the keys stay in your site and FreeAgent only gives access to the company you approve. No order data passes through our servers.</p>
+<h2>Step 3: connect</h2>
+<p>Paste the identifier into <strong>Client ID</strong> and the secret into <strong>Client Secret</strong>, then save. Tick <strong>Sandbox</strong> only if you are testing against a FreeAgent sandbox company. Click <strong>Connect to FreeAgent</strong>, sign in with the login you use for your books and approve access. The settings page then shows &quot;Connected to&quot; and your company name.</p>
+<h2>Step 4: pick the bank account and categories</h2>
+<ul>
+<li><strong>Bank account for payments</strong>: the FreeAgent account where the money lands, for example your Stripe or PayPal account in FreeAgent, or the bank account your gateway pays out to.</li>
+<li><strong>Income category for products and fees</strong> and <strong>for shipping</strong>: Sales by default.</li>
+</ul>
+<p>The page also tells you whether your FreeAgent company is VAT registered. If it is, each invoice line gets the WooCommerce VAT rate. If it is not, lines are sent without VAT.</p>
+<h2>Step 5: test with one order</h2>
+<p>Place a test order and set it to Processing. Within a few seconds the order notes should say &quot;FreeAgent invoice WC-... created&quot; and &quot;Payment of ... recorded in FreeAgent&quot;. Open the invoice in FreeAgent to check the lines and VAT.</p>
+<p>To send an order that was paid before you installed the plugin, open it and choose the order action <strong>Sync to FreeAgent now</strong>.</p>
+<h2>If something goes wrong</h2>
+<ul>
+<li><strong>FreeAgent is down or rate limits the request</strong>: the plugin retries in the background up to 5 times (after 5 minutes, 30 minutes, 2 hours and 6 hours). A retry never creates a second invoice or a second payment.</li>
+<li><strong>A note says the totals differ</strong>: FreeAgent works out VAT from the rate on each line, so rounding can differ by a penny. A WooCommerce rate that is not one of your FreeAgent VAT rates can differ more. Check the invoice in FreeAgent.</li>
+<li><strong>Errors</strong>: read the order notes, then <strong>WooCommerce &gt; Status &gt; Logs</strong> under the source skillmerc-sync-for-freeagent. Tick <strong>Debug log</strong> for more detail.</li>
+<li><strong>Refunds</strong>: version 0.1 does not send refunds. Record a credit note in FreeAgent by hand for now.</li>
+</ul>
+<p><a class="cta" href="https://wordpress.org/plugins/skillmerc-sync-for-freeagent/">Get it free on WordPress.org</a></p><hr><h2>More WooCommerce and FreeAgent guides</h2><ul><li><a href="/freeagent-woocommerce/help/woocommerce-freeagent-integration/">WooCommerce and FreeAgent integration: your three options compared</a></li></ul><p>Using Sage Accounting instead? See <a href="/sage-accounting-woocommerce/">WooCommerce to Sage Accounting sync</a>.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>

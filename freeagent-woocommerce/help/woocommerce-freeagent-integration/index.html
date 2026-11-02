@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WooCommerce and FreeAgent integration: your three options compared</title><meta name="description" content="FreeAgent has no built-in WooCommerce connection. Compare recording sales by hand from a bank feed, the paid FreeAgent extension on WooCommerce.com, and a free plugin that sends each paid order as an invoice with VAT."><link rel="canonical" href="https://skillmerc.github.io/freeagent-woocommerce/help/woocommerce-freeagent-integration/"><meta property="og:title" content="WooCommerce and FreeAgent integration: your three options compared"><meta property="og:description" content="FreeAgent has no built-in WooCommerce connection. Compare recording sales by hand from a bank feed, the paid FreeAgent extension on WooCommerce.com, and a free plugin that sends each paid order as an invoice with VAT."><meta property="og:url" content="https://skillmerc.github.io/freeagent-woocommerce/help/woocommerce-freeagent-integration/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>WooCommerce and FreeAgent: your three options</h1>
+<p>FreeAgent does not connect to WooCommerce out of the box. Its own help article, <a href="https://support.freeagent.com/hc/en-us/articles/22498772875922-Record-WooCommerce-transactions">Record WooCommerce transactions</a>, lists two routes: a paid third-party integration, or recording the sales yourself. A free plugin is now a third route. Here is how they compare.</p>
+<h2>Option 1: record sales by hand from your bank feed</h2>
+<p>Money from your store reaches a bank, Stripe or PayPal account. Connect that account to FreeAgent with a bank feed, or upload a statement, then explain each incoming payment against a sales category, or against an invoice if you create one.</p>
+<ul>
+<li><strong>Cost</strong>: free.</li>
+<li><strong>Good for</strong>: a handful of orders a month.</li>
+<li><strong>Downside</strong>: each payout can cover many orders, so you lose the per-order detail (customer, products, VAT per line) unless you create invoices by hand.</li>
+</ul>
+<h2>Option 2: the paid FreeAgent extension on WooCommerce.com</h2>
+<p>FreeAgent&#39;s integrations page links to a paid extension sold on WooCommerce.com. According to <a href="https://woocommerce.com/document/freeagent-for-woocommerce">its documentation</a> it has two modes:</p>
+<ul>
+<li><p><strong>Summarised mode</strong> (their recommendation for larger stores): one invoice a day for the accumulated sales, grouped by tax, currency and sales type.</p>
+</li>
+<li><p><strong>Detailed mode</strong>: an invoice and a contact for every order, with optional payment sync.</p>
+</li>
+<li><p><strong>Good for</strong>: stores with many orders that want daily summary invoices.</p>
+</li>
+<li><p><strong>Downside</strong>: a paid licence, renewed yearly.</p>
+</li>
+</ul>
+<h2>Option 3: the free Skillmerc Sync for FreeAgent plugin</h2>
+<p><a href="https://wordpress.org/plugins/skillmerc-sync-for-freeagent/">Skillmerc Sync for FreeAgent</a> is free on WordPress.org. We make it. Each paid order becomes:</p>
+<ol>
+<li>a contact (matched by email, or created),</li>
+<li>an invoice numbered WC-(order number) with one line per product and fee, a shipping line, and the VAT rate WooCommerce charged on each line,</li>
+<li>marked as sent (no email to your customer), and</li>
+<li>a payment explanation in the bank account you choose, so the invoice shows as paid.</li>
+</ol>
+<p>It retries in the background when FreeAgent is down, never creates a second invoice for the same order, and connects through your own free FreeAgent developer app, so no order data goes through a third-party server.</p>
+<p>What version 0.1 does not do yet: refunds (record credit notes by hand), orders in a currency other than your FreeAgent company currency, and daily summary invoices.</p>
+<ul>
+<li><strong>Cost</strong>: free.</li>
+<li><strong>Good for</strong>: stores that want one FreeAgent invoice per order without paying for a licence.</li>
+<li><strong>Setup</strong>: <a href="/freeagent-woocommerce/help/send-woocommerce-orders-to-freeagent/">step-by-step guide</a>.</li>
+</ul>
+<h2>Which one should you pick?</h2>
+<ul>
+<li>Very few orders and you already use bank feeds: option 1.</li>
+<li>Hundreds of orders a day and you want one summary invoice a day: option 2.</li>
+<li>You want each order in FreeAgent as a paid invoice with VAT, for free: option 3.</li>
+</ul>
+<h2>A note on payment fees</h2>
+<p>Stripe and PayPal take their fee before paying out. If you explain payments in your Stripe or PayPal account in FreeAgent, record the fee as a separate bank charge so the account balance matches.</p>
+<p><a class="cta" href="https://wordpress.org/plugins/skillmerc-sync-for-freeagent/">Get it free on WordPress.org</a></p><hr><h2>More WooCommerce and FreeAgent guides</h2><ul><li><a href="/freeagent-woocommerce/help/send-woocommerce-orders-to-freeagent/">How to send WooCommerce orders to FreeAgent as paid invoices with VAT (step by step)</a></li></ul><p>Using Sage Accounting instead? See <a href="/sage-accounting-woocommerce/">WooCommerce to Sage Accounting sync</a>.</p></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
