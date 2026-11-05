@@ -47,13 +47,13 @@ The app does not keep copies of customer names, emails, phone numbers or address
 <h3>Data minimisation</h3>
 <ul>
 <li>The app does <strong>not store</strong> customer names, emails, phones or addresses. They are held in memory during a sync and sent to FreeAgent.</li>
-<li>The database keeps per shop: the shop domain, the Shopify token, the plan, encrypted FreeAgent tokens, settings, and per order the Shopify order ID and number, the FreeAgent document link and number, status and errors.</li>
+<li>The database keeps per shop: the shop domain, the encrypted Shopify tokens, the plan, encrypted FreeAgent tokens, settings, and per order the Shopify order ID and number, the FreeAgent document link and number, status and errors.</li>
 <li>No <code>read_customers</code> scope; backfill only uses order IDs from the orders it lists.</li>
 </ul>
 <h3>Loss prevention controls</h3>
 <ul>
 <li><strong>Encryption in transit:</strong> HTTPS for the app (Railway), TLS to Shopify and FreeAgent, and <code>ssl: require</code> to the database.</li>
-<li><strong>Encryption at rest:</strong> Supabase encrypts the database and its backups at rest (AES-256). FreeAgent access and refresh tokens are also encrypted by the app with AES-256-GCM before they are stored.</li>
+<li><strong>Encryption at rest:</strong> Supabase encrypts the database and its backups at rest (AES-256). On top of that, the app encrypts every OAuth token before storing it: Shopify access and refresh tokens and FreeAgent access and refresh tokens are AES-256-GCM ciphertext (<code>v1:</code> format, random 96-bit IV per value). The 256-bit key is a Railway environment variable (TOKEN_ENC_KEY) and is never stored in the database or the code. Production refuses to encrypt or decrypt without it. Tokens written before 7 Nov 2026 were encrypted in place by migration 005.</li>
 <li><strong>Least privilege:</strong> the app connects with its own database role <code>ledgerline</code> that owns only the <code>ledgerline</code> schema and cannot read other projects&#39; tables.</li>
 <li><strong>No personal data in logs:</strong> activity log lines carry order numbers, not customer details; every log message and stored error goes through a scrubber that replaces email addresses and phone numbers (<code>scrubPii</code> in src/db/repo.js, tested in test/access-log.test.js).</li>
 <li><strong>Access logging:</strong> every read of customer contact fields is logged (see access-logging below).</li>
