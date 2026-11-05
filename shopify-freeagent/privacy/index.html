@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy policy: Ledgerline for Shopify and FreeAgent</title><meta name="description" content="Privacy policy, data protection and incident response policy for Ledgerline, the Shopify to FreeAgent app by SKILLMERC."><link rel="canonical" href="https://skillmerc.github.io/shopify-freeagent/privacy/"><meta property="og:title" content="Privacy policy: Ledgerline for Shopify and FreeAgent"><meta property="og:description" content="Privacy policy, data protection and incident response policy for Ledgerline, the Shopify to FreeAgent app by SKILLMERC."><meta property="og:url" content="https://skillmerc.github.io/shopify-freeagent/privacy/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Ledgerline privacy policy</h1>
+<p>Last updated: 6 November 2026</p>
+<p>Ledgerline (&quot;the app&quot;) is made by SKILLMERC (Pty) Ltd. It copies paid Shopify orders and refunds into the merchant&#39;s own FreeAgent account. This policy explains what the app reads, stores and shares.</p>
+<h2>What the app reads from Shopify</h2>
+<ul>
+<li>Orders and refunds (read_orders scope): order number, dates, line items, prices, taxes, shipping, discounts, refunds and payment gateway names.</li>
+<li>Customer name, email, phone and billing address on those orders, only to create or match the customer as a contact in the merchant&#39;s FreeAgent account.</li>
+<li>Shop name and currency, and the app subscription status.</li>
+</ul>
+<h2>What the app stores</h2>
+<ul>
+<li>The shop domain, Shopify access tokens and the plan.</li>
+<li>FreeAgent access and refresh tokens, encrypted with AES-256-GCM.</li>
+<li>The merchant&#39;s settings (chosen FreeAgent bank account and income categories).</li>
+<li>For each synced order: the Shopify order ID and number, the FreeAgent contact, invoice or credit note link and number, status and any error message.</li>
+<li>An activity log with order numbers and messages. Email addresses and phone numbers are removed from log messages before they are saved.</li>
+<li>An access log of every time the app reads customer contact details: who or what read them (for example the order webhook, or the merchant&#39;s preview), the shop, the purpose and the time. It does not contain the details themselves and is deleted after 90 days.
+The app does not keep copies of customer names, emails, phone numbers or addresses. They are sent to FreeAgent and not stored by the app.</li>
+</ul>
+<h2>Who the data is shared with</h2>
+<ul>
+<li>FreeAgent, only for the account the merchant connects, to create contacts, invoices, credit notes and payment records.</li>
+<li>Hosting: Railway (application servers) and Supabase (database). No data is sold or used for advertising.</li>
+</ul>
+<h2>Retention and deletion</h2>
+<ul>
+<li>Uninstalling deletes the Shopify and FreeAgent tokens at once and stops all syncing.</li>
+<li>48 hours after uninstall Shopify sends a shop redact request and the app deletes all remaining data for that shop.</li>
+<li>Customer redact requests delete activity log lines for that customer&#39;s orders.</li>
+<li>Documents already created in FreeAgent belong to the merchant&#39;s books and stay in their FreeAgent account.</li>
+</ul>
+<h2>Security</h2>
+<ul>
+<li>All connections use HTTPS or TLS: to Shopify, to FreeAgent and to the database.</li>
+<li>The database and its backups are encrypted at rest by our database host (AES-256). FreeAgent tokens are also encrypted by the app (AES-256-GCM) before they are stored.</li>
+<li>The app uses its own database account that can only reach Ledgerline&#39;s tables. Only the owner of SKILLMERC has access to the production systems.</li>
+<li>Test data and live data are kept apart: development uses a local test database and the FreeAgent sandbox.</li>
+</ul>
+<h2>Security incidents</h2>
+<p>If we find that data handled by the app may have been exposed, we contain it at once, work out which shops and data were affected within 24 hours, and email each affected merchant within 72 hours with what happened, what data was involved, what we did and what they should do. We also tell Shopify. After every incident we write down the cause and what we changed.</p>
+<h2>Contact</h2>
+<p>Kyle Pretorius, SKILLMERC: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
+<h2>Data protection and data loss prevention</h2>
+<p>Version 1.0, 6 November 2026. Owner: Kyle Pretorius, SKILLMERC (<a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>).</p>
+<h3>What personal data the app handles</h3>
+<p>Ledgerline reads the customer name, email, phone and billing or shipping address on paid Shopify orders (read_orders scope). It uses them only to find or create the customer as a contact in the merchant&#39;s own FreeAgent account and to put the invoice in that contact&#39;s name. The preview screen shows the same fields to the merchant. Nothing else uses them.</p>
+<h3>Data minimisation</h3>
+<ul>
+<li>The app does <strong>not store</strong> customer names, emails, phones or addresses. They are held in memory during a sync and sent to FreeAgent.</li>
+<li>The database keeps per shop: the shop domain, the Shopify token, the plan, encrypted FreeAgent tokens, settings, and per order the Shopify order ID and number, the FreeAgent document link and number, status and errors.</li>
+<li>No <code>read_customers</code> scope; backfill only uses order IDs from the orders it lists.</li>
+</ul>
+<h3>Loss prevention controls</h3>
+<ul>
+<li><strong>Encryption in transit:</strong> HTTPS for the app (Railway), TLS to Shopify and FreeAgent, and <code>ssl: require</code> to the database.</li>
+<li><strong>Encryption at rest:</strong> Supabase encrypts the database and its backups at rest (AES-256). FreeAgent access and refresh tokens are also encrypted by the app with AES-256-GCM before they are stored.</li>
+<li><strong>Least privilege:</strong> the app connects with its own database role <code>ledgerline</code> that owns only the <code>ledgerline</code> schema and cannot read other projects&#39; tables.</li>
+<li><strong>No personal data in logs:</strong> activity log lines carry order numbers, not customer details; every log message and stored error goes through a scrubber that replaces email addresses and phone numbers (<code>scrubPii</code> in src/db/repo.js, tested in test/access-log.test.js).</li>
+<li><strong>Access logging:</strong> every read of customer contact fields is logged (see access-logging below).</li>
+<li><strong>Secrets:</strong> API keys and the encryption key live only in Railway variables and owner-only local files (mode 600), never in the code repository.</li>
+<li><strong>Test and production data are separate:</strong> development uses an in-process test database and recorded fixtures; live testing uses Shopify development stores and the FreeAgent sandbox.</li>
+<li><strong>Deletion:</strong> uninstall removes tokens at once; Shopify&#39;s shop/redact deletes all of a shop&#39;s rows; customers/redact deletes the log lines for that customer&#39;s orders.</li>
+</ul>
+<h3>Access logging</h3>
+<p>Table <code>ledgerline.personal_data_access_log</code>: actor (system:webhook, system:backfill, merchant:<Shopify user id>, operator:<name>), shop, purpose, resource (order ID or &quot;orders list&quot;), field groups read, number of records, timestamp. It never stores the personal data itself. Rows older than 90 days are deleted automatically by the worker. Operator access (support or debugging that reads a customer&#39;s order details) must be recorded with <code>node tools/log-access.mjs</code>.</p>
+<h3>Staff access</h3>
+<p>Only the owner, Kyle Pretorius, has access to the production database, hosting and developer accounts. Each account must have a unique strong password (at least 12 characters, generated by a password manager) and two-step verification wherever the provider offers it. The self-audit checks this.</p>
+<h3>Incidents</h3>
+<p>See incident-response.md.</p>
+<h2>Security incident response policy</h2>
+<p>Version 1.0, adopted 6 November 2026. Owner: Kyle Pretorius, SKILLMERC (<a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>). Reviewed at least once a year and after every incident.</p>
+<h3>Scope</h3>
+<p>Any event that may have exposed, changed or destroyed data that Ledgerline handles: Shopify order and customer contact data read during a sync, Shopify access tokens, FreeAgent tokens, merchant settings and the activity log. It covers the app servers (Railway), the database (Supabase), the code and the developer accounts (Shopify Partners, FreeAgent developer, Railway, Supabase, GitHub).</p>
+<h3>Roles</h3>
+<p>SKILLMERC is a one-person company. Kyle Pretorius is the incident lead and makes every decision below. Automated tools he runs may help with the investigation but do not decide on notification.</p>
+<h3>Steps</h3>
+<ol>
+<li><strong>Detect and record (at once).</strong> Sources: Railway and Supabase alerts, the app&#39;s error logs, the personal data access log, unusual FreeAgent or Shopify API errors, reports from merchants, Shopify or FreeAgent. Open an incident note with the time found, what was seen and who reported it.</li>
+<li><strong>Contain (within 1 hour of confirming).</strong> As needed: rotate the Shopify client secret in the Dev Dashboard, rotate the database password and TOKEN_ENC_KEY, revoke FreeAgent connections (merchants reconnect), stop the Railway service, block a compromised account or key.</li>
+<li><strong>Assess (within 24 hours).</strong> Work out which shops and which data were affected, using the access log (actor, shop, purpose, time) and the database. Decide whether personal data was exposed.</li>
+<li><strong>Notify.</strong> If personal data of merchants&#39; customers may have been exposed: tell each affected merchant by email within 72 hours of becoming aware, with what happened, what data, what we did and what they should do. Tell Shopify through the Partner Dashboard support channel in the same window. Where Ledgerline acts as a processor, the merchant is the controller and decides on telling their customers and regulators; we give them the facts they need. SKILLMERC&#39;s own regulator notifications (for example the UK ICO or South Africa&#39;s Information Regulator) are made where the law requires it.</li>
+<li><strong>Recover.</strong> Fix the cause, redeploy, confirm webhooks and syncs work, re-enable the service.</li>
+<li><strong>Review (within 14 days).</strong> Write a short post-incident note: cause, timeline, what changed. Update this policy and the self-audit checklist.</li>
+</ol>
+<h3>Contacts</h3>
+<ul>
+<li>Incident lead: Kyle Pretorius, <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></li>
+<li>Shopify: Partner Dashboard support</li>
+<li>Hosting: Railway support, Supabase support</li>
+</ul>
+</main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
