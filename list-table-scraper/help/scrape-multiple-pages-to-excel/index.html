@@ -9,12 +9,12 @@
 <li>Neither one sees lists built from cards (product tiles, job cards, directory entries), and neither can click a Next button that loads results without changing the address.</li>
 </ul>
 <h2>Collect all pages with a browser add-on</h2>
-<p><a href="/list-table-scraper/">List &amp; Table Scraper</a> is a free Firefox add-on we make. It works on the page as you see it, so it handles card layouts and Next buttons too.</p>
+<p><a href="/list-table-scraper/">List &amp; Table Scraper</a> is a Firefox add-on we make. It is free for up to 3 pages per run, and it works on the page as you see it, so it handles card layouts and Next buttons too.</p>
 <ol>
 <li>Open the first page of results and click the add-on&#39;s toolbar button. It outlines the block of repeated items and shows a preview. If it picked the wrong block, click <strong>Try another</strong>.</li>
 <li>Click <strong>Locate Next button</strong>, then click the site&#39;s own Next link or button.</li>
-<li>Set <strong>Max pages</strong> (default 20) and the <strong>Delay</strong> between pages (1 to 10 seconds), then click <strong>Crawl pages</strong>.</li>
-<li>It collects page after page until there is no Next, or until your page limit, and drops duplicate rows.</li>
+<li>Set <strong>Max pages</strong> and the <strong>Delay</strong> between pages (1 to 10 seconds), then click <strong>Crawl pages</strong>. The free version reads up to 3 pages per run. With <a href="/list-table-scraper/#free-and-pro">Pro</a> Max pages goes up to 500.</li>
+<li>It collects page after page until there is no Next, or until the page limit, and drops duplicate rows. If a free run stops at 3 pages, the panel says so and you can still export what it collected.</li>
 <li>Download CSV, Excel (.xlsx) or JSON, or copy and paste into Google Sheets.</li>
 </ol>
 <p>When Next is a normal link, the next pages are loaded in the background from the same site, so the page you are on stays where it is. When Next is a button that updates the page in place, the add-on clicks it and waits for the new rows. For pages that load more items as you scroll, use <strong>Infinite scroll</strong> instead.</p>
@@ -22,6 +22,7 @@
 <h2>Limits worth knowing</h2>
 <ul>
 <li>It reads what the page has loaded. If a site builds its list with JavaScript after a link-based Next, the background load may not find the list, and the panel tells you when that happens.</li>
+<li>Free reads up to 3 pages per run. Pro (from USD 4 a month) reads up to 500 and saves a recipe per website, so the block and the Next button are remembered next time. CSV, Excel and JSON export are free either way.</li>
 <li>Use a delay of a few seconds and a sensible page limit so you do not hammer the site, and respect each website&#39;s terms of use.</li>
 </ul>
 <p><a class="cta" href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">Add to Firefox (free)</a></p><hr><h2>More guides</h2><ul><li><a href="/list-table-scraper/help/wikipedia-table-to-excel/">How to export a Wikipedia table to Excel, Google Sheets or CSV (3 free ways)</a></li><li><a href="/list-table-scraper/help/scrape-infinite-scroll-page-to-excel/">How to scrape an infinite scroll page into Excel or CSV</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
