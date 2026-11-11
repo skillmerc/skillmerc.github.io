@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Closewell for Jira: privacy policy</title>
+<style>body{font:16px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#172b4d}h1{font-size:28px}h2{font-size:19px;margin-top:28px}code{background:#f1f2f4;padding:1px 4px;border-radius:3px}</style></head><body>
+<h1>Closewell for Jira: privacy policy</h1>
+<p>Last updated 11 November 2026. Closewell for Jira ("the app") is made by SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>.</p>
+<h2>What the app does</h2>
+<p>The app runs a month-end close in a Jira project. It creates one Jira work item per close step and shows figures from an accounting ledger next to the steps that depend on them.</p>
+<h2>Where data is kept</h2>
+<p>The app is built on Atlassian Forge. Its code runs on Atlassian's infrastructure and everything it stores is kept in Forge storage inside your Atlassian site's app installation. SKILLMERC does not run servers for this app and does not receive a copy of your data.</p>
+<h2>What the app stores</h2>
+<ul>
+<li>Close runs: the month, the step names, and the ids and keys of the Jira work items it created.</li>
+<li>The ledger you chose for a project: its type, the company name and currency, and the Atlassian account id of the person who connected it.</li>
+<li>The Atlassian account id of the person who started a close, and the account id and display name of the person who signed it off.</li>
+<li>If you connect a real ledger: the last set of figures read from it. This holds unexplained bank lines (date, description, amount), unpaid or draft sales invoices and unpaid supplier bills (reference, customer or supplier name, dates, totals), and VAT return periods and filing status. It is replaced each time someone presses Refresh ledger facts and is deleted when the ledger is disconnected.</li>
+<li>Your changes to the close template.</li>
+</ul>
+<p>The app does not store passwords or ledger access tokens. Sign-in to the ledger is handled by Atlassian Forge external authentication, which keeps the connection on Atlassian's side.</p>
+<h2>What leaves Atlassian</h2>
+<p>With the sample company, nothing. With FreeAgent, the app makes read-only requests to <code>api.freeagent.com</code> (or <code>api.sandbox.freeagent.com</code> for a sandbox account) on behalf of the person who connected it. The app never writes to your ledger.</p>
+<h2>Rovo</h2>
+<p>If you use the Close Assistant agent, the answers it gives are produced by Atlassian Rovo from the close data described above. See Atlassian's own privacy terms for Rovo.</p>
+<h2>Deleting data</h2>
+<p>Uninstalling the app removes its Forge storage. Jira work items the app created are ordinary work items and stay in your project until you delete them. To revoke ledger access, disconnect the ledger in the app, remove the app from your Atlassian account's connected apps, or revoke it in FreeAgent under Settings, Approved Applications.</p>
+<h2>Questions</h2>
+<p>Email <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>.</p>
+</body></html>
