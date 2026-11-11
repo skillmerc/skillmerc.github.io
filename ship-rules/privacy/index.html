@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ship Rules for Jira: privacy policy</title>
+<style>body{font:16px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#172b4d}h1{font-size:28px}h2{font-size:19px;margin-top:28px}code{background:#f1f2f4;padding:1px 4px;border-radius:3px}table{border-collapse:collapse}td,th{border:1px solid #dcdfe4;padding:6px 10px;text-align:left;vertical-align:top}a{color:#0c66e4}</style></head><body>
+<h1>Ship Rules for Jira: privacy policy</h1>
+<p>Last updated 11 November 2026. Ship Rules for Jira ("the app") is made by SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>.</p>
+<h2>What the app does</h2>
+<p>The app keeps a project's ship rules: the checks a team wants met before a Jira work item ships. People attach evidence for each rule on the work item. Coding agents and Rovo agents can read the rules and attach evidence through the app's tools.</p>
+<h2>Where data is kept</h2>
+<p>The app is built on Atlassian Forge. Its code runs on Atlassian's infrastructure and everything it stores is kept in Forge storage inside your Atlassian site's app installation, or on the Jira work items themselves. SKILLMERC does not run servers for this app and does not receive a copy of your data. The app makes no requests to any service outside Atlassian.</p>
+<h2>What the app stores</h2>
+<ul>
+<li>Ship rules per project: the rule titles and guidance you write, the work types, labels and components each rule applies to, and the Atlassian account id of the person who last saved them.</li>
+<li>An evidence record per work item: the links and notes attached to each rule, the time, the Atlassian account id of the person who attached, confirmed or waived, whether it came from the Jira panel or through an agent tool, and the name an agent gave for itself (for example "Claude Code").</li>
+<li>A small readiness property on each work item of a project that has ship rules (property key <code>shiprules</code>): ready yes or no, the ids of the rules still open, and two counts. Jira uses it for JQL search.</li>
+</ul>
+<p>The app stores Atlassian account ids only. It does not store names, email addresses or avatars. Names are looked up from Jira when a page or a tool result is shown. Do not put personal data, passwords or tokens into evidence notes or links: the app refuses links that contain a user name or password, but it cannot check what a note says.</p>
+<h2>Agents and the Atlassian MCP server</h2>
+<p>The app's tools are available to Rovo agents on your site. They are available to external MCP clients (for example a coding agent on a developer's machine) only after an organization admin turns that on for the app in Atlassian Administration, and after each person approves the client on Atlassian's consent page. A tool call runs for the signed-in person and returns only what that person may see in Jira: work item key, summary, type, status, labels, components, assignee name, the ship rules, and the evidence with the names of the people who attached it. That result goes to the client through Atlassian's MCP server. What the client and its AI model do with it is covered by that client's own terms, not by this policy.</p>
+<h2>Rovo</h2>
+<p>If you use the Ship Rules Guide agent, its answers are produced by Atlassian Rovo from the data described above. See Atlassian's own privacy terms for Rovo.</p>
+<h2>Logs</h2>
+<p>The app writes technical error logs to Forge logging (error type and a short message). It does not log rule text, evidence or names.</p>
+<h2>Deleting data</h2>
+<p>Deleting a work item deletes its evidence record. Turning ship rules off for a project removes the readiness property from its open work items. Uninstalling the app removes its Forge storage. Readiness properties left on closed work items can be removed with the Jira REST API (issue property <code>shiprules</code>). To revoke an external client, remove it under Connected apps in your Atlassian account, or ask your admin to turn the tools off.</p>
+<h2>Questions</h2>
+<p>Email <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>.</p>
+</body></html>
