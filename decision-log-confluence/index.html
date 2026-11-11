@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Decision Log for Confluence: documentation</title><meta name="description" content="How to install and use Decision Log for Confluence: decision records, the Decision Register, the draft check and the Decision Keeper Rovo agent."><link rel="canonical" href="https://skillmerc.github.io/decision-log-confluence/"><meta property="og:title" content="Decision Log for Confluence: documentation"><meta property="og:description" content="How to install and use Decision Log for Confluence: decision records, the Decision Register, the draft check and the Decision Keeper Rovo agent."><meta property="og:url" content="https://skillmerc.github.io/decision-log-confluence/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}h2{margin-top:1.6em}a{color:#0b5fd1}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:6px 10px;text-align:left;vertical-align:top}code{font-size:.9em;background:#f3f4f7;padding:1px 4px;border-radius:3px}</style></head><body><header><a href="/">SKILLMERC</a></header><main>
+<h1>Decision Log for Confluence: documentation</h1>
+<p>Decision Log records team decisions on Confluence pages as structured records (context, options, decision, owner, date, status) and makes them findable later. It runs on Atlassian Forge. It makes no network calls outside Atlassian.</p>
+
+<h2>1. Install</h2>
+<ol>
+<li>A Confluence site admin installs the app from its installation link or from the Atlassian Marketplace listing.</li>
+<li>Approve the four permissions listed under <a href="#permissions">Permissions</a>.</li>
+<li>Open <b>Apps</b> in the Confluence sidebar and choose <b>Decision Register</b>.</li>
+</ol>
+
+<h2>2. First run</h2>
+<p>The register starts empty. Choose <b>Add sample decisions</b> to load five invented decisions, each marked "Sample", so you can try search, the draft check and the agent before recording anything real. <b>Remove sample decisions</b> deletes them again. Samples never count towards the free tier.</p>
+
+<h2>3. Record a decision on a page</h2>
+<ol>
+<li>Edit any Confluence page, type <code>/decision</code> and insert the <b>Decision Record</b> macro. Publish the page.</li>
+<li>Pick a format: Architecture Decision Record, DACI, RFC or Blank.</li>
+<li>Fill in the title, status, owner, context, options considered (one per line) and the decision with its rationale. Save.</li>
+</ol>
+<p>Statuses are Draft, Proposed, Decided and Superseded. Every status change is kept in the record's history with the person and date. Choosing an earlier decision in the <b>Supersedes</b> field marks that earlier decision as superseded when you save.</p>
+
+<h2>4. Decision Register</h2>
+<p>The register lists every decision on a page you have permission to open. You can search, filter by status, format, owner, space and decided date, sort, and export the filtered rows as CSV. <b>Details</b> opens the full record: whether it still stands, options with the chosen one marked, rationale, related decisions and history. A banner lists decisions that have been open for more than 14 days.</p>
+
+<h2>5. Check a draft or a page against past decisions</h2>
+<ul>
+<li><b>In the register:</b> choose <b>Check a draft</b>, paste a proposal and choose <b>Check</b>.</li>
+<li><b>On any page:</b> choose <b>Decision check</b> under the page title. It lists the decisions filed on that page and checks the page text against the rest of the log.</li>
+</ul>
+<p>Findings are grouped as: possible conflict (a decided record covers this and the text names an option that record rejected, or uses change wording such as "instead of" in the same sentence as what was chosen), relies on a superseded decision, still being decided, and already decided. Each finding shows its reasons and links to the record. Findings come from matching words against recorded decisions. They are leads to verify, not verdicts, and "no overlap found" is not proof that there is no conflict.</p>
+
+<h2>6. Decision Keeper, the Rovo agent</h2>
+<p>If Rovo is enabled on your site, open Rovo chat and choose the <b>Decision Keeper</b> agent, or use the <b>Ask Decision Keeper</b> buttons in the app. It can:</p>
+<ul>
+<li>find decisions about a topic, person or Jira issue key</li>
+<li>explain why a decision was made, with the options that were rejected and a link to the source page</li>
+<li>check the page you are viewing, or text you paste, against past decisions</li>
+<li>list decisions that have been waiting too long</li>
+<li>log a new decision from a discussion or from notes on the page you are viewing, after you confirm it</li>
+<li>change a decision's status</li>
+</ul>
+<p>The agent answers only from recorded decisions and only shows decisions on pages you can open. The search, explain and check steps are ordinary app functions over stored records; the agent words the result.</p>
+
+<h2>7. Tools for your own agents (Rovo MCP)</h2>
+<p>The same seven actions are exposed as tools through the app's Rovo MCP module, named <b>Decision Log</b>: find-decisions, explain-decision, check-against-decisions, review-open-decisions, read-page, log-decision and set-decision-status. In Rovo Studio, create or edit an agent, choose <b>Add tools</b>, then <b>Connected apps</b>, then Decision Log. To use the tools from an external MCP client, an organisation admin must first turn them on in Atlassian Administration under Apps, Sites, your site, Connected apps. External access is off by default.</p>
+
+<h2 id="permissions">8. Permissions</h2>
+<table>
+<tr><th>Scope</th><th>Why</th></tr>
+<tr><td><code>storage:app</code></td><td>Holds the decision records and each person's list of unread status changes, in Forge storage.</td></tr>
+<tr><td><code>read:page:confluence</code></td><td>Reads page titles, links and page text as the signed-in user: to show where a decision lives, to check the reader may see that page, and to read a page that the reader asks to have checked.</td></tr>
+<tr><td><code>read:space:confluence</code></td><td>Reads space names and keys for the Space column and filter.</td></tr>
+<tr><td><code>read:user:confluence</code></td><td>Backs the people pickers and shows the names of people named on a decision.</td></tr>
+</table>
+<p>The app has no write access to Confluence content. All Confluence reads are made as the signed-in user, so nobody sees a decision on a page they cannot open.</p>
+
+<h2>9. Free tier</h2>
+<p>The Marketplace edition is free for up to 10 live decisions (anything not superseded). Superseded and sample records do not count.</p>
+
+<h2 id="support">10. Support</h2>
+<p>Email <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a>. Include your site address and what you were doing. We aim to reply within two business days.</p>
+</main><footer><a href="/">SKILLMERC (Pty) Ltd</a> &middot; <a href="/decision-log-confluence/">Decision Log documentation</a> &middot; <a href="/decision-log-confluence/privacy/">Privacy</a></footer></body></html>
