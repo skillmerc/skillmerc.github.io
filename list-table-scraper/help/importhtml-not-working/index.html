@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IMPORTHTML not working in Google Sheets? Why it fails and how to get the table anyway</title><meta name="description" content="IMPORTHTML returns &quot;Imported content is empty&quot;, &quot;Could not fetch url&quot; or the wrong table. The usual causes (JavaScript tables, logins, blocked requests, wrong index) and a free way to get the data into Sheets anyway."><link rel="canonical" href="https://skillmerc.github.io/list-table-scraper/help/importhtml-not-working/"><meta property="og:title" content="IMPORTHTML not working in Google Sheets? Why it fails and how to get the table anyway"><meta property="og:description" content="IMPORTHTML returns &quot;Imported content is empty&quot;, &quot;Could not fetch url&quot; or the wrong table. The usual causes (JavaScript tables, logins, blocked requests, wrong index) and a free way to get the data into Sheets anyway."><meta property="og:url" content="https://skillmerc.github.io/list-table-scraper/help/importhtml-not-working/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>IMPORTHTML not working in Google Sheets? Why it fails and how to get the table anyway</h1>
+<p>You typed <code>=IMPORTHTML(url, &quot;table&quot;, 1)</code> and got an error, an empty cell or the wrong table, even though you can see the table on the page. Here is why that happens and what to do about it.</p>
+<h2>How IMPORTHTML reads a page</h2>
+<p>Google&#39;s own help says IMPORTHTML returns the table or list &quot;as defined in the HTML source&quot;. That is the key point. The page is downloaded by Google&#39;s servers, not by your browser, and the formula only sees the HTML that comes back. It does not log in as you and it does not wait for the page&#39;s scripts to build anything.</p>
+<p>So the table you see in your browser and the table IMPORTHTML sees can be two different things.</p>
+<h2>The common failures</h2>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Usual cause</th>
+<th>What to try</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Imported content is empty&quot;</td>
+<td>The table is built by JavaScript after the page loads, so it is not in the HTML source</td>
+<td>Use a tool that reads the page as your browser shows it (see below)</td>
+</tr>
+<tr>
+<td>&quot;Could not fetch url&quot;</td>
+<td>The site blocks automated requests, or the page needs a login</td>
+<td>Check the URL opens in a private window. If it needs a login, IMPORTHTML cannot reach it</td>
+</tr>
+<tr>
+<td>The wrong table or a list of menu links</td>
+<td>The index counts every table (or list) in the source, including hidden ones</td>
+<td>Try index 2, 3 and so on, and check you used &quot;table&quot; or &quot;list&quot; correctly</td>
+</tr>
+<tr>
+<td>Data looks like cards, not a table</td>
+<td>The page uses card or grid layouts, not real table tags</td>
+<td>IMPORTHTML only sees real tables and lists; use a scraper that finds repeated blocks</td>
+</tr>
+<tr>
+<td>Only the first page of results</td>
+<td>Each page of results is a separate URL</td>
+<td>One formula per page, or a tool that clicks Next for you</td>
+</tr>
+</tbody></table>
+<p>A quick test: open the page, right click, choose <strong>View page source</strong>, and search for a value you can see in the table. If it is not in the source, IMPORTHTML will not find it, no matter which index you try.</p>
+<h2>Fixes that keep you in Google Sheets</h2>
+<ul>
+<li><strong>Wrong table:</strong> count up the index. Lists and tables are counted separately, so <code>&quot;list&quot;, 1</code> and <code>&quot;table&quot;, 1</code> are different things.</li>
+<li><strong>Static copy needed:</strong> once it works, copy the range and use <strong>Paste special, values only</strong>, so later refreshes do not change it.</li>
+<li><strong>IMPORTXML</strong> can pull a specific element with an XPath, but it reads the same HTML source, so it fails on JavaScript tables for the same reason.</li>
+</ul>
+<h2>When the table only exists in your browser</h2>
+<p>If the data is built by scripts, sits behind a login, or is a grid of cards, you need something that reads the page after it has loaded, in your own browser.</p>
+<p><a href="/list-table-scraper/">List &amp; Table Scraper</a> is a free Firefox add-on we make that works this way. Open the page as you normally would (logged in, filters set), click its toolbar button, and it outlines the repeated data it found and shows a preview.</p>
+<ol>
+<li>Wrong block? Click <strong>Try another</strong>.</li>
+<li>Rename or remove columns in the preview.</li>
+<li>Click <strong>Copy</strong> and paste into Google Sheets, or download CSV, Excel (.xlsx) or JSON.</li>
+</ol>
+<p>It also handles <strong>Next</strong> buttons and infinite scroll. The free version reads up to 3 pages per run; <a href="/list-table-scraper/#free-and-pro">Pro</a> reads up to 500. Export is free either way, and the data stays in your browser: no account, and nothing is sent to a server.</p>
+<p>The trade-off: a copy made this way does not refresh by itself like IMPORTHTML does. Run it again when you need fresh data.</p>
+<h2>Which should I use?</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A plain table that shows up in View page source</td>
+<td>IMPORTHTML</td>
+</tr>
+<tr>
+<td>You want the sheet to update on its own</td>
+<td>IMPORTHTML (if the data is in the source)</td>
+</tr>
+<tr>
+<td>&quot;Imported content is empty&quot; or the table is built by scripts</td>
+<td>List &amp; Table Scraper</td>
+</tr>
+<tr>
+<td>The page needs a login</td>
+<td>List &amp; Table Scraper</td>
+</tr>
+<tr>
+<td>Cards, product grids, search results over several pages</td>
+<td>List &amp; Table Scraper</td>
+</tr>
+</tbody></table>
+<p>Related: <a href="/list-table-scraper/help/wikipedia-table-to-excel/">How to export a Wikipedia table to Excel, Google Sheets or CSV</a> and <a href="/list-table-scraper/help/scrape-multiple-pages-to-excel/">How to scrape multiple pages into one spreadsheet</a>.</p>
+<p><a class="cta" href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">Add to Firefox (free)</a></p><hr><h2>More guides</h2><ul><li><a href="/list-table-scraper/help/wikipedia-table-to-excel/">How to export a Wikipedia table to Excel, Google Sheets or CSV (3 free ways)</a></li><li><a href="/list-table-scraper/help/scrape-multiple-pages-to-excel/">How to scrape a list from multiple pages into Excel or CSV without code</a></li><li><a href="/list-table-scraper/help/scrape-infinite-scroll-page-to-excel/">How to scrape an infinite scroll page into Excel or CSV</a></li></ul></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
