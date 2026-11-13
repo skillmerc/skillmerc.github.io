@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Courier Guy WooCommerce plugin is being retired: what to do</title><meta name="description" content="The Courier Guy says it is moving away from its WooCommerce plugin to TCG Connect. What it has said, what happens to your current install, and how to keep live The Courier Guy rates at checkout."><link rel="canonical" href="https://skillmerc.github.io/sa-shipping-woocommerce/help/courier-guy-woocommerce-plugin-retired/"><meta property="og:title" content="The Courier Guy WooCommerce plugin is being retired: what to do"><meta property="og:description" content="The Courier Guy says it is moving away from its WooCommerce plugin to TCG Connect. What it has said, what happens to your current install, and how to keep live The Courier Guy rates at checkout."><meta property="og:url" content="https://skillmerc.github.io/sa-shipping-woocommerce/help/courier-guy-woocommerce-plugin-retired/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>The Courier Guy WooCommerce plugin is being retired: what to do</h1>
+<p>The Courier Guy has told us it is moving away from its own WooCommerce plugin and wants stores to move to a new platform called TCG Connect. No shutdown date has been given, and the old plugin still works and still gets updates. This page sets out what we know, with sources, and your options. Last checked 13 November 2026.</p>
+<h2>What The Courier Guy has said</h2>
+<p>On 3 November 2026 The Courier Guy&#39;s integrations team (<a href="mailto:connect@thecourierguy.co.za">connect@thecourierguy.co.za</a>) answered a question from us by email. They wrote that they are &quot;moving away from the older plugins&quot; and recommend &quot;migrating to TCG Connect, our new integration platform, which supports WooCommerce&quot;. They described TCG Connect as &quot;replacing the need for our existing native plugins&quot; and asked customers &quot;to begin migrating as soon as possible&quot;.</p>
+<p>That email gave no date for when the old plugin stops working or stops being updated.</p>
+<p>We found no public announcement. On 13 November 2026:</p>
+<ul>
+<li>The official plugin, <a href="https://wordpress.org/plugins/the-courier-guy/">The Courier Guy Shipping for WooCommerce</a>, is still listed on WordPress.org with 4,000+ active installs. Version 5.5.5 came out that same day.</li>
+<li>Its <a href="https://wordpress.org/support/plugin/the-courier-guy/">support forum</a> has no thread about retirement or TCG Connect.</li>
+<li>The Courier Guy&#39;s <a href="https://thecourierguy.co.za/business-courier-services">business integrations page</a> still tells WooCommerce stores to install that plugin.</li>
+</ul>
+<h2>What happens to your current install</h2>
+<p>Nothing switches off today. The official plugin keeps quoting rates for as long as The Courier Guy&#39;s API answers its requests and WordPress and WooCommerce updates do not break it. Since version 5.5.0 it calls api.portal.thecourierguy.co.za, according to its own changelog.</p>
+<p>The risk is slower: once a plugin is no longer maintained, a future WooCommerce update can break checkout and nobody fixes it. Keep an eye on its changelog, and do not leave the move until checkout is already broken.</p>
+<h2>What TCG Connect is</h2>
+<p>From The Courier Guy&#39;s setup email and public pages:</p>
+<ul>
+<li>You need a TCG Connect account. <a href="https://tcgconnect.co.za/">tcgconnect.co.za</a> shows a login page with a &quot;Request an account&quot; link.</li>
+<li>On WordPress you install a TCG Connect plugin, generate a site key in a new &quot;TCG App&quot; tab, and paste it into your TCG Connect profile. The plugin was sent to us as a download link. It is not in the WordPress.org plugin directory (we searched &quot;tcg connect&quot; and &quot;tcgconnect&quot; on 13 November 2026).</li>
+<li>You set shipping rates, your collection address and parcel sizes inside TCG Connect. A setting called &quot;Rates to be displayed at checkout&quot; controls which rates your customers see.</li>
+<li>The Courier Guy recommends testing on a staging copy of your store first.</li>
+<li>On Shopify the same service is <a href="https://apps.shopify.com/the-courier-guy-connect">The Courier Guy Connect</a> app (launched 29 October 2025), which lists label creation, collections and tracking.</li>
+</ul>
+<p>We have not tested TCG Connect ourselves, so we cannot tell you how well it works on WooCommerce.</p>
+<h2>Your options</h2>
+<ol>
+<li><strong>Stay on the official plugin for now.</strong> It works today. Plan the move before it stops getting fixes.</li>
+<li><strong>Move to TCG Connect.</strong> Email <a href="mailto:connect@thecourierguy.co.za">connect@thecourierguy.co.za</a> to ask for access, and test on a staging site first.</li>
+<li><strong>Use another plugin for checkout rates.</strong> Our free plugin is one option (below). It uses your own The Courier Guy API key, so you keep your account and your rates.</li>
+</ol>
+<h2>How our free plugin gives live The Courier Guy rates at checkout</h2>
+<p><a href="https://wordpress.org/plugins/skillmerc-shipping-courier-guy-pudo-paxi/">Skillmerc Shipping for The Courier Guy, Pudo and PAXI</a> is free on WordPress.org. For The Courier Guy it does this:</p>
+<ul>
+<li>Adds &quot;The Courier Guy (door to door)&quot; as a shipping method in your WooCommerce shipping zone.</li>
+<li>Asks The Courier Guy&#39;s API for live rates for each cart and address, using an API key you create under Settings, API keys in your The Courier Guy portal. Live keys go to api.portal.thecourierguy.co.za, the same API the official plugin uses.</li>
+<li>Shows each service level on your account (for example Economy) as its own option, or only the service codes you list.</li>
+<li>Shows a fallback flat rate if the API fails, times out or returns nothing, so customers never see &quot;no shipping method&quot;.</li>
+<li>Works on the Checkout block and the classic checkout.</li>
+<li>Also adds Pudo locker rates with a locker picker, Fastway rates and PAXI collection at PEP stores, if you use them.</li>
+</ul>
+<p>To set it up: install it, go to WooCommerce &gt; Settings &gt; Shipping, open your South Africa zone, add &quot;The Courier Guy (door to door)&quot;, choose Live, paste your API key and fill in your sender address. If you try it next to the official plugin, remove the official method from the zone so customers do not see two sets of The Courier Guy rates. Test on a staging copy first if you can.</p>
+<h2>What our free plugin does not do</h2>
+<ul>
+<li>It does not book collections, print waybills or send tracking numbers. Book shipments in your The Courier Guy portal as usual.</li>
+<li>Our paid Pro add-on books The Courier Guy shipments from the order screen, downloads the label PDF and adds the tracking reference to the customer&#39;s emails. Pudo and PAXI booking are not included in Pro yet.</li>
+<li>It is an independent plugin by Skillmerc. It is not made or supported by The Courier Guy.</li>
+<li>It depends on The Courier Guy&#39;s API. If The Courier Guy ever stops giving merchants API keys, its rates would stop too, and the fallback rate would show instead.</li>
+</ul>
+<p>We will update this page if The Courier Guy publishes dates.</p>
+<h2>Sources</h2>
+<ul>
+<li>The Courier Guy integrations team, email to Skillmerc, 3 November 2026 (quoted above).</li>
+<li>Official plugin page and changelog: <a href="https://wordpress.org/plugins/the-courier-guy/">https://wordpress.org/plugins/the-courier-guy/</a></li>
+<li>Official plugin support forum: <a href="https://wordpress.org/support/plugin/the-courier-guy/">https://wordpress.org/support/plugin/the-courier-guy/</a></li>
+<li>The Courier Guy business integrations page: <a href="https://thecourierguy.co.za/business-courier-services">https://thecourierguy.co.za/business-courier-services</a></li>
+<li>TCG Connect: <a href="https://tcgconnect.co.za/">https://tcgconnect.co.za/</a></li>
+<li>The Courier Guy Connect for Shopify: <a href="https://apps.shopify.com/the-courier-guy-connect">https://apps.shopify.com/the-courier-guy-connect</a></li>
+</ul>
+<p>More: <a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy not showing at checkout</a> and <a href="/sa-shipping-woocommerce/help/courier-guy-rates-wrong/">The Courier Guy rates look wrong</a>.</p>
+<hr><h2>More South African shipping guides for WooCommerce</h2><ul><li><a href="/sa-shipping-woocommerce/help/paxi-woocommerce/">PAXI on WooCommerce: how to let customers pick a PAXI point at checkout</a></li><li><a href="/sa-shipping-woocommerce/help/pudo-woocommerce/">Pudo locker shipping in WooCommerce: live rates and a locker picker</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-no-shipping-method/">The Courier Guy not showing at WooCommerce checkout: causes and fixes</a></li><li><a href="/sa-shipping-woocommerce/help/fastway-woocommerce/">Fastway rates in WooCommerce: how to show live Fastway Couriers prices at checkout</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-rates-wrong/">The Courier Guy rates wrong in WooCommerce: why the price is too high or too low</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-waybill-woocommerce/">Print a The Courier Guy waybill from WooCommerce: three ways and the common problems</a></li><li><a href="/sa-shipping-woocommerce/help/pudo-locker-not-showing/">Pudo locker option not showing at WooCommerce checkout: causes and fixes</a></li><li><a href="/sa-shipping-woocommerce/help/courier-guy-tracking-number-woocommerce-emails/">Add The Courier Guy tracking number to WooCommerce order emails</a></li></ul><div class="card"><h2>Pro: book The Courier Guy from your orders</h2><ul><li>Book a The Courier Guy shipment from the WooCommerce order screen</li><li>Download the label PDF</li><li>Tracking reference in the customer's completed order email and My Account</li><li>Book up to 50 orders at once from the orders list</li><li>Courier status column on the orders list</li></ul><p>Pudo and PAXI booking are not included yet. USD 49 a year for one site, 14-day money-back guarantee.</p><p><a class="cta" href="https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/">Get Pro</a></p></div></main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
