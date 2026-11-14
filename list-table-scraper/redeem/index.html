@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redeem a deal code for List &amp; Table Scraper Pro</title><meta name="description" content="Turn a one-time deal code into a lifetime List &amp; Table Scraper Pro license key. No card needed. Steps to redeem and activate the key in the add-on."><link rel="canonical" href="https://skillmerc.com/list-table-scraper/redeem/"><meta property="og:title" content="Redeem a deal code for List &amp; Table Scraper Pro"><meta property="og:description" content="Turn a one-time deal code into a lifetime List &amp; Table Scraper Pro license key. No card needed. Steps to redeem and activate the key in the add-on."><meta property="og:url" content="https://skillmerc.com/list-table-scraper/redeem/"><style>body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;color:#1a1f2b;background:#fafafa}header,footer{background:#0b1f3a;color:#fff;padding:14px 20px}header a,footer a{color:#fff;text-decoration:none;font-weight:600}main{max-width:860px;margin:0 auto;padding:24px 20px 48px;background:#fff}h1{font-size:1.9em;line-height:1.25}a{color:#0b5fd1}.cta{display:inline-block;background:#19c37d;color:#fff!important;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:600;margin:6px 8px 6px 0}.cta.alt{background:#0b1f3a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{border:1px solid #e3e6ec;border-radius:8px;padding:14px;background:#fff}.card h3{margin:.2em 0 .4em;font-size:1.05em}.card p{margin:0;font-size:.92em;color:#444}.price{color:#0b1f3a;font-weight:600;font-size:.9em}pre{background:#f3f4f7;padding:12px;overflow:auto;border-radius:6px;font-size:.85em}code{font-size:.9em}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:4px 8px}img.icon{width:56px;height:56px;border-radius:10px;float:right;margin-left:12px}</style></head><body><header><a href="/">SKILLMERC tools</a></header><main><h1>Redeem a deal code for List &amp; Table Scraper Pro</h1>
+<p>If you bought <strong>List &amp; Table Scraper Pro</strong> through a deal marketplace, you received a one-time code. This page turns that code into a lifetime Pro license key. The total is USD 0.00 and you are not asked for a card.</p>
+<form id="redeem" style="border:1px solid #e3e6ec;border-radius:8px;padding:16px;max-width:460px">
+<p><label>First name<br><input name="first" required autocomplete="given-name" style="width:100%;padding:8px;font:inherit;box-sizing:border-box"></label></p>
+<p><label>Last name<br><input name="last" required autocomplete="family-name" style="width:100%;padding:8px;font:inherit;box-sizing:border-box"></label></p>
+<p><label>Email (your license key is sent here)<br><input name="email" type="email" required autocomplete="email" style="width:100%;padding:8px;font:inherit;box-sizing:border-box"></label></p>
+<p><label>Deal code<br><input name="code" required autocomplete="off" spellcheck="false" style="width:100%;padding:8px;font:inherit;box-sizing:border-box;text-transform:uppercase"></label></p>
+<p><button type="submit" class="cta" style="border:0;cursor:pointer;font:inherit;font-weight:600">Redeem code</button></p>
+<p id="redeem-msg" style="font-size:.92em;color:#444">The next screen is the checkout of Freemius, our licensing provider. It shows the Pro lifetime plan with your code applied (100% off) and a button "Upgrade for Free". The phone field there is optional, leave it empty.</p>
+</form>
+<noscript><p>Without JavaScript: open the <a href="https://checkout.freemius.com/app/43817/plan/77163/licenses/1/?billing_cycle=lifetime">Pro lifetime checkout</a>, click "Have a promotional code?" and enter your code. The total drops to USD 0.00.</p></noscript>
+<h2>Steps</h2>
+<ol>
+<li>Install the add-on: <a href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">List &amp; Table Scraper for Firefox</a>. It is on Firefox today.</li>
+<li>Fill in your name, email and deal code above and click "Redeem code".</li>
+<li>On the Freemius screen, check that the total is USD 0.00 and click "Upgrade for Free". Freemius emails your license key to the address you entered.</li>
+<li>Open the add-on's "Pro license" page (the add-on's options, or the "I have a key" link in the panel), paste the key and click "Activate". The plan changes to Pro.</li>
+</ol>
+<h2>Good to know</h2>
+<ul>
+<li>There is no account or password. Your license key is your access, so keep the email.</li>
+<li>One code gives one lifetime Pro license for one browser. To move it, click "Deactivate on this browser" first, then activate on the other browser.</li>
+<li>Pro reads up to 500 pages per run and saves a recipe per website. The free version reads up to 3 pages per run. Exports to CSV, Excel and JSON are free either way.</li>
+<li>Each code works once. Codes stay valid for at least 60 days after you buy.</li>
+<li>Refunds are handled by the marketplace where you bought the code. When a code is refunded, its license is cancelled.</li>
+<li>Stuck? Email <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a> with your code and we will sort it out.</li>
+</ul>
+<p><a href="/list-table-scraper/">About List &amp; Table Scraper</a> · <a href="/privacy/list-table-scraper/">Privacy policy</a></p>
+<script>
+(function(){
+  var f=document.getElementById('redeem'), m=document.getElementById('redeem-msg');
+  var q=new URLSearchParams(location.search); if(q.get('code')) f.code.value=q.get('code');
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var code=f.code.value.trim().toUpperCase().replace(/\s+/g,'');
+    if(!/^[A-Z0-9_-]{6,40}$/.test(code)){ m.textContent='That does not look like a deal code. Codes are letters and numbers only. Check the code from your purchase and try again.'; m.style.color='#b00020'; return; }
+    var p=new URLSearchParams({billing_cycle:'lifetime',coupon:code,hide_coupon:'true',user_email:f.email.value.trim(),user_firstname:f.first.value.trim(),user_lastname:f.last.value.trim()});
+    location.href='https://checkout.freemius.com/app/43817/plan/77163/licenses/1/?'+p.toString();
+  });
+})();
+</script>
+</main><footer>SKILLMERC (Pty) Ltd, South Africa. Contact: <a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></footer></body></html>
