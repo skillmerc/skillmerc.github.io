@@ -230,7 +230,7 @@ void main(){
     if (aspect < .9) return { x: 0, y: side === 'center' ? .46 : .5, z: side === 'center' ? .46 : .5, d: side === 'center' ? .9 : .6 };
     if (side === 'left') return { x: -aspect * .44, y: 0, z: 1.0, d: 1 };
     if (side === 'center') return { x: 0, y: .5, z: .5, d: 1 };
-    return { x: aspect * .47, y: .02, z: 1.0, d: 1 };
+    return { x: aspect * .5, y: .02, z: .97, d: 1 };
   };
 
   // ---------- render ----------

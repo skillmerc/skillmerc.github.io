@@ -124,6 +124,7 @@ body.home{background:radial-gradient(60% 50% at 72% 30%,rgba(240,67,28,.07),tran
 .stage .cta-row{margin-top:8px}
 .stage[data-side=center] .cta-row{justify-content:center}
 @media (max-width:900px){
+  .panel{margin:0;border-radius:26px;border-inline:0}
   .stage{min-height:auto;padding:52vh 0 70px;align-items:flex-end}
   .stage[data-side=left] .stage-in,.stage-in{margin:0;max-width:none}
   .stage[data-side=center]{padding-top:50vh;min-height:auto}
