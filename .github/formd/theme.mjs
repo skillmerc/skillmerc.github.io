@@ -86,7 +86,7 @@ const PRODUCTS = [
     desc: 'Your options for getting Shopify sales into Sage Accounting today, and what Ledgerline for Sage UK will do.' },
   { cat: 'browser', icon: 'window', tag: 'Free + Pro', cin: true, title: 'List & Table Scraper', href: '/list-table-scraper/', foot: 'Firefox add-on',
     desc: 'Finds the tables, lists and product grids on any page and exports them to CSV, Excel or JSON. Follows Next buttons and infinite scroll.' },
-  { cat: 'browser', icon: 'doc', tag: 'In testing', soon: true, title: 'Threadkeep: chat exporter for DeepSeek', href: '/threadkeep/', foot: 'Browser extension · not released yet',
+  { cat: 'browser', icon: 'doc', tag: 'In review', soon: true, title: 'Threadkeep: chat exporter for DeepSeek', href: '/threadkeep/', foot: 'Browser extension · Firefox in review, Chrome soon',
     desc: 'Saves the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Everything stays in your browser. Not affiliated with DeepSeek.' },
   { cat: 'browser', icon: 'play', tag: 'Free + Pro', title: 'Transcript Pull for YouTube', href: AMO('transcript-pull-for-youtube'), ext: true, foot: 'Firefox add-on',
     desc: 'Get the transcript of any YouTube video: read, search, copy, or download it as a TXT file. Pro adds SRT, VTT, Markdown, JSON and playlist ZIP export.' },
