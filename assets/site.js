@@ -25,8 +25,11 @@
   // reveal on scroll
   const rv = d.querySelectorAll('[data-rv],[data-wipe]');
   if ('IntersectionObserver' in window && !reduce) {
-    const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px', threshold: .05 });
-    rv.forEach(el => io.observe(el));
+    // clip-path hides [data-wipe] from the observer, so watch its parent instead
+    const map = new Map();
+    const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { (map.get(e.target) || []).forEach(el => el.classList.add('in')); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+    rv.forEach(el => { const t = el.hasAttribute('data-wipe') ? el.parentElement : el; if (!map.has(t)) map.set(t, []); map.get(t).push(el); io.observe(t); });
+    setTimeout(() => rv.forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) el.classList.add('in'); }), 1800);
   } else rv.forEach(el => el.classList.add('in'));
 
   // table of contents on long documents
