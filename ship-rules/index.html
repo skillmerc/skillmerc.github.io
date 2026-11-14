@@ -5,6 +5,16 @@
 
 <p>Ship rules say what must be true before a Jira work item ships: tests linked, reviewed by a person, rollback noted, security review for sign-in changes. You set them per project, by work type, label and component.</p>
 <p>People attach evidence on the work item. Coding agents read the same rules and attach evidence through five tools on the Atlassian MCP server. Rules you mark "a person must confirm" stay open until a person confirms them in Jira, whatever an agent attaches.</p>
+<h2>Getting started</h2>
+<ol>
+<li>Install the app on your Jira site.</li>
+<li>Open a project, then Project settings, Apps, Ship rules. A project admin adds rules or loads the sample rules. Each rule says what must be true, who can satisfy it (a person or an agent, or a person only), the evidence it needs (a link, a note, or either), and which work types, labels and components it applies to.</li>
+<li>Open any work item in that project. The Ship rules panel shows each rule, its evidence and whether the item is ready to ship. Attach evidence, confirm a rule, or waive it with a reason.</li>
+<li>The project's Ship readiness page lists the open work items that are not ready, by item or by rule. In JQL you can search, for example, <code>shipReady = "no" AND shipMissing = "tests-linked"</code>.</li>
+<li>Optional: when a work item moves to Done with rules still open, the app adds a comment that lists them. A project admin can turn this off.</li>
+</ol>
+<h2>Licence</h2>
+<p>On the Atlassian Marketplace the app is paid through Atlassian, with Atlassian's free trial. If the licence for a site is not active, rules, readiness and evidence stay readable, but nothing can be added or changed until the licence is active again.</p>
 <h2>For coding agents</h2>
 <p>The open-source skill file and an AGENTS.md snippet are at <a href="https://github.com/skillmerc/ship-rules-skill">github.com/skillmerc/ship-rules-skill</a>.</p>
 <table><tr><th>Tool</th><th>What it does</th></tr>
