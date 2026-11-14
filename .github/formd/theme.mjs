@@ -67,7 +67,7 @@ const HUBS = {
   'shopify-freeagent': ['Ledgerline', 'accounting', true], 'shopify-sage-accounting': ['Shopify to Sage Accounting', 'accounting', true],
   'list-table-scraper': ['List & Table Scraper', 'browser', true], threadkeep: ['Threadkeep', 'browser', true], privacy: ['Privacy', 'browser', false],
   apify: ['Data actors', 'data', false], 'form-d': ['Form D filings', 'data', true],
-  'decision-log-confluence': ['Decision Keeper for Confluence', 'more', true], closewell: ['Closewell', 'more', false], 'ship-rules': ['Ship Rules', 'more', true],
+  'decision-log-confluence': ['Decision Keeper for Confluence', 'more', true], closewell: ['Closewell', 'more', false], 'ship-rules': ['Ship Rules', 'more', true], riskwell: ['Riskwell', 'more', true],
 };
 const PRODUCTS = [
   { cat: 'commerce', icon: 'payfast', tag: 'Free', title: 'PayFast gateway for WooCommerce', href: '/payfast-woocommerce/', foot: 'WordPress plugin · South Africa',
