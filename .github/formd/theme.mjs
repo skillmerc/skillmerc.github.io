@@ -136,11 +136,11 @@ const PLIST = ({ nData, minPrice }) => [
     ['103', 'Put every paid order into Sage, with the VAT right', 'WooCommerce to Sage Accounting', '<b>Free</b>', 'live', 'Live', '/sage-accounting-woocommerce/'],
     ['104', 'Put every paid order into FreeAgent, marked paid', 'WooCommerce to FreeAgent', '<b>Free</b>', 'live', 'Live', '/freeagent-woocommerce/']]],
   ['Shopify', '1 app', [
-    ['201', 'Send paid Shopify orders to FreeAgent as invoices', 'Ledgerline', 'Planned: from USD 9 a month, 14-day trial', 'review', 'In review at Shopify', '/shopify-freeagent/']]],
+    ['201', 'Send paid Shopify orders to FreeAgent as invoices', 'Ledgerline', 'From USD 9 a month, planned', 'review', 'In review at Shopify', '/shopify-freeagent/']]],
   ['Jira and Confluence', '3 apps', [
-    ['301', 'Keep a risk register and heat map in each Jira project', 'Riskwell', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/riskwell/'],
-    ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
-    ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/ship-rules/']]],
+    ['301', 'Keep a risk register and heat map in each Jira project', 'Riskwell', 'Not on sale yet', 'review', 'In review at Atlassian', '/riskwell/'],
+    ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'Not on sale yet', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
+    ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Your browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
     ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep', 'Free plan and Pro at launch', 'review', 'In review at Firefox', '/threadkeep/']]],
@@ -197,6 +197,40 @@ const tidy = (html, isHub) => { let h = html.replace(/https:\/\/skillmerc\.githu
   h = h.replace(/<a href="(https?:\/\/[^"]+)">\1<\/a>/g, (m, u) => `<a href="${u}"${/skillmerc\.com/.test(u) ? '' : ' rel="noopener"'}>${linkLabel(u)}</a>`);
   return autolink(h); };
 
+// Product pages: each h2 section folds shut so the page reads as a short list. The first one, and any with a form or a video, start open.
+// Questions under an FAQ heading fold one by one. Nothing is removed: closed sections stay in the page for search engines and find-in-page.
+const qa = (body) => body.split(/(?=<h3[\s>])/).map(q => { const m = q.match(/^<h3[^>]*>([\s\S]*?)<\/h3>/); return m ? `<details class="qa"><summary>${m[1]}</summary><div>${q.slice(m[0].length)}</div></details>` : q; }).join('');
+// topNodes: the top-level pieces of a block of HTML (elements whole, text between them), so a section is never cut through a wrapper.
+const VOID = new Set(['br', 'img', 'hr', 'input', 'meta', 'link', 'source', 'col', 'wbr', 'area', 'base', 'embed', 'track']);
+const topNodes = (html) => { const out = []; const re = /<!--[\s\S]*?-->|<(script|style)\b[\s\S]*?<\/\1>|<(\/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*?(\/?)>/g; let depth = 0, start = 0, last = 0, m;
+  while ((m = re.exec(html))) { const whole = m[1] || !m[3]; const tag = (m[3] || '').toLowerCase();
+    if (depth === 0) { if (m.index > last && html.slice(last, m.index).trim()) out.push({ html: html.slice(last, m.index) }); if (whole || VOID.has(tag) || m[4]) { out.push({ html: m[0] }); last = re.lastIndex; continue; } if (m[2]) { last = re.lastIndex; continue; } start = m.index; depth = 1; out.push({ tag, open: m[0], from: start }); continue; }
+    if (whole || VOID.has(tag) || m[4]) continue; if (m[2]) { depth--; if (depth === 0) { const n = out[out.length - 1]; n.html = html.slice(n.from, re.lastIndex); n.inner = html.slice(n.from + n.open.length, m.index); last = re.lastIndex; } } else depth++; }
+  if (depth !== 0) return null; if (last < html.length && html.slice(last).trim()) out.push({ html: html.slice(last) }); return out; };
+const fold = (html) => { const nodes = topNodes(html); if (!nodes) return html; const secs = []; let cur = null;
+  for (const n of nodes) {
+    if (!n.tag && /^<hr\b/i.test(n.html)) { cur = null; continue; } // a rule ends the section above it
+    if (n.tag === 'h2') { cur = { attrs: n.open.slice(3, -1), title: n.inner, body: '' }; secs.push(cur); continue; }
+    const card = n.tag === 'div' && /class="card"/.test(n.open) && n.inner.match(/^\s*<h2([^>]*)>([\s\S]*?)<\/h2>/);
+    if (card) { secs.push({ id: (n.open.match(/\sid="([^"]+)"/) || [])[1], attrs: card[1], title: card[2], body: n.inner.slice(card[0].length) }); cur = null; continue; } // a card's id moves to its fold, so links to it still land
+    if (cur) cur.body += n.html; else secs.push({ raw: n.html, tag: n.tag, inner: n.inner }); }
+  // Loose text outside any h2 (a plugin's long description) becomes sections too: one per h3 or bold one-line heading.
+  // Its lead stays as the page's opening text when it comes first, and becomes "How it works" when it comes later.
+  const isHead = (r) => r.tag === 'h3' || (r.tag === 'p' && /^\s*<(strong|b)>[^<]{2,80}<\/\1>\s*$/.test(r.inner || ''));
+  const out = []; let seen = false, run = [];
+  const flush = () => { const items = run; const after = seen; run = []; if (!items.length) return; const g = []; const lead = []; let c = null;
+    for (const r of items) { if (isHead(r)) { c = { attrs: '', title: r.inner.replace(/<\/?(strong|b)>/g, '').trim(), body: '' }; g.push(c); } else if (c) c.body += r.raw; else lead.push(r); }
+    const text = lead.map(r => r.raw).join(''); if (after && strip(lead.filter(r => !/^<(script|style)\b/i.test(r.raw)).map(r => r.raw).join('')).length >= 500) out.push({ attrs: '', title: 'How it works', body: text }); else out.push(...lead);
+    out.push(...g); if (g.length) seen = true; };
+  for (const x of secs) { if (x.raw) run.push(x); else { flush(); out.push(x); seen = true; } } flush();
+  if (out.filter(x => !x.raw).length < 3) return html;
+  const real = out.filter(x => !x.raw); const leadSec = real.find(x => /^(how it works|what it does)$/i.test(strip(x.title).trim())) || real.find(x => !/^guides$/i.test(strip(x.title).trim())) || real[0];
+  return out.map(x => { if (x.raw) return x.raw; const title = strip(x.title); let body = x.body; if (/frequently asked|^faq/i.test(title)) body = qa(body);
+    // open at the start: how it works (or the first real section), anything with a form or a video, and everything a buyer or a store reviewer must see without a click: limits, prices, licence, privacy, data, permissions, outside services
+    const lead = x === leadSec;
+    const open = lead || /<form[\s>]|<iframe[\s>]|class="yt"|id="(demo|notify)"/.test(body) || /does not do|limits|not affiliated|pricing|free and pro|free tier|licen[cs]e|privacy|stays on your device|^data$|permissions|external services?/i.test(title);
+    return `<details class="fold"${x.id ? ` id="${x.id}"` : ''}${open ? ' open' : ''}><summary><h2${x.attrs}>${x.title}</h2></summary><div class="fold-b">${body}</div></details>`; }).join(''); };
+
 // ---------- content page shell ----------
 function docPage(rel, title, desc, body) {
   const url = BASE + '/' + rel.replace(/index\.html$/, '');
@@ -208,6 +242,7 @@ function docPage(rel, title, desc, body) {
   if (m) { h1 = m[1]; rest = rest.replace(m[0], ''); } else h1 = esc(title);
   if (segs[0] === 'list-table-scraper' && segs.length === 1) rest = rest.replace('<div style="position:relative;padding-bottom:56.25%', '<div id="demo" style="position:relative;padding-bottom:56.25%');
   rest = tidy(rest, isHub);
+  if (isHub) rest = fold(rest);
   registry.push({ rel, segs, h1: strip(h1), url: '/' + rel.replace(/index\.html$/, '') });
   const crumbs = [['Home', '/']];
   if (hub.cat !== 'more') crumbs.push([cat.label, cat.a]);
@@ -233,7 +268,7 @@ function docPage(rel, title, desc, body) {
   const promo = offer ? `<a class="promo" href="${offer[2]}"${ext ? ' rel="noopener"' : ''}><span class="ph">${isHub ? 'This tool' : 'The tool for this job'}</span><span class="pb"><b>${esc(hub.name)}</b><p>${esc(isHub ? (hub.promo ? hub.promo[0] : hub.say) : offer[0])}</p></span><span class="go">${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
   const dock = offer ? `<a class="dock" href="${offer[2]}"${ext ? ' rel="noopener"' : ''} data-dock><b>${esc(hub.name)}</b><span>${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
   const shots = isHub ? (SHOTS[segs[0]] || []) : [];
-  const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="shots-head"><h2 class="hx">See it working.</h2><span class="typed">${shots.length} real screenshots</span></div><div class="shot-grid">${shots.map((s, i) => `<figure class="shot${i === 0 ? ' lead' : ''}"><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async">${s.cap ? `<figcaption><b>${String(i + 1).padStart(2, '0')}</b>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
+  const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="shots-head"><h2 class="hx">See it working.</h2><span class="typed">${shots.length} real screenshots. Click one to enlarge.</span></div><div class="strip">${shots.map((s, i) => `<figure class="shot"><a href="${shotSrc(s)}" data-zoom aria-label="Enlarge screenshot ${i + 1}${s.cap ? ': ' + esc(s.cap) : ''}"><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async"></a>${s.cap ? `<figcaption><b>${String(i + 1).padStart(2, '0')}</b>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
   const pick = CARDS.filter(c => c.k !== segs[0]).slice(0, 3);
   const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
   return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
@@ -243,7 +278,9 @@ function docPage(rel, title, desc, body) {
 const money = n => n == null ? '' : n >= 1e9 ? '$' + (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? '$' + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + n;
 const longDate = day => new Date(day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const shortDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Africa/Johannesburg' });
-const exhibit = ({ id, n, label, plat, h2, tale, say, fx, ctas, also = '', doc, flip = false }) => `<section class="exhibit${flip ? ' flip' : ''}" id="${id}">${doc}<div class="ex-tx"><p class="kick lbl" data-rv><b>${n}</b><span>${label}</span><span>${plat}</span></p><h2 class="hx" data-rv style="--d:1">${h2}</h2><p class="tale" data-rv style="--d:2">${tale}</p><p class="say" data-rv style="--d:3">${say}</p><div data-rv style="--d:4">${facts(fx)}</div><div class="row-ctas" data-rv style="--d:5">${ctas.map((c, k) => k ? `<a class="tlink" href="${c[1]}"${c[3] ? ` aria-label="${esc(c[3])}"` : ''}>${esc(c[0])} ${ARROW}</a>` : btn(c, '')).join('')}</div>${also ? `<p class="also" data-rv style="--d:6">${also}</p>` : ''}</div></section>`;
+const jtab = (j, on) => `<button type="button" role="tab" id="jt-${j.id}" aria-controls="${j.id}" aria-selected="${on}"${on ? '' : ' tabindex="-1"'}><b>${j.n}</b>${j.label}</button>`;
+// One job: an orb with its small screen, the story in two short paragraphs, the facts and the way in. Only one shows at a time.
+const job = ({ id, n, label, plat, h2, tale, say, fx, ctas, also = '', doc, on = false, extra = '' }) => `<section class="exhibit jpanel${on ? ' on' : ''}" id="${id}" role="tabpanel" aria-labelledby="jt-${id}">${doc}<div class="ex-tx"><p class="kick lbl"><b>${n}</b><span>${label}</span><span>${plat}</span></p><h3 class="hx">${h2}</h3><p class="tale">${tale}</p><p class="say">${say}</p>${facts(fx)}<div class="row-ctas">${ctas.map((c, k) => k ? `<a class="tlink" href="${c[1]}"${c[3] ? ` aria-label="${esc(c[3])}"` : ''}>${esc(c[0])} ${ARROW}</a>` : btn(c, '')).join('')}</div>${also ? `<p class="also">${also}</p>` : ''}</div>${extra}</section>`;
 
 const PICK = {
   q: 'Where do you sell?', a: [
@@ -268,7 +305,7 @@ const PICKS = {
 };
 // In the in-tray: built and tested, waiting on a store's review. Update as reviews land.
 const LAB = [
-  ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT.', 'In review', 'Shopify'],
+  ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT. From USD 9 a month, planned.', 'In review', 'Shopify'],
   ['/threadkeep/', 'Threadkeep', 'Save a DeepSeek chat as PDF, Markdown or Word.', 'In review', 'Firefox'],
   ['/riskwell/', 'Riskwell', 'A risk register and risk matrix inside Jira.', 'In review', 'Atlassian'],
   ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
@@ -302,72 +339,74 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   const plist = PLIST({ nData: actors.length, minPrice });
   const allRows = plist.flatMap(g => g[2]); const nLive = allRows.filter(r => r[4] === 'live').length; const nReview = allRows.filter(r => r[4] === 'review').length; const nFree = allRows.filter(r => /<b>Free/.test(r[3])).length;
 
+  const JOBS = [
+    { id: 'shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
+  tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
+  say: 'Live The Courier Guy and Fastway rates, a Pudo locker picker and a PAXI point picker. Pro books The Courier Guy and downloads the label PDF from the order.',
+  fx: ['Free plugin', '*Pro USD 49 a year', 'South Africa'], ctas: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up', 'Get the shipping plugin free on WordPress.org'], ['How it works', '/sa-shipping-woocommerce/', '', 'How the shipping plugin works']], doc: orbFig('label') },
+    { id: 'payments', n: '02', label: 'Payments', plat: 'WooCommerce', h2: 'Get paid. The order updates itself.',
+  tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself.',
+  say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
+  fx: ['Free', 'PayFast', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') },
+    { id: 'books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
+  tale: 'Month end. Orders in one window, your accounts in the other, and an afternoon of typing between them. These plugins do the typing the moment an order is paid.',
+  say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
+  fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
+  also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', doc: orbFig('inv') },
+    { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox', h2: 'Any web table. Into Excel.',
+  tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
+  say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Nothing leaves your browser.',
+  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
+    { id: 'data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, by the row.',
+  tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
+  say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
+  fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
+  doc: orbFig('card', dataOpts) },
+  ];
+  JOBS[JOBS.length - 1].extra = `<div class="jx">${formd}${dlist}</div>`.replace(/ data-rv/g, '');
   return `<section class="hero"><canvas id="ribbon" aria-hidden="true"></canvas><div class="ribbon-fb" aria-hidden="true"></div>
 <div class="orbs" data-orbs><span class="orb wire" style="--s:clamp(120px,13vw,200px);--x:90%;--y:38%;--z:1;--k:.4;--i:0;--ms:26vw;--mx:74%;--my:62%">${WIRE}</span>${O.map(([k, s, x, y, z, dep, href, name, ms, mx, my, opts], i) => orb(k, { tag: 'a', opts, attrs: ` href="${href}" aria-label="${esc(name)}" style="--s:${s};--x:${x}%;--y:${y}%;--z:${z};--k:${dep};--i:${i + 1};--bt:${8 + i * 1.3}s;--bd:-${i * 2}s;--ms:${ms};--mx:${mx}%;--my:${my}%"` })).join('')}</div>
 <div class="wrap">
 <p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
 <h1><span class="ln">The boring parts,</span> <span class="ln dim">handled.</span></h1>
 <p class="lede">Quoting couriers. Chasing payments. Retyping invoices. Copying tables. <b>One small tool per job.</b></p>
-<div class="row-ctas">${btn(['See the price list', '#kit', 'dn'], '')}<a class="tlink" href="#pick">Find my tool ${ARROW}</a></div>
+<div class="row-ctas">${btn(['See the tools', '#jobs', 'dn'], '')}<a class="tlink" href="#pick">Find my tool ${ARROW}</a></div>
 </div>
 <div class="wrap"><div class="runs"><span>Built for</span><a href="#kit">WooCommerce</a><a href="/shopify-freeagent/">Shopify</a><a href="/riskwell/">Jira</a><a href="/decision-log-confluence/">Confluence</a><a href="/list-table-scraper/">Firefox</a><a href="#data">Apify</a></div></div>
 </section>
 
-<section class="sec" id="kit"><div class="wrap">${secRule('02', 'Price list', 'Prices in US dollars')}
-<div class="sec-head"><h2 class="hx">The price list.</h2><p>Every tool, its job and what it costs.</p></div>
-<div class="plist">${plist.map(([g, sub, rows]) => `<div class="pgroup"><h3>${esc(g)}<small>${esc(sub)}</small></h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="no">${no}</span><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="stc"><span class="st ${st}">${esc(stl)}</span></span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
+<section class="sec" id="jobs"><div class="wrap">${secRule('02', 'What they do', 'Example figures')}
+<div class="sec-head"><h2 class="hx">Five jobs, off your desk.</h2><p>Pick one.</p></div>
+<div class="jobs" data-jobs><div class="jtabs" role="tablist" aria-label="The five jobs">${JOBS.map((j, i) => jtab(j, i === 0)).join('')}</div>
+${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
+</div>
+<noscript><style>.jtabs{display:none}.jpanel{display:grid!important;margin-top:30px;padding-top:30px;border-top:1px solid var(--line)}</style></noscript>
+</div></section>
+
+<section class="sec" id="kit"><div class="wrap">${secRule('03', 'Price list', 'Prices in US dollars')}
+<div class="sec-head"><h2 class="hx">The price list.</h2><p>${nLive} tools you can have today.</p></div>
+<div class="plist">${plist.map(([g, sub, rows]) => [g, sub, rows.filter(r => r[4] === 'live'), rows.length]).filter(([, , rows]) => rows.length).map(([g, sub, rows, all]) => `<div class="pgroup"><h3>${esc(g)}${rows.length === all ? `<small>${esc(sub)}</small>` : ''}</h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="no">${no}</span><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="stc"><span class="st ${st}">${esc(stl)}</span></span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
 
 <div class="pick" id="pick"><div><h2 class="hx">Not sure which? <span class="dim">Three clicks at most.</span></h2><p class="say">Answer two or three questions and get the one tool that fits.</p></div>
 <div class="pform" data-pick><div class="ph"><span>Find my tool</span><button class="back" type="button" hidden>Back</button></div><div class="pb"><div class="pq"><span class="lbl step" style="color:var(--mute)">Question 1</span><b class="ptitle" style="margin-top:8px">Where do you sell?</b><div class="opts2"></div></div><div class="pres" hidden><div><span class="lbl">Your tool</span><b class="pn"></b><p></p><div class="row-ctas"><a class="btn" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="again" type="button">Start over</button></div></div></div></div></div>
 <script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { n: v[0], p: v[1], c: v[2], h: v[3], m: v[4] }])) }).replace(/</g, '\\u003c')}</script></div>
 </div></section>
 
-<section class="sec"><div class="wrap">${secRule('03', 'How they work', 'Example figures')}
-<div class="sec-head"><h2 class="hx">Five jobs, off your desk.</h2><p>What each looks like once it is handled.</p></div>
-<div class="exhibits">
-${exhibit({ id: 'shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
-  tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
-  say: 'Live The Courier Guy and Fastway rates, a Pudo locker picker and a PAXI point picker. Pro books The Courier Guy and downloads the label PDF from the order.',
-  fx: ['Free plugin', '*Pro USD 49 a year', 'South Africa'], ctas: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up', 'Get the shipping plugin free on WordPress.org'], ['How it works', '/sa-shipping-woocommerce/', '', 'How the shipping plugin works']], doc: orbFig('label') })}
-${exhibit({ id: 'payments', n: '02', label: 'Payments', plat: 'WooCommerce', flip: true, h2: 'Get paid. The order updates itself.',
-  tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself.',
-  say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
-  fx: ['Free', 'PayFast', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') })}
-${exhibit({ id: 'books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
-  tale: 'Month end. Orders in one window, your accounts in the other, and an afternoon of typing between them. These plugins do the typing the moment an order is paid.',
-  say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
-  fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
-  also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', doc: orbFig('inv') })}
-${exhibit({ id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox', flip: true, h2: 'Any web table. Into Excel.',
-  tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
-  say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Nothing leaves your browser.',
-  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') })}
-${exhibit({ id: 'data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, by the row.',
-  tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
-  say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
-  fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
-  doc: orbFig('card', dataOpts) })}
-</div>
-${formd}
-${dlist}
-</div></section>
-
-<section class="sec" id="lab"><div class="wrap">${secRule('04', 'In review', 'Waiting on store review')}
-<div class="sec-head"><h2 class="hx">Next up.</h2><p>Built and tested.</p></div>
-<div class="tray">${LAB.map(([h, n, p, s, who], i) => `<a href="${h}" data-rv style="--d:${i}"><b>${esc(n)}</b><p>${esc(p)}</p><span class="st review">${esc(s)} &middot; ${esc(who)}</span></a>`).join('')}</div>
-</div></section>
-
-<section class="sec" id="guides"><div class="wrap">${secRule('05', 'The manual', `${guides.length} guides`)}
-<div class="sec-head"><h2 class="hx">Stuck? Read the fix.</h2><p>Short guides for the errors shops actually hit.</p></div>
-<ul class="toc-list">${glinks.map((g, i) => `<li><a href="${g.url}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${esc(g.h1)}</span><span class="dl"></span><span class="g">${esc(groupName(g.segs[0]))}</span></a></li>`).join('')}</ul>
-<div class="row-ctas" style="margin-top:30px"><a class="tlink" href="/guides/">All ${guides.length} guides ${ARROW}</a></div>
-</div></section>
+<section class="sec" id="lab"><div class="wrap"><div class="duo">
+<div>${secRule('04', 'In review', 'Waiting on store review')}
+<h2 class="hx duo-h">Next up. <span class="dim">Built and tested.</span></h2>
+<ul class="mini">${LAB.map(([h, n, p, , who]) => `<li><a href="${h}"><b>${esc(n)}</b><span class="t">${esc(p)}</span><span class="w">${esc(who)}</span></a></li>`).join('')}</ul></div>
+<div id="guides">${secRule('05', 'The manual', `${guides.length} guides`)}
+<h2 class="hx duo-h">Stuck? <span class="dim">Read the fix.</span></h2>
+<ul class="mini">${glinks.map(g => `<li><a href="${g.url}"><span class="t1">${esc(g.h1)}</span>${ARROW}</a></li>`).join('')}</ul>
+<div class="row-ctas"><a class="tlink" href="/guides/">All ${guides.length} guides ${ARROW}</a></div></div>
+</div></div></section>
 
 <section class="contact" id="contact"><div class="wrap">${secRule('06', 'Contact')}
-<h2 class="hx">Got a boring job? <span class="dim">Hand it over.</span></h2>
+<div class="ct-grid"><div><h2 class="hx">Got a boring job? <span class="dim">Hand it over.</span></h2>
 <p><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
-<p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p>
-<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Apify, Freemius</p></div></div>
+<p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p></div>
+<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Apify, Freemius</p></div></div></div>
 </div></section>`;
 }
 
