@@ -1,13 +1,15 @@
-/* SKILLMERC site behaviour. No dependencies. */
+/* SKILLMERC site behaviour (theme v8). No dependencies. Everything here is an extra:
+   the pages read and work with this file missing. */
 (() => {
   const d = document;
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg>';
 
   // nav
   const nav = d.querySelector('.nav');
   if (nav) {
-    const onScroll = () => nav.classList.toggle('stuck', scrollY > 24);
+    const onScroll = () => nav.classList.toggle('stuck', scrollY > 8);
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
     const burger = nav.querySelector('.burger');
     if (burger) {
@@ -18,19 +20,79 @@
     }
   }
 
-  // local time in Pretoria
+  // the time where the work is done
   const clk = d.querySelector('[data-clock]');
-  if (clk) { const f = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Johannesburg' }); const tick = () => { clk.textContent = 'Pretoria ' + f.format(new Date()); }; tick(); setInterval(tick, 20000); }
+  if (clk) { const f = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Johannesburg' }); const tick = () => { clk.textContent = 'South Africa ' + f.format(new Date()); }; tick(); setInterval(tick, 20000); }
 
-  // reveal on scroll
-  const rv = d.querySelectorAll('[data-rv],[data-wipe]');
+  // reveal on scroll, and stamps that land when they come into view
+  const rv = [...d.querySelectorAll('[data-rv],[data-thunk]')];
   if ('IntersectionObserver' in window && !reduce) {
-    // clip-path hides [data-wipe] from the observer, so watch its parent instead
-    const map = new Map();
-    const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { (map.get(e.target) || []).forEach(el => el.classList.add('in')); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0 });
-    rv.forEach(el => { const t = el.hasAttribute('data-wipe') ? el.parentElement : el; if (!map.has(t)) map.set(t, []); map.get(t).push(el); io.observe(t); });
-    setTimeout(() => rv.forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) el.classList.add('in'); }), 1800);
+    const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    // a stamp is observed through its sheet so its own transform never hides it from the observer
+    rv.forEach(el => { if (el.hasAttribute('data-thunk')) { const host = el.closest('.sheet,.pform,h2,.num') || el.parentElement; const o = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { setTimeout(() => el.classList.add('in'), 260); o.disconnect(); } }), { rootMargin: '0px 0px -22% 0px' }); o.observe(host); } else io.observe(el); });
+    setTimeout(() => rv.forEach(el => { const r = (el.closest('.sheet') || el).getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) el.classList.add('in'); }), 2200);
   } else rv.forEach(el => el.classList.add('in'));
+
+  // orbs drift a little with the pointer
+  const orbs = d.querySelector('[data-orbs]');
+  if (orbs && fine && !reduce) {
+    let raf = 0, tx = 0, ty = 0;
+    addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * -22; ty = (e.clientY / innerHeight - .5) * -16; if (!raf) raf = requestAnimationFrame(() => { orbs.style.setProperty('--px', tx.toFixed(2)); orbs.style.setProperty('--py', ty.toFixed(2)); raf = 0; }); }, { passive: true });
+  }
+
+  // a section's orb leans toward the pointer
+  if (fine && !reduce) d.querySelectorAll('.exhibit,.band.hub').forEach(sec => { const o = sec.querySelector('.ex-doc .orb'); if (!o) return;
+    sec.addEventListener('pointermove', (e) => { const r = o.getBoundingClientRect(); const dx = (e.clientX - (r.left + r.width / 2)) / innerWidth, dy = (e.clientY - (r.top + r.height / 2)) / innerHeight; o.style.setProperty('--ry', (dx * 16).toFixed(2) + 'deg'); o.style.setProperty('--rx', (dy * -14).toFixed(2) + 'deg'); }, { passive: true });
+    sec.addEventListener('pointerleave', () => { o.style.setProperty('--ry', '0deg'); o.style.setProperty('--rx', '0deg'); }); });
+
+  // the ribbon: one band of warm light behind the hero, drawn by a small shader. Falls back to a still gradient.
+  (() => {
+    const c = d.getElementById('ribbon'); if (!c) return;
+    let gl = null; try { gl = c.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' }); } catch {}
+    if (!gl) { d.documentElement.classList.add('no-gl'); c.remove(); return; }
+    const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    const FS = `precision highp float;uniform vec2 r;uniform float t;
+mat2 rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);}
+vec3 band(vec2 p,float off,float t){
+  float c=.16*sin(p.x*1.25+t+off)+.07*sin(p.x*2.9-t*1.4+off*2.);
+  float w=.21+.13*sin(p.x*.9+t*.6+off*1.7);
+  float v=(p.y-c)/w;
+  float m=smoothstep(1.,.84,abs(v));
+  float fold=.5+.5*sin(v*2.6+p.x*1.8+t*.9+off);
+  float lines=.8+.2*sin(v*170.+sin(p.x*2.+t)*4.)*(.6+.4*sin(v*23.+p.x*3.));
+  vec3 a=vec3(1.,.56,.24),b=vec3(1.,.22,.16),cc=vec3(1.,.3,.6),e=vec3(.46,.34,1.);
+  float h=.5+.5*v;
+  vec3 col=mix(mix(a,b,smoothstep(0.,.5,h)),mix(cc,e,smoothstep(.72,1.,h)),smoothstep(.45,.82,h));
+  float edge=pow(abs(v),6.);
+  return col*m*lines*(.16+.95*fold*fold+.55*edge);
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/r; vec2 p=(gl_FragCoord.xy-.5*r)/r.y;
+  p-=vec2(.46,.1); p=rot(-.74)*p;
+  vec3 col=band(p,0.,t)+.5*band(p*vec2(1.,1.3)+vec2(.34,.16),2.1,t*.8);
+  col*=smoothstep(-1.1,.1,p.x)*smoothstep(1.5,.5,p.x);
+  col*=.06+.94*smoothstep(.22,.62,uv.x);
+  float g=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
+  col+=(g-.5)*.05*smoothstep(.02,.2,max(col.r,max(col.g,col.b)));
+  gl_FragColor=vec4(col,1.);
+}`;
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+    const v = sh(gl.VERTEX_SHADER, VS), f = sh(gl.FRAGMENT_SHADER, FS); const pr = gl.createProgram();
+    if (!v || !f) { d.documentElement.classList.add('no-gl'); c.remove(); return; }
+    gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { d.documentElement.classList.add('no-gl'); c.remove(); return; }
+    gl.useProgram(pr);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const uR = gl.getUniformLocation(pr, 'r'), uT = gl.getUniformLocation(pr, 't');
+    const size = () => { const dpr = Math.min(devicePixelRatio || 1, 1.5); const w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; gl.viewport(0, 0, w, h); } };
+    let vis = true, raf = 0; const t0 = performance.now();
+    const draw = () => { raf = 0; size(); gl.uniform2f(uR, c.width, c.height); gl.uniform1f(uT, reduce ? 2.4 : 2.4 + (performance.now() - t0) / 1000 * .22); gl.drawArrays(gl.TRIANGLES, 0, 3); if (vis && !reduce && !d.hidden) raf = requestAnimationFrame(draw); };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { vis = es[0].isIntersecting; if (vis) kick(); }).observe(c);
+    d.addEventListener('visibilitychange', kick); addEventListener('resize', kick); kick();
+    window.__ribbon = { draw: kick };
+  })();
 
   // table of contents on long documents
   const prose = d.querySelector('.prose[data-toc]'), side = d.querySelector('.side');
@@ -46,10 +108,8 @@
         const a = d.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent; toc.appendChild(a); return a;
       });
       side.prepend(toc);
-      if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { const i = hs.indexOf(e.target); links.forEach((l, k) => l.classList.toggle('on', k === i)); } }), { rootMargin: '-90px 0px -70% 0px' });
-        hs.forEach(h => io.observe(h));
-      }
+      const mark = () => { let i = -1; hs.forEach((h, k) => { if (h.getBoundingClientRect().top < 140) i = k; }); links.forEach((l, k) => l.classList.toggle('on', k === i)); };
+      addEventListener('scroll', mark, { passive: true }); mark();
     }
   }
   if (side && !side.children.length) side.remove();
@@ -57,76 +117,22 @@
   // wide tables scroll instead of breaking the layout
   d.querySelectorAll('.prose table').forEach(t => { const p = t.parentElement; if (p.style.overflowX === 'auto' || p.classList.contains('tw')) return; const w = d.createElement('div'); w.className = 'tw'; p.insertBefore(w, t); w.appendChild(t); });
 
-  // the kit: floating render follows the cursor
-  const peek = d.querySelector('.peek');
-  if (peek && fine && !reduce) {
-    const img = peek.querySelector('img'); let x = innerWidth / 2, y = innerHeight / 2, px = x, py = y, raf = 0;
-    const loop = () => { px += (x - px) * .16; py += (y - py) * .16; peek.style.left = px + 'px'; peek.style.top = py + 'px'; raf = Math.abs(x - px) + Math.abs(y - py) > .5 ? requestAnimationFrame(loop) : 0; };
-    d.querySelectorAll('.rows a[data-peek]').forEach(a => {
-      a.addEventListener('pointerenter', () => { img.src = a.dataset.peek; peek.classList.add('on'); });
-      a.addEventListener('pointerleave', () => peek.classList.remove('on'));
-      a.addEventListener('pointermove', (e) => { x = Math.max(e.clientX + 200, innerWidth * .66); y = e.clientY; if (!raf) raf = requestAnimationFrame(loop); });
-    });
+  // dock: on small screens the tool for this page stays one tap away, out of the way at the top and the bottom
+  const dock = d.querySelector('[data-dock]');
+  if (dock) {
+    const foot = d.querySelector('.foot');
+    const upd = () => { const nearEnd = foot && foot.getBoundingClientRect().top < innerHeight - 40; dock.classList.toggle('on', scrollY > 520 && !nearEnd); };
+    addEventListener('scroll', upd, { passive: true }); upd();
   }
 
-  // mercury thermometer: fills as you scroll the page
-  const rail = d.querySelector('.rail');
-  if (rail) {
-    const col = rail.querySelector('.hgcol'), lbl = rail.querySelector('.lbl');
-    const marks = [...d.querySelectorAll('[data-rail]')];
-    const upd = () => {
-      const max = d.documentElement.scrollHeight - innerHeight; const p = max > 0 ? Math.min(1, scrollY / max) : 0;
-      col.style.height = (p * 100).toFixed(2) + '%'; rail.classList.toggle('on', scrollY > innerHeight * .4);
-      let cur = marks[0]; for (const m of marks) if (m.getBoundingClientRect().top < innerHeight * .5) cur = m;
-      if (cur && lbl.textContent !== cur.dataset.rail) lbl.textContent = cur.dataset.rail;
-    };
-    addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
-  }
-
-  // cursor ring and magnetic buttons (mouse only)
-  if (fine && !reduce) {
-    const cur = d.createElement('div'); cur.className = 'cur'; cur.setAttribute('aria-hidden', 'true'); d.body.appendChild(cur);
-    let cx = 0, cy = 0, tx = 0, ty = 0, on = false;
-    addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; if (!on) { on = true; cx = tx; cy = ty; cur.classList.add('on'); } }, { passive: true });
-    d.addEventListener('pointerleave', () => { on = false; cur.classList.remove('on'); });
-    const loop = () => { cx += (tx - cx) * .22; cy += (ty - cy) * .22; cur.style.transform = `translate3d(${cx}px,${cy}px,0)`; requestAnimationFrame(loop); }; loop();
-    d.querySelectorAll('a,button,input,textarea,select,label').forEach(el => { el.addEventListener('pointerenter', () => cur.classList.add('big')); el.addEventListener('pointerleave', () => cur.classList.remove('big')); });
-    d.querySelectorAll('.btn').forEach(b => {
-      b.addEventListener('pointermove', (e) => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * 10}px,${((e.clientY - r.top) / r.height - .5) * 8}px)`; });
-      b.addEventListener('pointerleave', () => { b.style.transform = ''; });
-    });
-  }
-
-  // live product demos: small loops that run only while on screen
-  const demos = [...d.querySelectorAll('.demo')];
-  if (demos.length) {
-    const $ = (el, q) => [...el.querySelectorAll(q)];
-    const runs = {
-      ship: async (el, w) => { const li = $(el, '.opts li'); el.classList.remove('done'); li.forEach(x => x.classList.remove('on')); el.classList.add('loading'); await w(1200); el.classList.remove('loading'); for (const i of [0, 2, 1, 2]) { li.forEach((x, k) => x.classList.toggle('on', k === i)); await w(1100); } el.classList.add('done'); await w(2800); },
-      pay: async (el, w) => { const st = $(el, '.steps li'), pill = el.querySelector('.st'); el.classList.remove('done'); st.forEach(x => x.classList.remove('on')); pill.textContent = pill.dataset.a; pill.classList.remove('paid'); await w(900); for (const x of st) { x.classList.add('on'); await w(850); } pill.textContent = pill.dataset.b; pill.classList.add('paid'); el.classList.add('done'); await w(3000); },
-      books: async (el, w) => { el.classList.remove('go', 'done'); await w(1100); el.classList.add('go'); await w(1000); el.classList.add('done'); await w(3200); },
-      tables: async (el, w) => { const rows = $(el, '.sheet .r:not(.h)'), cnt = el.querySelector('.cnt'), pg = el.querySelector('.pg'); el.classList.remove('done'); rows.forEach(r => r.classList.remove('on', 'flash')); cnt.textContent = '0 rows'; pg.textContent = 'Page 1'; await w(700);
-        for (let i = 0; i < rows.length; i++) { if (i === 3) { pg.textContent = 'Next page'; await w(700); pg.textContent = 'Page 2'; } rows[i].classList.add('on', 'flash'); setTimeout(() => rows[i].classList.remove('flash'), 500); cnt.textContent = (i + 1) + (i ? ' rows' : ' row'); await w(420); }
-        el.classList.add('done'); await w(3000); },
-      feed: async (el, w) => { const ul = el.querySelector('.feed'); await w(2300); const last = ul.lastElementChild; ul.removeChild(last); ul.prepend(last); },
-    };
-    const start = (el) => {
-      if (el._run) return; const fn = runs[el.dataset.demo]; if (!fn) return;
-      el._run = true; const w = (ms) => new Promise(r => setTimeout(r, ms));
-      (async () => { while (el._vis) { await fn(el, w); } el._run = false; })();
-    };
-    if (reduce || !('IntersectionObserver' in window)) demos.forEach(el => { el.classList.add('shown', 'done', 'go'); el.querySelectorAll('.opts li:first-child,.steps li,.sheet .r').forEach(x => x.classList.add('on')); const st = el.querySelector('.st'); if (st) { st.textContent = st.dataset.b; st.classList.add('paid'); } });
-    else { const io = new IntersectionObserver((es) => es.forEach(e => { const el = e.target; el._vis = e.isIntersecting; if (e.isIntersecting) { el.classList.add('shown'); start(el); } }), { threshold: .35 }); demos.forEach(el => io.observe(el)); }
-  }
-
-  // command palette: search every tool and guide (Cmd/Ctrl+K or "/")
+  // search: every tool and guide (Cmd/Ctrl+K or "/")
   (() => {
     const btn = d.querySelector('[data-k]'); if (!btn) return;
     let idx = null, pal = null, input, list, sel = 0, items = [];
     const escH = (s) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const build = () => {
       pal = d.createElement('div'); pal.className = 'pal'; pal.setAttribute('role', 'dialog'); pal.setAttribute('aria-modal', 'true'); pal.setAttribute('aria-label', 'Search');
-      pal.innerHTML = '<div class="pal-box"><div class="pal-in"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><input type="search" placeholder="Search tools and guides" aria-label="Search tools and guides" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div><ul class="pal-list" role="listbox"></ul><div class="pal-foot"><span>&uarr; &darr; to move</span><span>Enter to open</span></div></div>';
+      pal.innerHTML = '<div class="pal-box"><div class="pal-in"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><input type="search" placeholder="Search tools and guides" aria-label="Search tools and guides" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div><ul class="pal-list" role="listbox"></ul><div class="pal-foot"><span>&uarr; &darr; to move</span><span>Enter to open</span></div></div>';
       d.body.appendChild(pal); input = pal.querySelector('input'); list = pal.querySelector('.pal-list');
       pal.addEventListener('click', (e) => { if (e.target === pal) close(); });
       input.addEventListener('input', () => { sel = 0; draw(); });
@@ -138,8 +144,10 @@
     };
     const score = (q, t) => { t = t.toLowerCase(); let s = 0; for (const w of q) { const i = t.indexOf(w); if (i < 0) return -1; s += i === 0 ? 3 : (t[i - 1] === ' ' ? 2 : 1); } return s; };
     const hl = (t, q) => { let h = escH(t); for (const w of q) if (w.length > 1) h = h.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>'); return h; };
+    let qt = 0;
     const draw = () => {
       const q = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      clearTimeout(qt); if (q.length) qt = setTimeout(() => { window.__smTrack && window.__smTrack({ e: 'search', q: q.join(' ').slice(0, 80), n: items.length }); }, 1400);
       items = !q.length ? idx.filter(x => x[2] === 'Tool' || x[2] === 'Guides' || x[2] === 'Data') : idx.map(x => [x, score(q, x[0] + ' ' + x[2] + ' ' + (x[3] || ''))]).filter(x => x[1] >= 0).sort((a, b) => b[1] - a[1]).slice(0, 12).map(x => x[0]);
       list.innerHTML = items.length ? items.map((x, i) => `<li role="option"${i === sel ? ' class="on"' : ''}><a href="${x[1]}"><b>${hl(x[0], q)}</b><span>${escH(x[2])}</span></a></li>`).join('') : '<li class="pal-empty">Nothing found. Try "PayFast", "Pudo" or "Excel".</li>';
       list.querySelectorAll('li a').forEach((a, i) => a.addEventListener('mousemove', () => { if (sel !== i) { sel = i; mark(); } }));
@@ -161,41 +169,49 @@
     if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) { const k = btn.querySelector('kbd'); if (k) k.textContent = 'Ctrl K'; }
   })();
 
-  // tool picker: two or three questions, one answer
+  // tool request form: two or three ticks, one answer
   (() => {
     const root = d.querySelector('[data-pick]'), data = d.getElementById('pick-data'); if (!root || !data) return;
     const { tree, picks } = JSON.parse(data.textContent);
-    const pq = root.querySelector('.pq'), pres = root.querySelector('.pres'), title = root.querySelector('.ptitle'), opts = root.querySelector('.opts2'), step = root.querySelector('.step'), back = root.querySelector('.back');
+    const pq = root.querySelector('.pq'), pres = root.querySelector('.pres'), title = root.querySelector('.ptitle'), opts = root.querySelector('.opts2'), step = root.querySelector('.step'), back = root.querySelector('.back'), stamp = pres.querySelector('.stamp');
     let path = [];
     const node = () => path.reduce((n, i) => n.a[i][1], tree);
     const show = () => {
-      const n = node();
+      const n = node(); back.hidden = !path.length;
       if (typeof n === 'string') { const p = picks[n]; pq.hidden = true; pres.hidden = false;
-        pres.querySelector('img').src = p.r; pres.querySelector('b').textContent = p.n; pres.querySelector('p').textContent = p.p;
-        const c = pres.querySelector('.btn'); c.textContent = p.c + ' '; c.href = p.h; c.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg>');
+        pres.querySelector('.pn').textContent = p.n; pres.querySelector('p').textContent = p.p;
+        const c = pres.querySelector('.btn'); c.textContent = p.c + ' '; c.href = p.h; c.insertAdjacentHTML('beforeend', ARROW);
         if (/^https?:/.test(p.h)) c.setAttribute('rel', 'noopener'); else c.removeAttribute('rel');
-        const m = pres.querySelector('.pmore'); m.hidden = !p.m; if (p.m) m.href = p.m; return; }
-      pq.hidden = false; pres.hidden = true; title.textContent = n.q; step.textContent = 'Step ' + String(path.length + 1).padStart(2, '0'); back.hidden = !path.length;
-      opts.innerHTML = ''; n.a.forEach(([label], i) => { const b = d.createElement('button'); b.type = 'button'; b.textContent = label; b.style.setProperty('--i', i); b.addEventListener('click', () => { path.push(i); show(); }); opts.appendChild(b); });
+        const m = pres.querySelector('.pmore'); m.hidden = !p.m; if (p.m) m.href = p.m;
+        window.__smTrack && window.__smTrack({ e: 'pick', t: p.n });
+        if (stamp && !reduce) { stamp.style.animation = 'none'; void stamp.offsetWidth; stamp.style.animation = 'thunk .4s cubic-bezier(.2,1.25,.4,1) .12s both'; }
+        return; }
+      pq.hidden = false; pres.hidden = true; title.textContent = n.q; step.textContent = 'Question ' + (path.length + 1);
+      opts.innerHTML = ''; n.a.forEach(([label], i) => { const b = d.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => { path.push(i); show(); }); opts.appendChild(b); });
     };
     back.addEventListener('click', () => { path.pop(); show(); });
     root.querySelector('.again').addEventListener('click', () => { path = []; show(); });
     show();
   })();
 
-  // the split: labels ride on the five drops while that formation is on screen
+  // page statistics: first-party, no cookies, no storage, nothing personal (see /privacy/website/). Off when the browser asks.
   (() => {
-    const box = d.querySelector('.blabels'); if (!box) return;
-    const labels = [...box.querySelectorAll('.blabel')];
-    const tick = () => {
-      const pts = window.__mercPts, mixv = window.__mercMix || 0;
-      if (pts && mixv > .02) {
-        labels.forEach(l => { const p = pts[+l.dataset.bead]; if (!p) return; const cx = innerWidth / 2, cy = innerHeight / 2, dx = p[0] - cx, dy = p[1] - cy, len = Math.hypot(dx, dy) || 1, off = p[2] + 34;
-          const x = p[0] + dx / len * off, y = p[1] + dy / len * off; l.style.setProperty('--x', Math.max(8, Math.min(innerWidth - l.offsetWidth - 8, x - l.offsetWidth / 2)).toFixed(1) + 'px'); l.style.setProperty('--y', (y - l.offsetHeight / 2).toFixed(1) + 'px'); l.style.opacity = Math.max(0, Math.min(1, (mixv - .78) / .17)).toFixed(3); l.classList.toggle('on', mixv > .9); });
-      } else labels.forEach(l => { l.style.opacity = 0; l.classList.remove('on'); });
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+    if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl || !/^(www\.)?skillmerc\.com$/.test(location.hostname)) return;
+    const EP = 'https://hq-production-e33c164a.up.railway.app/t';
+    const id = Math.random().toString(36).slice(2, 10), t0 = Date.now(); let maxD = 0, tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
+    const send = (o) => { try { const b = JSON.stringify(Object.assign({ v: 1, id, p: location.pathname, w: innerWidth, tz, l: navigator.language || '' }, o)); if (!(navigator.sendBeacon && navigator.sendBeacon(EP, b))) fetch(EP, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' }); } catch {} };
+    let ref = ''; try { if (d.referrer) { const u = new URL(d.referrer); if (u.hostname !== location.hostname) ref = u.hostname + u.pathname; } } catch {}
+    const qs = new URLSearchParams(location.search);
+    send({ e: 'view', r: ref, us: qs.get('utm_source') || '', um: qs.get('utm_medium') || '', uc: qs.get('utm_campaign') || '', nf: /^Page not found/.test(d.title) ? 1 : 0 });
+    addEventListener('scroll', () => { const h = d.documentElement.scrollHeight - innerHeight; if (h > 0) maxD = Math.max(maxD, Math.round(scrollY / h * 100)); }, { passive: true });
+    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a,button'); if (!a) return; const href = a.getAttribute('href') || ''; const ext = /^(https?:|mailto:)/.test(href) && !href.includes('//' + location.hostname);
+      if (!ext && !a.matches('.btn,.cta,.promo,.dock,.prow,.tcard,.orb,.tlink,.tray a,.toc-list a,.opts2 button')) return;
+      const zone = a.closest('.dock,.promo,.hero,.plist,.pform,.exhibit,.band,.tray,.toc-list,.side,.prose,.more,.foot,.nav,.pal');
+      send({ e: ext ? 'out' : 'click', h: href.slice(0, 200), t: (a.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60), z: zone ? zone.className.split(' ')[0] : '' }); }, true);
+    let left = false; const leave = () => { if (left) return; left = true; send({ e: 'leave', d: maxD, ms: Date.now() - t0 }); };
+    addEventListener('pagehide', leave); d.addEventListener('visibilitychange', () => { if (d.visibilityState === 'hidden') leave(); });
+    window.__smTrack = send;
   })();
 
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
