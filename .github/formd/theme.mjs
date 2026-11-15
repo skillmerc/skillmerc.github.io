@@ -94,6 +94,14 @@ const HUBS = {
     say: 'Ship rules say what must be true before a Jira work item ships. People and coding agents attach the evidence, and rules marked for a person stay open until a person confirms.',
     facts: ['Jira', 'Atlassian MCP server', 'Built on Forge'], cta: [] }, closewell: { cat: 'more', name: 'Closewell', form: 0, link: '/closewell/install/' },
 };
+// schema.org SoftwareApplication facts for released products (prices as listed on each page)
+const SCHEMA = {
+  'sa-shipping-woocommerce': { name: 'Skillmerc Shipping for The Courier Guy, Pudo and PAXI', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0], ['Pro, one site, one year', 49]], url: WP('skillmerc-shipping-courier-guy-pudo-paxi') },
+  'payfast-woocommerce': { name: 'Skillmerc Payment Gateway for PayFast', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-payment-gateway-for-payfast') },
+  'sage-accounting-woocommerce': { name: 'Skillmerc Sync for Sage Accounting', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-sage-accounting') },
+  'freeagent-woocommerce': { name: 'Skillmerc Sync for FreeAgent', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-freeagent') },
+  'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
+};
 const CARDS = [
   { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and one-click labels.', ft: 'Free / Pro', r: 'parcel', href: '/sa-shipping-woocommerce/' },
   { k: 'shopify-freeagent', m: 'Bookkeeping', b: 'Ledgerline for Shopify', p: 'Paid Shopify orders into FreeAgent, with VAT. Coming soon.', ft: 'Coming soon', r: 'ledger', href: '/shopify-freeagent/' },
@@ -111,7 +119,7 @@ const shotSrc = (s) => s.p || `/assets/shots/${s.f}`;
 
 // ---------- shared chrome ----------
 const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/fraunces-italic.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
-const navHtml = () => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<span class="clock mono" aria-hidden="true"><i></i><span data-clock>Pretoria</span></span><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="https://apify.com/skillmerc">Data</a><a class="pill" href="mailto:kyle@skillmerc.com">Contact</a></nav></div></header>`;
+const navHtml = () => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<span class="clock mono" aria-hidden="true"><i></i><span data-clock>Pretoria</span></span><button class="kbtn mono" type="button" data-k aria-label="Search tools and guides">Search <kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="https://apify.com/skillmerc">Data</a><a class="pill" href="mailto:kyle@skillmerc.com">Contact</a></nav></div></header>`;
 const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-grid">
 <div class="foot-about">${brand}<p>The boring parts, handled. Plugins and tools for online stores, bookkeeping and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
 <div><h5>Tools</h5><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="${AMO('transcript-pull-for-youtube')}">Transcript Pull</a></li></ul></div>
@@ -141,6 +149,8 @@ function docPage(rel, title, desc, body) {
   if (isGuide) crumbs.push(['Guide', '/guides/']);
   const here = strip(h1); crumbs.push([here.length > 54 ? here.slice(0, 52).replace(/\s+\S*$/, '') + '...' : here, null]);
   const crumbHtml = `<ol class="crumbs mono">${crumbs.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
+  const sc = isHub && SCHEMA[segs[0]] ? SCHEMA[segs[0]] : null;
+  const app = sc ? ld({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: sc.name, applicationCategory: sc.cat, operatingSystem: sc.os, url, sameAs: sc.url, description: nod(desc), publisher: { '@type': 'Organization', name: 'SKILLMERC', url: BASE + '/' }, offers: sc.offers.map(([n, p]) => ({ '@type': 'Offer', name: n, price: String(p), priceCurrency: 'USD' })) }) : '';
   const bl = ld({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map(([t, h], i) => ({ '@type': 'ListItem', position: i + 1, name: nod(t), item: h ? BASE + h : url })) });
   const wide = segs[0] === 'form-d' || segs[0] === 'guides';
   const words = strip(rest).split(' ').length;
@@ -156,7 +166,7 @@ function docPage(rel, title, desc, body) {
   const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="more-head"><h2 class="h2" data-wipe style="font-size:clamp(2rem,4.4vw,4rem)">See it <em class="hg">working.</em></h2><span class="mono" style="color:var(--mute)">Real screenshots &middot; ${shots.length}</span></div><div class="shot-grid">${shots.map((s, i) => `<figure class="shot${i === 0 ? ' lead' : ''}"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async">${s.cap ? `<figcaption><span class="mono">${String(i + 1).padStart(2, '0')}</span>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
   const pick = CARDS.filter(c => c.k !== segs[0]).slice(0, 3);
   const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="h2" style="font-size:clamp(2rem,4vw,3.6rem)">More from <em class="hg">the kit.</em></h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
-  return `${head({ title, desc, url, extra: bl })}<body class="doc"><div class="grain" aria-hidden="true"></div>${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${scripts(true)}</body></html>`;
+  return `${head({ title, desc, url, extra: bl + app })}<body class="doc"><div class="grain" aria-hidden="true"></div>${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${scripts(true)}</body></html>`;
 }
 
 // ---------- homepage ----------
@@ -171,6 +181,28 @@ const DEMOS = {
   tables: `<div class="demo" data-demo="tables" aria-hidden="true"><div class="dh"><span>Any web page &rarr; Excel</span><span class="cnt">0 rows</span></div><div class="sheet"><div class="r h"><span>Name</span><span>Price</span><span>Rating</span></div>${[['Desk lamp','$39','4.6'],['Office chair','$189','4.4'],['Monitor arm','$59','4.7'],['USB-C hub','$29','4.3'],['Standing mat','$45','4.5'],['Webcam','$69','4.2']].map(r => `<div class="r">${r.map(c => `<span>${c}</span>`).join('')}</div>`).join('')}</div><div class="df"><span class="chip pg">Page 1</span><span class="chip ok">Download .xlsx</span></div></div>`,
 };
 const feedDemo = (day) => { if (!day) return ''; const ops = day.rows.filter(r => !r.pooled && r.sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 6); return `<div class="demo" data-demo="feed" aria-hidden="true"><div class="dh"><span><i class="dot"></i>SEC Form D &middot; live data</span><span>${esc(longDate(day.day))}</span></div><ul class="feed">${ops.map(r => `<li><b>${esc(r.name)}</b><em>${esc([r.city, r.state].filter(Boolean).join(', '))}</em><s>${money(r.sold)}</s></li>`).join('')}</ul></div>`; };
+const PICK = {
+  q: 'Where do you sell?', a: [
+    ['WooCommerce', { q: 'What eats your time?', a: [
+      ['Shipping', 'ship'], ['Taking payments', 'pay'],
+      ['Bookkeeping', { q: 'Which accounting app?', a: [['Sage Accounting', 'sage'], ['FreeAgent', 'fa']] }]] }],
+    ['Shopify', { q: 'What eats your time?', a: [
+      ['Bookkeeping', { q: 'Which accounting app?', a: [['FreeAgent', 'll'], ['Sage Accounting', 'shsage']] }],
+      ['Copying data off websites', 'lts']] }],
+    ["I don't run a store", { q: 'What do you need?', a: [
+      ['Tables and lists from websites', 'lts'], ['Company and funding data', 'data'], ['YouTube transcripts', 'tp'], ['Saving DeepSeek chats', 'tk']] }]] };
+const PICKS = {
+  ship: ['parcel', 'Shipping for WooCommerce', 'Live The Courier Guy and Fastway rates, Pudo lockers and PAXI points at checkout. Pro books the courier and prints the label.', 'Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), '/sa-shipping-woocommerce/'],
+  pay: ['coin', 'PayFast for WooCommerce', 'Card, instant EFT, SnapScan and Mobicred. Each payment is checked, then the order marks itself paid.', 'Get it free', WP('skillmerc-payment-gateway-for-payfast'), '/payfast-woocommerce/'],
+  sage: ['ledger', 'WooCommerce to Sage Accounting', 'Every paid order becomes a customer, a VAT invoice and a payment in Sage. Free.', 'Get it free', WP('skillmerc-sync-for-sage-accounting'), '/sage-accounting-woocommerce/'],
+  fa: ['ledger', 'WooCommerce to FreeAgent', 'Every paid order becomes a contact, a VAT invoice and a payment in FreeAgent. Free.', 'Get it free', WP('skillmerc-sync-for-freeagent'), '/freeagent-woocommerce/'],
+  ll: ['ledger', 'Ledgerline for Shopify', 'Paid Shopify orders into FreeAgent as VAT invoices, marked paid. Coming soon: get one email at launch.', 'Get the launch email', '/shopify-freeagent/#notify', '/shopify-freeagent/'],
+  shsage: ['ledger', 'Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
+  lts: ['window', 'List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
+  data: ['grid', 'Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
+  tp: ['window', 'Transcript Pull for YouTube', 'Read, search, copy or download the transcript of any YouTube video. Free.', 'Add to Firefox, free', AMO('transcript-pull-for-youtube'), ''],
+  tk: ['window', 'Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. In review at Firefox Add-ons.', 'See Threadkeep', '/threadkeep/', ''],
+};
 const LAB = [
   ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT.', 'In review at Shopify'],
   ['/threadkeep/', 'Threadkeep', 'Save a DeepSeek chat as PDF, Markdown or Word.', 'In review at Firefox Add-ons'],
@@ -216,6 +248,9 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 <div class="kit-head"><h2 class="h2" data-wipe>The <em class="hg">kit.</em></h2><p data-rv>Five jobs you can stop doing by hand. Pick one.</p></div>
 <div class="rows">${kit.map(([n, nm, ds, pl, pr, href, r], i) => `<a href="${href}" data-peek="${R(r)}" data-rv style="--d:${i}"><span class="n mono">${n}</span><span class="nm">${nm}</span><span class="ds">${ds}</span><span class="pl mono">${pl}</span><span class="pr mono">${pr}</span><span class="go">${ARROW_DN}</span></a>`).join('')}</div>
 </div></section>
+
+<section class="pick" id="pick" data-rail="Pick"><div class="wrap"><div class="pick-in" data-rv><div class="pick-l"><div class="tag mono"><b>?</b><i></i><span>Not sure</span></div><h2 class="h2" data-wipe>Find yours <em class="hg">in two clicks.</em></h2><p class="say">Answer a couple of questions and get the one tool that fits.</p></div><div class="pick-r" data-pick><div class="pq"><div class="pmeta"><span class="mono step">Step 01</span><button class="tlink back" type="button" hidden>Back</button></div><b class="ptitle">Where do you sell?</b><div class="opts2"></div></div><div class="pres" hidden><img alt="" width="1000" height="1000" loading="lazy"><div><span class="mono">Your tool</span><b></b><p></p><div class="row-ctas"><a class="btn btn-cin" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="tlink again" type="button">Start over</button></div></div></div></div></div></div><script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { r: R(v[0]), n: v[1], p: v[2], c: v[3], h: v[4], m: v[5] }])) }).replace(/</g, '\\u003c')}</script></section>
+
 
 ${scene({ i: 1, side: 'left', id: 'shipping', rail: 'Shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. <em class="hg">Zero copy&#8209;paste.</em>',
   say: 'Shoppers see live The Courier Guy and Fastway rates, or pick a Pudo locker or PAXI point. Pro books The Courier Guy and prints the label from the order.',
@@ -281,9 +316,20 @@ export function reshell(rel, html) {
 }
 
 /** Copy theme assets into the build output and write the theme's root files. */
+export function searchIndex() {
+  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
+  const seen = new Set(tools.map(x => x[1]));
+  const pages = registry.filter(r => !(r.segs[0] === 'form-d' && r.segs.length > 1) && !seen.has(r.url)).map(r => {
+    const hub = HUBS[r.segs[0]]; const kind = r.segs[1] === 'help' ? 'Guide' : r.segs[0] === 'apify' ? 'Data tool' : (r.segs[0] === 'privacy' || r.segs.includes('privacy')) ? 'Privacy' : r.segs.includes('terms') ? 'Terms' : (hub ? hub.name : 'Page');
+    return [r.h1, r.url, kind];
+  });
+  return JSON.stringify(tools.concat(pages));
+}
+
 export function copyAssets(out) {
   const src = path.join(HERE, 'static/assets'); const walk = (d, rel = '') => { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) walk(p, rel + f + '/'); else { const o = path.join(out, 'assets', rel + f); fs.mkdirSync(path.dirname(o), { recursive: true }); fs.copyFileSync(p, o); } } };
   walk(src);
   fs.writeFileSync(path.join(out, 'favicon.svg'), LOGO.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' aria-hidden="true"', ''));
+  fs.writeFileSync(path.join(out, 'assets', 'search.json'), searchIndex());
   fs.writeFileSync(path.join(out, '404.html'), render('404.html', 'Page not found: SKILLMERC', 'This page does not exist.', notFoundBody()));
 }
