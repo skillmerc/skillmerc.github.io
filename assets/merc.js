@@ -237,7 +237,7 @@ void main(){
   const place = (i, aspect) => {
     const side = sideOf(i);
     if (side === 'still') return { x: 0, y: 0, z: +(canvas.dataset.zoom || 1.35), d: 1 };
-    if (side === 'band') { if (aspect < 1.25) return { x: 0, y: -.12, z: .92, d: .95 }; const z = Math.min(1.3, .5 + aspect * .28); return { x: Math.max(0, aspect - 1.12 * z), y: -.02, z, d: 1 }; }
+    if (side === 'band') { if (aspect < 1.25) return { x: 0, y: -.12, z: .92, d: .95 }; const z = Math.min(1.3, .5 + aspect * .28); return { x: Math.max(0, aspect - .98 * z), y: -.02, z, d: 1 }; }
     if (aspect < .9) return { x: 0, y: side === 'center' ? .46 : .5, z: side === 'center' ? .46 : .5, d: side === 'center' ? .9 : .6 };
     if (side === 'left') return { x: -aspect * .44, y: 0, z: 1.0, d: 1 };
     if (side === 'center') return { x: 0, y: .5, z: .5, d: 1 };
@@ -251,6 +251,8 @@ void main(){
   let W = 0, H = 0, acc = 0, frames = 0, last = performance.now(), time = reduce ? 3.2 : +(canvas.dataset.time || 0), running = false, dirty = true, tries = 0, capped = false;
   const resize = () => { const w = Math.max(2, Math.round(canvas.clientWidth * scale)), h = Math.max(2, Math.round(canvas.clientHeight * scale)); if (w !== W || h !== H) { W = canvas.width = w; H = canvas.height = h; gl.viewport(0, 0, W, H); } };
   const B = new Float32Array(N * 4);
+  let intro = 1;
+  const clamp01 = (x) => Math.min(1, Math.max(0, x)), ease3 = (x) => 1 - Math.pow(1 - x, 3);
   const frame = (now) => {
     running = false;
     const dt = Math.min(.05, (now - last) / 1000); last = now;
@@ -273,6 +275,15 @@ void main(){
         const arc = Math.sin(f * Math.PI) * .25 * Math.sin(i * 1.9);
         B[i*4] = mix(a[0], b[0], f) + arc; B[i*4+1] = mix(a[1], b[1], f) + arc * .6; B[i*4+2] = mix(a[2], b[2], f);
         B[i*4+3] = mix(A[i][3], Bf[i][3], f);
+      }
+      // intro: droplets rain in from above and merge into the pool
+      if (intro < 1) {
+        intro = Math.min(1, intro + dt / 2.6); const wgt = Math.max(0, 1 - stage * 2);
+        for (let i = 0; i < N; i++) {
+          const delay = i === 1 ? 0 : .08 + i * .055, e = ease3(clamp01((intro - delay) / (1 - delay)));
+          if (i === 1) { B[i*4+3] *= mix(1, mix(.3, 1, ease3(intro)), wgt); continue; }
+          B[i*4+1] += (1 - e) * (3.4 + i * .38) * wgt; B[i*4] *= mix(1, mix(.55, 1, e), wgt); B[i*4+3] *= mix(1, mix(.45, 1, e), wgt);
+        }
       }
       const p0h = place(0, aspect);
       ptr.live += ((performance.now() - ptr.on < 2600 ? 1 : 0) - ptr.live) * Math.min(1, dt * 3);
@@ -313,6 +324,7 @@ void main(){
   addEventListener('scroll', () => { dirty = true; }, { passive: true });
   document.addEventListener('visibilitychange', () => { last = performance.now(); });
   collect(); readStage(); stage = stageT;
+  intro = (reduce || still || !stages.length || stage > .6) ? 1 : 0;
   if (!stages.length && !still && 'IntersectionObserver' in window) new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(canvas);
   window.__merc = { collect, get stage() { return stage; }, get scale() { return scale; }, set time(v) { time = v; dirty = true; }, snap() { readStage(); stage = stageT; dirty = true; },
     render(form, t) { canvas.dataset.form = form; time = t; readStage(); stage = stageT; dirty = true; frame(performance.now()); } };

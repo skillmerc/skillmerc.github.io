@@ -97,5 +97,27 @@
     });
   }
 
+  // live product demos: small loops that run only while on screen
+  const demos = [...d.querySelectorAll('.demo')];
+  if (demos.length) {
+    const $ = (el, q) => [...el.querySelectorAll(q)];
+    const runs = {
+      ship: async (el, w) => { const li = $(el, '.opts li'); el.classList.remove('done'); li.forEach(x => x.classList.remove('on')); el.classList.add('loading'); await w(1200); el.classList.remove('loading'); for (const i of [0, 2, 1, 2]) { li.forEach((x, k) => x.classList.toggle('on', k === i)); await w(1100); } el.classList.add('done'); await w(2800); },
+      pay: async (el, w) => { const st = $(el, '.steps li'), pill = el.querySelector('.st'); el.classList.remove('done'); st.forEach(x => x.classList.remove('on')); pill.textContent = pill.dataset.a; pill.classList.remove('paid'); await w(900); for (const x of st) { x.classList.add('on'); await w(850); } pill.textContent = pill.dataset.b; pill.classList.add('paid'); el.classList.add('done'); await w(3000); },
+      books: async (el, w) => { el.classList.remove('go', 'done'); await w(1100); el.classList.add('go'); await w(1000); el.classList.add('done'); await w(3200); },
+      tables: async (el, w) => { const rows = $(el, '.sheet .r:not(.h)'), cnt = el.querySelector('.cnt'), pg = el.querySelector('.pg'); el.classList.remove('done'); rows.forEach(r => r.classList.remove('on', 'flash')); cnt.textContent = '0 rows'; pg.textContent = 'Page 1'; await w(700);
+        for (let i = 0; i < rows.length; i++) { if (i === 3) { pg.textContent = 'Next page'; await w(700); pg.textContent = 'Page 2'; } rows[i].classList.add('on', 'flash'); setTimeout(() => rows[i].classList.remove('flash'), 500); cnt.textContent = (i + 1) + (i ? ' rows' : ' row'); await w(420); }
+        el.classList.add('done'); await w(3000); },
+      feed: async (el, w) => { const ul = el.querySelector('.feed'); await w(2300); const last = ul.lastElementChild; ul.removeChild(last); ul.prepend(last); },
+    };
+    const start = (el) => {
+      if (el._run) return; const fn = runs[el.dataset.demo]; if (!fn) return;
+      el._run = true; const w = (ms) => new Promise(r => setTimeout(r, ms));
+      (async () => { while (el._vis) { await fn(el, w); } el._run = false; })();
+    };
+    if (reduce || !('IntersectionObserver' in window)) demos.forEach(el => { el.classList.add('shown', 'done', 'go'); el.querySelectorAll('.opts li:first-child,.steps li,.sheet .r').forEach(x => x.classList.add('on')); const st = el.querySelector('.st'); if (st) { st.textContent = st.dataset.b; st.classList.add('paid'); } });
+    else { const io = new IntersectionObserver((es) => es.forEach(e => { const el = e.target; el._vis = e.isIntersecting; if (e.isIntersecting) { el.classList.add('shown'); start(el); } }), { threshold: .35 }); demos.forEach(el => io.observe(el)); }
+  }
+
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 })();
