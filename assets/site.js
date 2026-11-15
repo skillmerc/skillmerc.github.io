@@ -214,5 +214,14 @@ void main(){
     window.__smTrack = send;
   })();
 
+  // videos: nothing loads from YouTube until the visitor presses play
+  d.addEventListener('click', (e) => {
+    const b = e.target.closest && e.target.closest('button[data-yt]'); if (!b) return;
+    const f = d.createElement('iframe');
+    f.src = b.dataset.yt + '?autoplay=1&rel=0'; f.title = (b.getAttribute('aria-label') || 'Video').replace(/^Play video: /, 'Video: ');
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; f.allowFullscreen = true;
+    b.parentNode.replaceChild(f, b); f.focus();
+  });
+
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 })();
