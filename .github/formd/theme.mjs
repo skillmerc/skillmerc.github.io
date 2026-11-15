@@ -1,28 +1,30 @@
-// SKILLMERC site theme ("Hg"). Shared by gen.mjs (local build) and the Form D GitHub Action.
+// SKILLMERC site theme v8 (Nov 2026). Shared by gen.mjs (local build) and the Form D GitHub Action.
 // Exports: render(rel,title,desc,body), reshell(rel,html), homeBody(ctx), guidesBody(), copyAssets(out).
+// Look: black, giant white type, glass orbs that hold real product screens, one warm ribbon of light (site.js),
+// a hairline frame. No 3D renders.
 // Page copy for content pages lives in gen.mjs and the help-*/ folders. This file owns the shell, the homepage,
-// the product heroes on hub pages and the /guides/ index. Node builtins only.
+// the product headers on hub pages and the /guides/ index. Node builtins only (the Action copies this one file).
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const BASE = 'https://skillmerc.com';
+const REG = '2025/673155/07';
 const nod = s => String(s ?? '').replace(/\u2014/g, '-').replace(/\u2013/g, '-');
 const esc = s => nod(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const strip = s => String(s).replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
 let _v;
 const ver = () => { if (_v) return _v; const h = crypto.createHash('sha1'); let n = 0;
-  for (const dir of [path.join(HERE, 'static/assets'), path.join(process.cwd(), 'assets')]) { if (!fs.existsSync(dir)) continue; for (const f of ['site.css', 'site.js', 'merc.js']) { const p = path.join(dir, f); if (fs.existsSync(p)) { h.update(fs.readFileSync(p)); n++; } } if (n) break; }
+  for (const dir of [path.join(HERE, 'static/assets'), path.join(process.cwd(), 'assets')]) { if (!fs.existsSync(dir)) continue; for (const f of ['site.css', 'site.js']) { const p = path.join(dir, f); if (fs.existsSync(p)) { h.update(fs.readFileSync(p)); n++; } } if (n) break; }
   return (_v = n ? h.digest('hex').slice(0, 8) : '1'); };
 
 // ---------- marks ----------
-const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg>';
-const ARROW_UP = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>';
-const ARROW_DN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9"/></svg>';
-const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#c3c7ce"/><stop offset=".52" stop-color="#4a4f58"/><stop offset=".66" stop-color="#a2a8b1"/><stop offset="1" stop-color="#f6f7f8"/></linearGradient><radialGradient id="lg-r" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#ff936f"/><stop offset=".42" stop-color="#f0431c"/><stop offset="1" stop-color="#96200a"/></radialGradient><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask></defs><circle cx="13.6" cy="18.2" r="11.8" fill="url(#lg-c)" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="url(#lg-r)"/></svg>';
+const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg>';
+const ARROW_UP = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>';
+const ARROW_DN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5"/></svg>';
+// The mark: a disc with a small dot.
+const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg>';
+const FAVICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#050506"/><mask id="m"><rect width="32" height="32" fill="#fff"/><circle cx="23.4" cy="9.2" r="6.2" fill="#000"/></mask><circle cx="14" cy="18" r="10.2" fill="#fff" mask="url(#m)"/><circle cx="23.4" cy="9.2" r="4.5" fill="#ff5a36"/></svg>';
 const brand = `<a class="brand" href="/" aria-label="SKILLMERC home">${LOGO}<span>SKILLMERC</span></a>`;
-const R = (n) => `/assets/r/${n}.webp`;
-const FORM_R = ['quicksilver', 'parcel', 'coin', 'ledger', 'window', 'grid', 'drop', 'quicksilver'];
-const poster = (form) => `<img class="poster" src="${R(FORM_R[form] || 'quicksilver')}" alt="" width="1000" height="1000" decoding="async">`;
 
 // ---------- catalogue ----------
 const WP = (slug) => `https://wordpress.org/plugins/${slug}/`;
@@ -33,68 +35,79 @@ const CATS = {
   books: { label: 'Bookkeeping', n: '03', a: '/#books' }, tables: { label: 'Web tables', n: '04', a: '/#tables' },
   data: { label: 'Data', n: '05', a: '/#data' }, more: { label: 'SKILLMERC', n: '', a: '/' },
 };
-// hub pages: first URL segment -> product meta. `hero` turns the header into a full product hero.
+// Hub pages: first URL segment -> product meta. `hero` turns the header into a full product header.
+// doc = which specimen document stands for the product, stamp = what gets stamped on it, tale = the job in a few plain sentences.
 const HUBS = {
-  'sa-shipping-woocommerce': { cat: 'shipping', name: 'Shipping for WooCommerce', form: 1, r: 'parcel', hero: true,
-    tag: 'Real courier prices. <em class="hg">Zero copy&#8209;paste.</em>',
-    say: 'Shoppers see live The Courier Guy and Fastway rates at checkout, or pick a Pudo locker or PAXI point. Pro books The Courier Guy and prints the label from the order.',
+  'sa-shipping-woocommerce': { cat: 'shipping', name: 'Shipping for WooCommerce', doc: 'label', stamp: 'Quoted', hero: true,
+    tag: 'Real courier prices. <em>Zero copy&#8209;paste.</em>',
+    tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
+    say: 'Shoppers see live The Courier Guy and Fastway rates at checkout, or pick a Pudo locker or PAXI point. Pro books The Courier Guy and downloads the label PDF from the order.',
     facts: ['Free plugin', '*Pro USD 49 a year', 'Checkout block ready'],
     cta: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up'], ['Get Pro', PRO_SHIP, 'up']],
-    promo: ['Live courier rates, locker pickers and one-click labels.', 'Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi')] },
-  'payfast-woocommerce': { cat: 'payments', name: 'PayFast for WooCommerce', form: 2, r: 'coin', hero: true,
-    tag: 'Get paid. <em class="hg">The order updates itself.</em>',
+    promo: ['Live courier rates and locker pickers. Pro adds booking and labels.', 'Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi')] },
+  'payfast-woocommerce': { cat: 'payments', name: 'PayFast for WooCommerce', doc: 'slip', stamp: 'Paid', hero: true,
+    tag: 'Get paid. <em>The order updates itself.</em>',
+    tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself. When a notice fails a check, the log says why.',
     say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
     facts: ['Free', 'PayFast hosted checkout', 'Signed ITN checks'],
     cta: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up'], ['Fix a PayFast problem', '/payfast-woocommerce/help/', '']],
     promo: ['Card and EFT payments that mark orders paid by themselves.', 'Get it free', WP('skillmerc-payment-gateway-for-payfast')] },
-  'sage-accounting-woocommerce': { cat: 'books', name: 'WooCommerce to Sage Accounting', form: 3, r: 'ledger', hero: true,
-    tag: 'Every sale, <em class="hg">already in Sage.</em>',
+  'sage-accounting-woocommerce': { cat: 'books', name: 'WooCommerce to Sage Accounting', doc: 'inv', stamp: 'In Sage', hero: true,
+    tag: 'Every sale, <em>already in Sage.</em>',
+    tale: 'Month end. Orders in one window, Sage in the other, and an afternoon of typing between them. This plugin does the typing the moment an order is paid.',
     say: 'Each paid order becomes a customer, a sales invoice with the right VAT and a payment in Sage Accounting. No retyping at month end.',
     facts: ['Free', 'Sage Accounting UK', 'Failed sends retry'],
     cta: [['Get it free', WP('skillmerc-sync-for-sage-accounting'), 'up'], ['Setup guide', '/sage-accounting-woocommerce/help/send-woocommerce-orders-to-sage-accounting/', '']],
     promo: ['Paid orders become Sage invoices with the right VAT.', 'Get it free', WP('skillmerc-sync-for-sage-accounting')] },
-  'freeagent-woocommerce': { cat: 'books', name: 'WooCommerce to FreeAgent', form: 3, r: 'ledger', hero: true,
-    tag: 'Every sale, <em class="hg">already in FreeAgent.</em>',
+  'freeagent-woocommerce': { cat: 'books', name: 'WooCommerce to FreeAgent', doc: 'inv', stamp: 'In FreeAgent', hero: true,
+    tag: 'Every sale, <em>already in FreeAgent.</em>',
+    tale: 'Month end. Orders in one window, FreeAgent in the other, and an afternoon of typing between them. This plugin does the typing the moment an order is paid.',
     say: 'Each paid order becomes a contact, an invoice with the VAT rate per line and a payment, so it shows as paid in FreeAgent. No retyping.',
     facts: ['Free', 'FreeAgent', 'Keys stay on your site'],
     cta: [['Get it free', WP('skillmerc-sync-for-freeagent'), 'up'], ['Setup guide', '/freeagent-woocommerce/help/send-woocommerce-orders-to-freeagent/', '']],
     promo: ['Paid orders become FreeAgent invoices with the right VAT.', 'Get it free', WP('skillmerc-sync-for-freeagent')] },
-  'shopify-freeagent': { cat: 'books', name: 'Ledgerline', form: 3, r: 'ledger', hero: true,
-    tag: 'Shopify sales, <em class="hg">straight into FreeAgent.</em>',
-    say: 'FreeAgent switched off its Shopify integration on 30 April 2025. Ledgerline sends paid Shopify orders to FreeAgent as invoices with VAT, marked paid, with refunds as credit notes.',
-    facts: ['Shopify app', '*Coming soon', 'FreeAgent'], cta: [['Get the launch email', '#notify', 'dn']],
-    promo: ['Paid Shopify orders into FreeAgent, with VAT. Coming soon.', 'Get the launch email', '#notify'] },
-  'shopify-sage-accounting': { cat: 'books', name: 'Shopify to Sage Accounting', form: 3, r: 'ledger', hero: true,
-    tag: 'Shopify sales, <em class="hg">into Sage.</em>',
+  'shopify-freeagent': { cat: 'books', name: 'Ledgerline', doc: 'inv', docNo: 'SHOP-1042', stamp: 'Booked', hero: true,
+    tag: 'Shopify sales, <em>straight into FreeAgent.</em>',
+    tale: 'On 30 April 2025 FreeAgent switched off its Shopify integration and told sellers to record sales by hand. Ledgerline puts the link back.',
+    say: 'Ledgerline sends paid Shopify orders to FreeAgent as invoices with VAT, marked paid, with refunds as credit notes.',
+    facts: ['Shopify app', '*In review at Shopify', 'FreeAgent'], cta: [['Get the launch email', '#notify', 'dn']],
+    promo: ['Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.', 'Get the launch email', '/shopify-freeagent/#notify'] },
+  'shopify-sage-accounting': { cat: 'books', name: 'Shopify to Sage Accounting', doc: 'inv', stamp: 'Booked', hero: true,
+    tag: 'Shopify sales, <em>into Sage.</em>',
     say: 'Your options for getting Shopify orders into Sage Accounting today, and what Ledgerline for Sage UK will do.',
     facts: ['Guide', 'Ledgerline coming soon'], cta: [] },
-  'list-table-scraper': { cat: 'tables', name: 'List & Table Scraper', form: 4, r: 'window', hero: true,
-    tag: 'Any web table. <em class="hg">Into Excel.</em>',
+  'list-table-scraper': { cat: 'tables', name: 'List & Table Scraper', doc: 'print', stamp: 'Exported', hero: true,
+    tag: 'Any web table. <em>Into Excel.</em>',
+    tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
     say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Nothing leaves your browser.',
     facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month'],
     cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '#demo', 'dn']],
     promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')] },
-  privacy: { cat: 'tables', name: 'Privacy', form: 4 },
-  threadkeep: { cat: 'tables', name: 'Threadkeep', form: 4, r: 'window', hero: true,
-    tag: 'DeepSeek chats, <em class="hg">saved properly.</em>',
+  privacy: { cat: 'more', name: 'Privacy' },
+  threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
+    tag: 'DeepSeek chats, <em>saved properly.</em>',
+    tale: 'A long DeepSeek chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep saves the whole thing to a file on your own computer.',
     say: 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Long chats are joined in order, and everything stays in your browser.',
     facts: ['Firefox, in review', 'Chrome coming soon', 'Stays in your browser'], cta: [['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
-  riskwell: { cat: 'more', name: 'Riskwell for Jira', form: 5, hero: true,
-    tag: 'Every project risk, <em class="hg">in one register.</em>',
+  riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
+    tag: 'Every project risk, <em>in one register.</em>',
+    tale: 'The risk register is a spreadsheet. It was last opened at kickoff. Riskwell keeps it inside the Jira project, next to the work, and emails the risk owner when a review is due.',
     say: 'Riskwell keeps a risk register in each Jira project: inherent and residual scores, a heat map, review reminders, CSV export and a Rovo agent.',
     facts: ['Jira', 'Heat map', 'CSV export'], cta: [] },
-  apify: { cat: 'data', name: 'Data tools', form: 5, r: 'grid', link: '/#data',
+  apify: { cat: 'data', name: 'Data tools', link: '/#data',
     promo: ['11 scrapers and monitors on Apify. Pay only for the rows you get.', 'Browse on Apify', 'https://apify.com/skillmerc'] },
-  'form-d': { cat: 'data', name: 'Form D filings', form: 5 },
-  guides: { cat: 'more', name: 'Guides', form: 6 },
-  'decision-log-confluence': { cat: 'more', name: 'Decision Keeper for Confluence', form: 3, hero: true,
-    tag: 'Every decision, <em class="hg">on the record.</em>',
+  'form-d': { cat: 'data', name: 'Form D filings' },
+  guides: { cat: 'more', name: 'Guides' },
+  'decision-log-confluence': { cat: 'more', name: 'Decision Keeper for Confluence', doc: 'min', stamp: 'On record', hero: true,
+    tag: 'Every decision, <em>on the record.</em>',
+    tale: 'Six months on, someone asks why you chose that vendor. The answer was said out loud in a meeting. Decision Keeper gives each decision a record in Confluence and lists them in one register.',
     say: 'Decision records, the Decision Register, a draft check and the Decision Keeper Rovo agent, inside Confluence.',
     facts: ['Confluence', 'Decision Register', 'Rovo agent'], cta: [] },
-  'ship-rules': { cat: 'more', name: 'Ship Rules for Jira', form: 1, hero: true,
-    tag: 'Proof first. <em class="hg">Then it ships.</em>',
+  'ship-rules': { cat: 'more', name: 'Ship Rules for Jira', doc: 'tag', stamp: 'Not yet', hero: true,
+    tag: 'Proof first. <em>Then it ships.</em>',
+    tale: '"Done" means one thing to whoever wrote the code and another to whoever gets the call when it breaks. Ship rules say what must be true before a Jira work item ships, and ask for the proof.',
     say: 'Ship rules say what must be true before a Jira work item ships. People and coding agents attach the evidence, and rules marked for a person stay open until a person confirms.',
-    facts: ['Jira', 'Atlassian MCP server', 'Built on Forge'], cta: [] }, closewell: { cat: 'more', name: 'Closewell', form: 0, link: '/closewell/install/' },
+    facts: ['Jira', 'Atlassian MCP server', 'Built on Forge'], cta: [] }, closewell: { cat: 'more', name: 'Closewell', link: '/closewell/install/' },
 };
 // schema.org SoftwareApplication facts for released products (prices as listed on each page)
 const SCHEMA = {
@@ -105,52 +118,102 @@ const SCHEMA = {
   'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
 };
 const CARDS = [
-  { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and one-click labels.', ft: 'Free / Pro', r: 'parcel', href: '/sa-shipping-woocommerce/' },
-  { k: 'shopify-freeagent', m: 'Bookkeeping', b: 'Ledgerline for Shopify', p: 'Paid Shopify orders into FreeAgent, with VAT. Coming soon.', ft: 'Coming soon', r: 'ledger', href: '/shopify-freeagent/' },
-  { k: 'list-table-scraper', m: 'Web tables', b: 'List & Table Scraper', p: 'Any web table or list into Excel in one click.', ft: 'Free / Pro', r: 'window', href: '/list-table-scraper/' },
-  { k: 'payfast-woocommerce', m: 'Payments', b: 'PayFast for WooCommerce', p: 'Card and EFT payments that mark orders paid by themselves.', ft: 'Free', r: 'coin', href: '/payfast-woocommerce/' },
-  { k: 'sage-accounting-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to Sage', p: 'Paid orders become Sage invoices with the right VAT.', ft: 'Free', r: 'ledger', href: '/sage-accounting-woocommerce/' },
-  { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', r: 'ledger', href: '/freeagent-woocommerce/' },
-  { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', r: 'grid', href: '/form-d/' },
+  { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and locker pickers. Pro adds booking and labels.', ft: 'Free / Pro', href: '/sa-shipping-woocommerce/' },
+  { k: 'shopify-freeagent', m: 'Bookkeeping', b: 'Ledgerline for Shopify', p: 'Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.', ft: 'In review', href: '/shopify-freeagent/' },
+  { k: 'list-table-scraper', m: 'Web tables', b: 'List & Table Scraper', p: 'Any web table or list into Excel in one click.', ft: 'Free / Pro', href: '/list-table-scraper/' },
+  { k: 'payfast-woocommerce', m: 'Payments', b: 'PayFast for WooCommerce', p: 'Card and EFT payments that mark orders paid by themselves.', ft: 'Free', href: '/payfast-woocommerce/' },
+  { k: 'sage-accounting-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to Sage', p: 'Paid orders become Sage invoices with the right VAT.', ft: 'Free', href: '/sage-accounting-woocommerce/' },
+  { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
+  { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
 const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent']];
+// The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
+const PLIST = ({ nData, minPrice }) => [
+  ['WooCommerce', '4 plugins', [
+    ['101', 'Show real courier prices at checkout', 'Shipping for WooCommerce: The Courier Guy, Fastway, Pudo, PAXI', '<b>Free.</b> Pro USD 49 a year', 'live', 'Live', '/sa-shipping-woocommerce/'],
+    ['102', 'Take card and EFT payments that mark the order paid', 'PayFast for WooCommerce', '<b>Free</b>', 'live', 'Live', '/payfast-woocommerce/'],
+    ['103', 'Put every paid order into Sage, with the VAT right', 'WooCommerce to Sage Accounting', '<b>Free</b>', 'live', 'Live', '/sage-accounting-woocommerce/'],
+    ['104', 'Put every paid order into FreeAgent, marked paid', 'WooCommerce to FreeAgent', '<b>Free</b>', 'live', 'Live', '/freeagent-woocommerce/']]],
+  ['Shopify', '1 app', [
+    ['201', 'Send paid Shopify orders to FreeAgent as invoices', 'Ledgerline', 'Planned: from USD 9 a month, 14-day trial', 'review', 'In review at Shopify', '/shopify-freeagent/']]],
+  ['Jira and Confluence', '3 apps', [
+    ['301', 'Keep a risk register and heat map in each Jira project', 'Riskwell', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/riskwell/'],
+    ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
+    ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'On Atlassian Marketplace after review', 'review', 'In review at Atlassian', '/ship-rules/']]],
+  ['Your browser', '2 add-ons', [
+    ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
+    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep', 'Free plan and Pro at launch', 'review', 'In review at Firefox', '/threadkeep/']]],
+  ['Public data', `${nData} tools, 1 free list`, [
+    ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
+    ['502', 'See which companies raised money this week', 'SEC Form D filings, updated daily', '<b>Free</b>', 'live', 'Live', '/form-d/']]],
+];
+
+// ---------- orbs ----------
+// A glass sphere with a small product screen inside. Figures in the screens are examples (the Form D one is live data).
+const row = (a, b, cls = '') => `<span class="row${cls ? ' ' + cls : ''}"><span>${esc(a)}</span><b>${esc(b)}</b></span>`;
+const SCREEN = {
+  ship: () => `<span class="cap">Checkout &middot; shipping</span>${row('The Courier Guy', 'R 99.00', 'on')}${row('Fastway', 'R 85.00')}${row('Pudo locker', 'R 60.00')}`,
+  pay: () => `<span class="cap">Order #1042</span><span class="big">R 1 249</span><span class="chip">Paid</span><span class="sub">Order moved to Processing</span>`,
+  books: ({ no = 'Invoice 1042' } = {}) => `<span class="cap">${esc(no)}</span>${row('Net', '\u00a379.17')}${row('VAT 20%', '\u00a315.83')}${row('Total', '\u00a395.00', 'tot')}<span class="chip">In the books</span>`,
+  tables: () => `<span class="cap">6 rows &middot; export.xlsx</span>${row('Desk lamp', '$39')}${row('Office chair', '$189')}${row('Monitor arm', '$59')}${row('USB-C hub', '$29')}`,
+  data: ({ rows = [], date = '' } = {}) => `<span class="cap">Form D${date ? ' &middot; ' + esc(date) : ''}</span>${(rows.length ? rows : [['Updated every weekday', '']]).map(([a, b]) => row(a, b)).join('')}`,
+  chat: () => `<span class="cap">DeepSeek chat</span><span class="big">24 of 24</span><span class="sub">messages saved, in order</span><span class="fm"><span>MD</span><span>TXT</span><span>JSON</span><span>PDF</span><span>DOC</span></span>`,
+  risk: () => `<span class="cap">Risk register</span><span class="grid5">${['', '', 'm', 'h', 'h', '', '', 'm', 'x', 'h', '', '', 'm', 'm', 'h', '', '', '', 'm', 'm', '', '', '', '', ''].map(c => `<i${c ? ` class="${c}"` : ''}></i>`).join('')}</span><span class="chip wait">Review due</span>`,
+  min: () => `<span class="cap">Decision record</span><span class="bar" style="width:100%"></span><span class="bar" style="width:82%"></span><span class="bar" style="width:64%"></span><span class="chip">Decided</span>`,
+  tag: () => `<span class="cap">Ship rules</span><span class="tick y"><i></i>Tests linked</span><span class="tick y"><i></i>Rollback noted</span><span class="tick"><i></i>Reviewed by a person</span><span class="chip wait">Not ready yet</span>`,
+};
+const orb = (kind, { tag = 'span', attrs = '', opts } = {}) => `<${tag} class="orb"${attrs}><span class="scr">${SCREEN[kind](opts)}</span></${tag}>`;
+const DOC2SCR = { label: 'ship', slip: 'pay', inv: 'books', print: 'tables', card: 'data', chat: 'chat', risk: 'risk', min: 'min', tag: 'tag' };
+const orbFig = (doc, opts) => DOC2SCR[doc] ? `<div class="ex-doc" aria-hidden="true">${orb(DOC2SCR[doc], { opts })}</div>` : '';
+const WIRE = '<svg viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(-18 50 50)"><circle cx="50" cy="50" r="49"/>' + [12, 26, 40].map(v => `<ellipse cx="50" cy="50" rx="49" ry="${v}"/><ellipse cx="50" cy="50" rx="${v}" ry="49"/>`).join('') + '<path d="M1 50h98M50 1v98"/></g></svg>';
 
 const registry = [];
 let SHOTS = {}; try { SHOTS = JSON.parse(fs.readFileSync(path.join(HERE, 'shots.json'), 'utf8')); } catch {}
 const shotSrc = (s) => s.p || `/assets/shots/${s.f}`;
 
 // ---------- shared chrome ----------
-const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/fraunces-italic.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
-const navHtml = () => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<span class="clock mono" aria-hidden="true"><i></i><span data-clock>Pretoria</span></span><button class="kbtn mono" type="button" data-k aria-label="Search tools and guides">Search <kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="https://apify.com/skillmerc">Data</a><a class="pill" href="mailto:kyle@skillmerc.com">Contact</a></nav></div></header>`;
+const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#050506"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
+const navHtml = () => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="/#data">Data</a><a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header>`;
 const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-grid">
-<div class="foot-about">${brand}<p>The boring parts, handled. Plugins and tools for online stores, bookkeeping and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
-<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="${AMO('transcript-pull-for-youtube')}">Transcript Pull</a></li></ul></div>
+<div class="foot-about">${brand}<p>The boring parts, handled. Small tools for online shops, bookkeeping, project teams and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li></ul></div>
 <div><h2 class="fh">Data and help</h2><ul><li><a href="/#data">Data tools on Apify</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/guides/">All guides</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li></ul></div>
-<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li></ul></div>
-</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd</span><span class="mono">Hg &middot; 80 &middot; 25.75&deg; S 28.23&deg; E</span></div></div></footer>`;
-const scripts = (merc) => `${merc ? `<script src="/assets/merc.js?v=${ver()}" defer></script>` : ''}<script src="/assets/site.js?v=${ver()}" defer></script>`;
+<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li></ul></div>
+</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. ${REG}</span><span>The boring parts, handled.</span></div></div></footer>`;
+const scripts = () => `<script src="/assets/site.js?v=${ver()}" defer></script>`;
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const btn = ([label, href, dir, aria], cls) => `<a class="btn ${cls}${dir ? ' ' + dir : ''}" href="${href}"${aria ? ` aria-label="${esc(aria)}"` : ''}${/^https?:/.test(href) ? ' rel="noopener"' : ''}>${esc(label)} ${dir === 'up' ? ARROW_UP : dir === 'dn' ? ARROW_DN : ARROW}</a>`;
 const facts = (list) => `<ul class="facts">${list.map(f => f.startsWith('*') ? `<li class="hot">${esc(f.slice(1))}</li>` : `<li>${esc(f)}</li>`).join('')}</ul>`;
-const tcard = (c) => `<a class="tcard" href="${c.href}" data-rv><div class="pic"><img src="${R(c.r)}" alt="" width="1000" height="1000" loading="lazy"></div><div class="tx"><span class="mono">${esc(c.m)}</span><b>${esc(c.b)}</b><p>${esc(c.p)}</p><div class="ft"><span class="mono">${esc(c.ft)}</span><span class="go">${ARROW}</span></div></div></a>`;
+const tcard = (c) => `<a class="tcard" href="${c.href}"><span class="lbl">${esc(c.m)}</span><b>${esc(c.b)}</b><p>${esc(c.p)}</p><span class="ft"><span>${esc(c.ft)}</span>${ARROW}</span></a>`;
+const secRule = (no, label, note = '') => `<div class="sec-rule"><span class="tab">${esc(no)} &middot; ${esc(label)}</span>${note ? `<span class="typed">${note}</span>` : ''}</div>`;
+
+// Readme text arrives with bare URLs and a "Screenshots" caption list: label the links, drop what the gallery already shows,
+// and give a button its own line when a sentence follows it.
+const linkLabel = (u) => /youtu\.?be/.test(u) ? 'Watch the video' : /checkout\.freemius\.com/.test(u) ? 'Pro checkout' : u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+const autolink = (html) => html.split(/(<a\b[\s\S]*?<\/a>|<pre\b[\s\S]*?<\/pre>|<code\b[\s\S]*?<\/code>|<script\b[\s\S]*?<\/script>|<[^>]+>)/).map((seg, i) => i % 2 ? seg : seg.replace(/https?:\/\/[^\s<>"')]*[^\s<>"').,;:]/g, (u) => `<a href="${u}"${/skillmerc\.com/.test(u) ? '' : ' rel="noopener"'}>${linkLabel(u)}</a>`)).join('');
+const tidy = (html, isHub) => { let h = html.replace(/https:\/\/skillmerc\.github\.io\//g, 'https://skillmerc.com/'); if (isHub) h = h.replace(/<h2[^>]*>Screenshots<\/h2>\s*<ol>[\s\S]*?<\/ol>/, '');
+  h = h.replace(/<p>([\s\S]*?)<\/p>/g, (m, inner) => { const mm = inner.match(/^((?:\s*<a class="cta[^"]*"[^>]*>[^<]*<\/a>)+)\s*([\s\S]*\S[\s\S]*)$/); return mm ? `<p>${mm[1]}</p><p>${mm[2]}</p>` : m; });
+  h = h.replace(/<a href="(https?:\/\/[^"]+)">\1<\/a>/g, (m, u) => `<a href="${u}"${/skillmerc\.com/.test(u) ? '' : ' rel="noopener"'}>${linkLabel(u)}</a>`);
+  return autolink(h); };
 
 // ---------- content page shell ----------
 function docPage(rel, title, desc, body) {
   const url = BASE + '/' + rel.replace(/index\.html$/, '');
   const segs = rel.replace(/\/?index\.html$/, '').split('/').filter(Boolean);
-  const hub = HUBS[segs[0]] || { cat: 'more', name: 'SKILLMERC', form: 0 }; const cat = CATS[hub.cat];
+  const hub = HUBS[segs[0]] || { cat: 'more', name: 'SKILLMERC' }; const cat = CATS[hub.cat];
   const isHub = segs.length === 1 && hub.hero; const isGuide = segs[1] === 'help' && segs.length > 2;
   let rest = nod(body); let h1;
   const m = rest.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
   if (m) { h1 = m[1]; rest = rest.replace(m[0], ''); } else h1 = esc(title);
   if (segs[0] === 'list-table-scraper' && segs.length === 1) rest = rest.replace('<div style="position:relative;padding-bottom:56.25%', '<div id="demo" style="position:relative;padding-bottom:56.25%');
+  rest = tidy(rest, isHub);
   registry.push({ rel, segs, h1: strip(h1), url: '/' + rel.replace(/index\.html$/, '') });
   const crumbs = [['Home', '/']];
   if (hub.cat !== 'more') crumbs.push([cat.label, cat.a]);
   if (segs.length > 1 && !['privacy'].includes(segs[0])) crumbs.push([hub.name, hub.link || `/${segs[0]}/`]);
   if (isGuide) crumbs.push(['Guide', '/guides/']);
   const here = strip(h1); crumbs.push([here.length > 54 ? here.slice(0, 52).replace(/\s+\S*$/, '') + '...' : here, null]);
-  const crumbHtml = `<ol class="crumbs mono">${crumbs.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
+  const crumbHtml = `<ol class="crumbs">${crumbs.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
   const sc = isHub && SCHEMA[segs[0]] ? SCHEMA[segs[0]] : null;
   const app = sc ? ld({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: sc.name, applicationCategory: sc.cat, operatingSystem: sc.os, url, sameAs: sc.url, description: nod(desc), publisher: { '@type': 'Organization', name: 'SKILLMERC', url: BASE + '/' }, offers: sc.offers.map(([n, p]) => ({ '@type': 'Offer', name: n, price: String(p), priceCurrency: 'USD' })) }) : '';
   const bl = ld({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map(([t, h], i) => ({ '@type': 'ListItem', position: i + 1, name: nod(t), item: h ? BASE + h : url })) });
@@ -159,30 +222,28 @@ function docPage(rel, title, desc, body) {
   const meta = isGuide ? [`${Math.max(2, Math.round(words / 220))} min read`, hub.name] : segs[0] === 'apify' ? ['Runs on Apify', 'Pay per result'] : [];
   let band;
   if (isHub) {
-    band = `<header class="band tall"><canvas id="merc" data-form="${hub.form}" data-side="band" aria-hidden="true"></canvas>${poster(hub.form)}<div class="wrap">${crumbHtml}<h1>${h1}</h1><p class="display" data-wipe>${hub.tag}</p><p class="say" data-rv style="--d:2">${esc(hub.say)}</p><div data-rv style="--d:3">${facts(hub.facts)}</div>${hub.cta.length ? `<div class="row-ctas" data-rv style="--d:4">${hub.cta.map((c, i) => btn(c, i ? 'btn-ghost' : 'btn-cin')).join('')}</div>` : ''}</div><div class="scrolldown mono"><span>Details</span><i></i></div></header>`;
+    band = `<header class="band hub"><canvas id="ribbon" aria-hidden="true"></canvas><div class="wrap">${crumbHtml}<div class="hub-grid"><div class="ex-tx"><h1>${h1}</h1><p class="display">${hub.tag}</p>${hub.tale ? `<p class="tale">${esc(hub.tale)}</p>` : ''}<p class="say">${esc(hub.say)}</p>${facts(hub.facts)}${hub.cta.length ? `<div class="row-ctas">${hub.cta.map((c, i) => btn(c, i ? 'btn-line' : '')).join('')}</div>` : ''}</div>${orbFig(hub.doc, hub.docNo ? { no: hub.docNo } : undefined)}</div></div></header>`;
   } else {
-    band = `<header class="band"><canvas id="merc" data-form="${hub.form}" data-side="band" aria-hidden="true"></canvas>${poster(hub.form)}<div class="wrap">${crumbHtml}<h1>${h1}</h1>${meta.length ? `<div class="meta">${meta.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div></header>`;
+    band = `<header class="band"><div class="wrap">${crumbHtml}<h1>${h1}</h1>${meta.length ? `<div class="meta">${meta.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div></header>`;
   }
-  const promo = !isHub && hub.promo && hub.r ? `<a class="promo" href="${hub.promo[2]}"${/^https?:/.test(hub.promo[2]) ? ' rel="noopener"' : ''}><img src="${R(hub.r)}" alt="" width="1000" height="1000" loading="lazy"><span class="mono">The tool for this</span><b>${esc(hub.name)}</b><p>${esc(hub.promo[0])}</p><span class="tlink">${esc(hub.promo[1])} ${ARROW_UP}</span></a>` : '';
+  // The tool for this page: a card beside the text on wide screens, a dock along the bottom on small ones.
+  const offer = isHub ? (hub.cta[0] ? [hub.say, hub.cta[0][0], hub.cta[0][1]] : null) : (hub.promo || null);
+  const ext = offer && /^https?:/.test(offer[2]);
+  const promo = offer ? `<a class="promo" href="${offer[2]}"${ext ? ' rel="noopener"' : ''}><span class="ph">${isHub ? 'This tool' : 'The tool for this job'}</span><span class="pb"><b>${esc(hub.name)}</b><p>${esc(isHub ? (hub.promo ? hub.promo[0] : hub.say) : offer[0])}</p></span><span class="go">${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
+  const dock = offer ? `<a class="dock" href="${offer[2]}"${ext ? ' rel="noopener"' : ''} data-dock><b>${esc(hub.name)}</b><span>${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
   const shots = isHub ? (SHOTS[segs[0]] || []) : [];
-  const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="more-head"><h2 class="h2" data-wipe style="font-size:clamp(2rem,4.4vw,4rem)">See it <em class="hg">working.</em></h2><span class="mono" style="color:var(--mute)">Real screenshots &middot; ${shots.length}</span></div><div class="shot-grid">${shots.map((s, i) => `<figure class="shot${i === 0 ? ' lead' : ''}"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async">${s.cap ? `<figcaption><span class="mono">${String(i + 1).padStart(2, '0')}</span>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
+  const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="shots-head"><h2 class="hx">See it working.</h2><span class="typed">${shots.length} real screenshots</span></div><div class="shot-grid">${shots.map((s, i) => `<figure class="shot${i === 0 ? ' lead' : ''}"><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async">${s.cap ? `<figcaption><b>${String(i + 1).padStart(2, '0')}</b>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
   const pick = CARDS.filter(c => c.k !== segs[0]).slice(0, 3);
-  const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="h2" style="font-size:clamp(2rem,4vw,3.6rem)">More from <em class="hg">the kit.</em></h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
-  return `${head({ title, desc, url, extra: bl + app })}<body class="doc"><div class="grain" aria-hidden="true"></div>${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${scripts(true)}</body></html>`;
+  const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
+  return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
 }
 
 // ---------- homepage ----------
 const money = n => n == null ? '' : n >= 1e9 ? '$' + (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? '$' + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + n;
 const longDate = day => new Date(day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-const scene = ({ i, side, id, rail, n, label, plat, h2, say, fx, ctas, also = '', demo = '' }) => `<section class="scene" id="${id}" data-stage="${i + 1}" data-form="${i}" data-side="${side}" data-rail="${rail}"><span class="ghost" aria-hidden="true">${n}</span><div class="wrap">${demo}<div class="scene-in"><div class="tag mono" data-rv><b>${n}</b><i></i><span>${label}</span><i></i><span>${plat}</span></div><h2 data-wipe style="--d:1">${h2}</h2><p class="say" data-rv style="--d:2">${say}</p><div data-rv style="--d:3">${facts(fx)}</div><div class="row-ctas" data-rv style="--d:4">${ctas.map((c, k) => btn(c, k ? 'btn-ghost' : 'btn-bone')).join('')}</div>${also ? `<p class="also" data-rv style="--d:5">${also}</p>` : ''}</div></div></section>`;
+const shortDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Africa/Johannesburg' });
+const exhibit = ({ id, n, label, plat, h2, tale, say, fx, ctas, also = '', doc, flip = false }) => `<section class="exhibit${flip ? ' flip' : ''}" id="${id}">${doc}<div class="ex-tx"><p class="kick lbl" data-rv><b>${n}</b><span>${label}</span><span>${plat}</span></p><h2 class="hx" data-rv style="--d:1">${h2}</h2><p class="tale" data-rv style="--d:2">${tale}</p><p class="say" data-rv style="--d:3">${say}</p><div data-rv style="--d:4">${facts(fx)}</div><div class="row-ctas" data-rv style="--d:5">${ctas.map((c, k) => k ? `<a class="tlink" href="${c[1]}"${c[3] ? ` aria-label="${esc(c[3])}"` : ''}>${esc(c[0])} ${ARROW}</a>` : btn(c, '')).join('')}</div>${also ? `<p class="also" data-rv style="--d:6">${also}</p>` : ''}</div></section>`;
 
-const DEMOS = {
-  ship: `<div class="demo" data-demo="ship" aria-hidden="true"><div class="dh"><span>Checkout &middot; shipping</span><span>Example</span></div><ul class="opts"><li><i></i><b>The Courier Guy</b><em>Door to door</em><s data-v="R 99.00">R 99.00</s></li><li><i></i><b>Fastway Couriers</b><em>Door to door</em><s data-v="R 85.00">R 85.00</s></li><li><i></i><b>Pudo locker</b><em>Sandton City</em><s data-v="R 60.00">R 60.00</s></li></ul><div class="df"><span class="chip">Live rates</span><span class="chip ok">Label PDF ready</span></div></div>`,
-  pay: `<div class="demo" data-demo="pay" aria-hidden="true"><div class="dh"><span>Order #1042</span><span>R 1 249.00</span></div><ol class="steps"><li>Shopper pays on PayFast</li><li>Payment notice received</li><li>Signature and amount checked</li><li>Order marked as paid</li></ol><div class="df"><span class="chip st" data-a="Pending payment" data-b="Processing">Pending payment</span><span class="chip">No refresh needed</span></div></div>`,
-  books: `<div class="demo" data-demo="books" aria-hidden="true"><div class="dh"><span>WooCommerce order #1042</span><span>Paid</span></div><div class="lines"><p><b>Linen shirt &times; 2</b><s>&pound;90.00</s></p><p><b>Shipping</b><s>&pound;5.00</s></p></div><div class="inv"><div class="dh"><span>Invoice in your books</span><span class="stamp">Paid</span></div><p><b>Net</b><s>&pound;79.17</s></p><p><b>VAT 20%</b><s>&pound;15.83</s></p><p class="tot"><b>Total</b><s>&pound;95.00</s></p></div></div>`,
-  tables: `<div class="demo" data-demo="tables" aria-hidden="true"><div class="dh"><span>Any web page &rarr; Excel</span><span class="cnt">0 rows</span></div><div class="sheet"><div class="r h"><span>Name</span><span>Price</span><span>Rating</span></div>${[['Desk lamp','$39','4.6'],['Office chair','$189','4.4'],['Monitor arm','$59','4.7'],['USB-C hub','$29','4.3'],['Standing mat','$45','4.5'],['Webcam','$69','4.2']].map(r => `<div class="r">${r.map(c => `<span>${c}</span>`).join('')}</div>`).join('')}</div><div class="df"><span class="chip pg">Page 1</span><span class="chip ok">Download .xlsx</span></div></div>`,
-};
-const feedDemo = (day) => { if (!day) return ''; const ops = day.rows.filter(r => !r.pooled && r.sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)).slice(0, 6); return `<div class="demo" data-demo="feed" aria-hidden="true"><div class="dh"><span><i class="dot"></i>SEC Form D &middot; live data</span><span>${esc(longDate(day.day))}</span></div><ul class="feed">${ops.map(r => `<li><b>${esc(r.name)}</b><em>${esc([r.city, r.state].filter(Boolean).join(', '))}</em><s>${money(r.sold)}</s></li>`).join('')}</ul></div>`; };
 const PICK = {
   q: 'Where do you sell?', a: [
     ['WooCommerce', { q: 'What eats your time?', a: [
@@ -192,101 +253,126 @@ const PICK = {
       ['Bookkeeping', { q: 'Which accounting app?', a: [['FreeAgent', 'll'], ['Sage Accounting', 'shsage']] }],
       ['Copying data off websites', 'lts']] }],
     ["I don't run a store", { q: 'What do you need?', a: [
-      ['Tables and lists from websites', 'lts'], ['Company and funding data', 'data'], ['YouTube transcripts', 'tp'], ['Saving DeepSeek chats', 'tk']] }]] };
+      ['Tables and lists from websites', 'lts'], ['Company and funding data', 'data'], ['Saving DeepSeek chats', 'tk']] }]] };
 const PICKS = {
-  ship: ['parcel', 'Shipping for WooCommerce', 'Live The Courier Guy and Fastway rates, Pudo lockers and PAXI points at checkout. Pro books the courier and prints the label.', 'Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), '/sa-shipping-woocommerce/'],
-  pay: ['coin', 'PayFast for WooCommerce', 'Card, instant EFT, SnapScan and Mobicred. Each payment is checked, then the order marks itself paid.', 'Get it free', WP('skillmerc-payment-gateway-for-payfast'), '/payfast-woocommerce/'],
-  sage: ['ledger', 'WooCommerce to Sage Accounting', 'Every paid order becomes a customer, a VAT invoice and a payment in Sage. Free.', 'Get it free', WP('skillmerc-sync-for-sage-accounting'), '/sage-accounting-woocommerce/'],
-  fa: ['ledger', 'WooCommerce to FreeAgent', 'Every paid order becomes a contact, a VAT invoice and a payment in FreeAgent. Free.', 'Get it free', WP('skillmerc-sync-for-freeagent'), '/freeagent-woocommerce/'],
-  ll: ['ledger', 'Ledgerline for Shopify', 'Paid Shopify orders into FreeAgent as VAT invoices, marked paid. Coming soon: get one email at launch.', 'Get the launch email', '/shopify-freeagent/#notify', '/shopify-freeagent/'],
-  shsage: ['ledger', 'Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
-  lts: ['window', 'List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
-  data: ['grid', 'Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
-  tp: ['window', 'Transcript Pull for YouTube', 'Read, search, copy or download the transcript of any YouTube video. Free.', 'Add to Firefox, free', AMO('transcript-pull-for-youtube'), ''],
-  tk: ['window', 'Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. In review at Firefox Add-ons.', 'See Threadkeep', '/threadkeep/', ''],
+  ship: ['Shipping for WooCommerce', 'Live The Courier Guy and Fastway rates, Pudo lockers and PAXI points at checkout. Pro books The Courier Guy and downloads the label PDF.', 'Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), '/sa-shipping-woocommerce/'],
+  pay: ['PayFast for WooCommerce', 'Card, instant EFT, SnapScan and Mobicred. Each payment is checked, then the order marks itself paid.', 'Get it free', WP('skillmerc-payment-gateway-for-payfast'), '/payfast-woocommerce/'],
+  sage: ['WooCommerce to Sage Accounting', 'Every paid order becomes a customer, a VAT invoice and a payment in Sage. Free.', 'Get it free', WP('skillmerc-sync-for-sage-accounting'), '/sage-accounting-woocommerce/'],
+  fa: ['WooCommerce to FreeAgent', 'Every paid order becomes a contact, a VAT invoice and a payment in FreeAgent. Free.', 'Get it free', WP('skillmerc-sync-for-freeagent'), '/freeagent-woocommerce/'],
+  ll: ['Ledgerline for Shopify', 'Paid Shopify orders into FreeAgent as VAT invoices, marked paid. In review at Shopify: get one email at launch.', 'Get the launch email', '/shopify-freeagent/#notify', '/shopify-freeagent/'],
+  shsage: ['Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
+  lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
+  data: ['Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
+  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. In review at Firefox Add-ons.', 'See Threadkeep', '/threadkeep/', ''],
 };
+// In the in-tray: built and tested, waiting on a store's review. Update as reviews land.
 const LAB = [
-  ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT.', 'In review at Shopify'],
-  ['/threadkeep/', 'Threadkeep', 'Save a DeepSeek chat as PDF, Markdown or Word.', 'In review at Firefox Add-ons'],
-  ['/riskwell/', 'Riskwell', 'A risk register and risk matrix inside Jira.', 'Submitted to Atlassian'],
-  ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review at Atlassian'],
+  ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT.', 'In review', 'Shopify'],
+  ['/threadkeep/', 'Threadkeep', 'Save a DeepSeek chat as PDF, Markdown or Word.', 'In review', 'Firefox'],
+  ['/riskwell/', 'Riskwell', 'A risk register and risk matrix inside Jira.', 'In review', 'Atlassian'],
+  ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
+  ['/ship-rules/', 'Ship Rules', 'Proof before a Jira work item ships.', 'In review', 'Atlassian'],
 ];
 export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}) {
   const day = fdDays.find(d => d.rows && d.rows.some(r => !r.pooled && r.sold));
   const guides = registry.filter(r => r.segs[1] === 'help' && r.segs.length > 2);
   const per1k = actors.map(a => (String(priceLine(a)).match(/USD ([\d.]+) per 1,000/) || [])[1]).filter(Boolean).sort((x, y) => x - y);
   const minPrice = per1k.length ? per1k[0] : null;
-  const kit = [
-    ['01', 'Shipping', 'Live courier rates at checkout. Labels in one click.', 'WooCommerce', 'Free / Pro', '#shipping', 'parcel'],
-    ['02', 'Payments', 'Card and EFT payments that mark orders paid by themselves.', 'WooCommerce', 'Free', '#payments', 'coin'],
-    ['03', 'Bookkeeping', 'Every paid order lands in Sage or FreeAgent with the right VAT.', 'WooCommerce, Shopify', 'Free / Soon', '#books', 'ledger'],
-    ['04', 'Web tables', 'Any table or list on the web, into Excel in one click.', 'Firefox', 'Free / Pro', '#tables', 'window'],
-    ['05', 'Data', 'Company filings, funding rounds and transcripts, by the row.', 'Apify', 'Pay per row', '#data', 'grid'],
+  const ops = day ? day.rows.filter(r => !r.pooled && r.sold).sort((a, b) => (b.sold || 0) - (a.sold || 0)) : [];
+  const dataOpts = { rows: ops.slice(0, 4).map(r => [r.name.length > 20 ? r.name.slice(0, 19).replace(/[\s,.]+$/, '') : r.name, money(r.sold)]), date: day ? new Date(day.day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '' };
+  // hero orbs: [screen, size, x%, y%, z, parallax depth, link, name, mobile size, mobile x%, mobile y%, opts]
+  const O = [
+    ['pay', 'clamp(150px,15vw,228px)', 54, 5, 2, .6, '#payments', 'Payments', '34vw', 2, 2],
+    ['ship', 'clamp(200px,21.5vw,330px)', 76, 13, 4, 1.4, '#shipping', 'Courier shipping', '50vw', 38, 0],
+    ['books', 'clamp(170px,18vw,276px)', 55, 47, 4, 1.1, '#books', 'Bookkeeping', '42vw', 6, 46],
+    ['tables', 'clamp(150px,15.5vw,236px)', 80, 52, 2, 1.8, '#tables', 'Web tables into Excel', '36vw', 56, 54],
+    ['data', 'clamp(130px,12.5vw,190px)', 69, 71, 5, .9, '#data', 'Public data', '0px', 0, 0, dataOpts],
   ];
   let formd = '';
   if (day) {
-    const ops = day.rows.filter(r => !r.pooled).sort((a, b) => (b.sold || 0) - (a.sold || 0)); const top = ops.slice(0, 5);
-    formd = `<div class="slab" data-rv><div class="slab-head"><div><div class="live mono"><i></i>Free list &middot; updated daily</div><h3 style="margin-top:12px">Who raised money on ${longDate(day.day)}</h3></div><a class="btn btn-ghost" href="/form-d/">See this week ${ARROW}</a></div>
+    const all = day.rows.filter(r => !r.pooled).sort((a, b) => (b.sold || 0) - (a.sold || 0)); const top = all.slice(0, 5);
+    formd = `<div class="ledger" data-rv><div class="ledger-head"><div><div class="fresh"><i></i>Free list, updated daily</div><h3 style="margin-top:10px">Who raised money on ${longDate(day.day)}</h3></div><a class="tlink" href="/form-d/">See this week ${ARROW}</a></div>
 <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Company</th><th class="hide-s">Where</th><th class="hide-s">Industry</th><th class="n">Raised so far</th></tr></thead><tbody>${top.map(r => `<tr><td>${esc(r.name)}</td><td class="hide-s">${esc([r.city, r.state].filter(Boolean).join(', '))}</td><td class="hide-s">${esc(r.industry || '')}</td><td class="n">${money(r.sold)}</td></tr>`).join('')}</tbody></table></div></div>`;
   }
-  const dlist = `<div class="slab" data-rv><div class="slab-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
+  const dlist = `<div class="ledger" data-rv><div class="ledger-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
   const pickG = ['payfast-order-still-pending', 'courier-guy-no-shipping-method', 'wikipedia-table-to-excel', 'freeagent-shopify-integration-discontinued', 'pudo-woocommerce', 'importhtml-not-working'];
   const glinks = pickG.map(s => guides.find(g => g.segs[2] === s)).filter(Boolean).concat(guides).filter((g, i, a) => a.indexOf(g) === i).slice(0, 6);
   const groupName = (seg) => (GUIDE_GROUPS.find(g => g[0] === seg) || [, 'Guide'])[1];
+  const plist = PLIST({ nData: actors.length, minPrice });
+  const allRows = plist.flatMap(g => g[2]); const nLive = allRows.filter(r => r[4] === 'live').length; const nReview = allRows.filter(r => r[4] === 'review').length; const nFree = allRows.filter(r => /<b>Free/.test(r[3])).length;
 
-  return `<canvas id="merc" aria-hidden="true"></canvas>${poster(0)}<div class="peek" aria-hidden="true"><img alt="" src="${R('parcel')}"></div>
-<div class="rail" aria-hidden="true"><span class="lbl mono">Intro</span><div class="tube"><div class="hgcol"></div><div class="ticks"></div></div><div class="bulb"></div></div>
-<section class="hero" data-stage="0" data-form="0" data-side="right" data-rail="Intro">
-<span class="anno tl mono">Fig. 01 &middot; Quicksilver, mid-pour</span><span class="anno tr mono">Hg &middot; 80 &middot; Liquid at room temperature</span>
+  return `<section class="hero"><canvas id="ribbon" aria-hidden="true"></canvas><div class="ribbon-fb" aria-hidden="true"></div>
+<div class="orbs" data-orbs><span class="orb wire" style="--s:clamp(120px,13vw,200px);--x:90%;--y:38%;--z:1;--k:.4;--i:0;--ms:26vw;--mx:74%;--my:62%">${WIRE}</span>${O.map(([k, s, x, y, z, dep, href, name, ms, mx, my, opts], i) => orb(k, { tag: 'a', opts, attrs: ` href="${href}" aria-label="${esc(name)}" style="--s:${s};--x:${x}%;--y:${y}%;--z:${z};--k:${dep};--i:${i + 1};--bt:${8 + i * 1.3}s;--bd:-${i * 2}s;--ms:${ms};--mx:${mx}%;--my:${my}%"` })).join('')}</div>
 <div class="wrap">
-<h1><span class="ln"><span>The boring</span></span><span class="ln" style="--d:1"><span>parts, <em class="hg">handled.</em></span></span></h1>
-<p class="lede">Plugins and tools that <b>take payments, book couriers, keep the books and pull data</b> for you. Most are free.</p>
-<div class="row-ctas">${btn(['Explore the kit', '#kit', 'dn'], 'btn-cin')}${btn(['Talk to a human', 'mailto:kyle@skillmerc.com', ''], 'btn-ghost')}</div>
+<p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
+<h1><span class="ln">The boring parts,</span> <span class="ln dim">handled.</span></h1>
+<p class="lede">Quoting couriers. Chasing payments. Retyping invoices. Copying tables. <b>One small tool per job.</b></p>
+<div class="row-ctas">${btn(['See the price list', '#kit', 'dn'], '')}<a class="tlink" href="#pick">Find my tool ${ARROW}</a></div>
 </div>
-<div class="hero-foot"><div class="wrap"><ul class="stats"><li><b>4</b><span class="mono">WordPress plugins</span></li><li><b>2</b><span class="mono">Browser add-ons</span></li><li><b>${actors.length}</b><span class="mono">Data tools</span></li><li><b>${guides.length}</b><span class="mono">How-to guides</span></li></ul><div class="coords mono">25.75&deg; S, 28.23&deg; E<br>Made in South Africa</div></div></div>
+<div class="wrap"><div class="runs"><span>Built for</span><a href="#kit">WooCommerce</a><a href="/shopify-freeagent/">Shopify</a><a href="/riskwell/">Jira</a><a href="/decision-log-confluence/">Confluence</a><a href="/list-table-scraper/">Firefox</a><a href="#data">Apify</a></div></div>
 </section>
 
-<section class="split" id="split" data-stage="1" data-form="7" data-side="mid" data-rail="Five jobs"><div class="split-head wrap"><div class="tag mono" data-rv><b>Fig. 02</b><i></i><span>The split</span></div><h2 class="h2" data-wipe>One drop. <em class="hg">Five jobs.</em></h2></div><div class="blabels" aria-label="The five jobs">${[['01', 'Shipping', '#shipping'], ['02', 'Payments', '#payments'], ['03', 'Bookkeeping', '#books'], ['04', 'Web tables', '#tables'], ['05', 'Data', '#data']].map(([n, l, h], k) => `<a class="blabel" data-bead="${k + 1}" href="${h}"><span class="mono">${n}</span><b>${l}</b></a>`).join('')}</div><p class="split-foot mono">Scroll to pour each one into shape</p></section>
-<section class="kit" id="kit" data-rail="The kit"><div class="wrap">
-<div class="kit-head"><h2 class="h2" data-wipe>The <em class="hg">kit.</em></h2><p data-rv>Five jobs you can stop doing by hand. Pick one.</p></div>
-<div class="rows">${kit.map(([n, nm, ds, pl, pr, href, r], i) => `<a href="${href}" data-peek="${R(r)}" data-rv style="--d:${i}"><span class="n mono">${n}</span><span class="nm">${nm}</span><span class="ds">${ds}</span><span class="pl mono">${pl}</span><span class="pr mono">${pr}</span><span class="go">${ARROW_DN}</span></a>`).join('')}</div>
+<section class="sec" id="kit"><div class="wrap">${secRule('02', 'Price list', 'Prices in US dollars')}
+<div class="sec-head"><h2 class="hx">The price list.</h2><p>Every tool, its job and what it costs.</p></div>
+<div class="plist">${plist.map(([g, sub, rows]) => `<div class="pgroup"><h3>${esc(g)}<small>${esc(sub)}</small></h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="no">${no}</span><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="stc"><span class="st ${st}">${esc(stl)}</span></span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
+
+<div class="pick" id="pick"><div><h2 class="hx">Not sure which? <span class="dim">Three clicks at most.</span></h2><p class="say">Answer two or three questions and get the one tool that fits.</p></div>
+<div class="pform" data-pick><div class="ph"><span>Find my tool</span><button class="back" type="button" hidden>Back</button></div><div class="pb"><div class="pq"><span class="lbl step" style="color:var(--mute)">Question 1</span><b class="ptitle" style="margin-top:8px">Where do you sell?</b><div class="opts2"></div></div><div class="pres" hidden><div><span class="lbl">Your tool</span><b class="pn"></b><p></p><div class="row-ctas"><a class="btn" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="again" type="button">Start over</button></div></div></div></div></div>
+<script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { n: v[0], p: v[1], c: v[2], h: v[3], m: v[4] }])) }).replace(/</g, '\\u003c')}</script></div>
 </div></section>
 
-<section class="pick" id="pick" data-rail="Pick"><div class="wrap"><div class="pick-in" data-rv><div class="pick-l"><div class="tag mono"><b>?</b><i></i><span>Not sure</span></div><h2 class="h2" data-wipe>Find yours <em class="hg">in two clicks.</em></h2><p class="say">Answer a couple of questions and get the one tool that fits.</p></div><div class="pick-r" data-pick><div class="pq"><div class="pmeta"><span class="mono step">Step 01</span><button class="tlink back" type="button" hidden>Back</button></div><b class="ptitle">Where do you sell?</b><div class="opts2"></div></div><div class="pres" hidden><img alt="" width="1000" height="1000" loading="lazy"><div><span class="mono">Your tool</span><b></b><p></p><div class="row-ctas"><a class="btn btn-cin" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="tlink again" type="button">Start over</button></div></div></div></div></div></div><script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { r: R(v[0]), n: v[1], p: v[2], c: v[3], h: v[4], m: v[5] }])) }).replace(/</g, '\\u003c')}</script></section>
-
-
-${scene({ i: 1, side: 'left', id: 'shipping', rail: 'Shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. <em class="hg">Zero copy&#8209;paste.</em>',
-  say: 'Shoppers see live The Courier Guy and Fastway rates, or pick a Pudo locker or PAXI point. Pro books The Courier Guy and prints the label from the order.',
-  fx: ['Free plugin', '*Pro USD 49 a year', 'South Africa'], ctas: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up', 'Get the shipping plugin free on WordPress.org'], ['How it works', '/sa-shipping-woocommerce/', '', 'How the shipping plugin works']], demo: DEMOS.ship })}
-${scene({ i: 2, side: 'right', id: 'payments', rail: 'Payments', n: '02', label: 'Payments', plat: 'WooCommerce', h2: 'Get paid. <em class="hg">The order updates itself.</em>',
+<section class="sec"><div class="wrap">${secRule('03', 'How they work', 'Example figures')}
+<div class="sec-head"><h2 class="hx">Five jobs, off your desk.</h2><p>What each looks like once it is handled.</p></div>
+<div class="exhibits">
+${exhibit({ id: 'shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
+  tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
+  say: 'Live The Courier Guy and Fastway rates, a Pudo locker picker and a PAXI point picker. Pro books The Courier Guy and downloads the label PDF from the order.',
+  fx: ['Free plugin', '*Pro USD 49 a year', 'South Africa'], ctas: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up', 'Get the shipping plugin free on WordPress.org'], ['How it works', '/sa-shipping-woocommerce/', '', 'How the shipping plugin works']], doc: orbFig('label') })}
+${exhibit({ id: 'payments', n: '02', label: 'Payments', plat: 'WooCommerce', flip: true, h2: 'Get paid. The order updates itself.',
+  tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself.',
   say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
-  fx: ['Free', 'PayFast', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], demo: DEMOS.pay })}
-${scene({ i: 3, side: 'left', id: 'books', rail: 'Books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, <em class="hg">already in the books.</em>',
+  fx: ['Free', 'PayFast', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') })}
+${exhibit({ id: 'books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
+  tale: 'Month end. Orders in one window, your accounts in the other, and an afternoon of typing between them. These plugins do the typing the moment an order is paid.',
   say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
   fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
-  also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', demo: DEMOS.books })}
-${scene({ i: 4, side: 'right', id: 'tables', rail: 'Tables', n: '04', label: 'Web tables', plat: 'Firefox', h2: 'Any web table. <em class="hg">Into Excel.</em>',
-  say: 'List &amp; Table Scraper finds the rows in one click, follows the Next button and exports CSV, Excel or JSON. Nothing leaves your browser.',
-  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '/list-table-scraper/#demo', '']],
-  also: 'Need YouTube transcripts instead? <a href="' + AMO('transcript-pull-for-youtube') + '">Transcript Pull</a> does that, free.', demo: DEMOS.tables })}
-${scene({ i: 5, side: 'left', id: 'data', rail: 'Data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, <em class="hg">by the row.</em>',
-  say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet. Pay only for the rows you get.',
-  fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']], demo: feedDemo(day) })}
+  also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', doc: orbFig('inv') })}
+${exhibit({ id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox', flip: true, h2: 'Any web table. Into Excel.',
+  tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
+  say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Nothing leaves your browser.',
+  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') })}
+${exhibit({ id: 'data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, by the row.',
+  tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
+  say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
+  fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
+  doc: orbFig('card', dataOpts) })}
+</div>
 ${formd}
 ${dlist}
+</div></section>
 
-<div class="slab lab" data-rail="Lab" data-rv><div class="slab-head"><h3>In the <em class="hg">lab.</em></h3><p>Built and tested. Waiting on store review.</p></div><div class="labs">${LAB.map(([h, n, p, s], i) => `<a href="${h}" data-rv style="--d:${i}"><span class="mono st"><i></i>${esc(s)}</span><b>${esc(n)}</b><p>${esc(p)}</p><span class="go">${ARROW}</span></a>`).join('')}</div></div>
+<section class="sec" id="lab"><div class="wrap">${secRule('04', 'In review', 'Waiting on store review')}
+<div class="sec-head"><h2 class="hx">Next up.</h2><p>Built and tested.</p></div>
+<div class="tray">${LAB.map(([h, n, p, s, who], i) => `<a href="${h}" data-rv style="--d:${i}"><b>${esc(n)}</b><p>${esc(p)}</p><span class="st review">${esc(s)} &middot; ${esc(who)}</span></a>`).join('')}</div>
+</div></section>
 
-<div class="slab" id="guides" data-rail="Guides" style="margin-top:14px"><div class="slab-head"><h2 class="h2" data-wipe style="font-size:clamp(2.2rem,4.4vw,4.2rem)">Stuck? <em class="hg">Read the fix.</em></h2><p data-rv>${guides.length} short guides for the errors stores actually hit.</p></div>
-<ul class="glinks">${glinks.map(g => `<li data-rv><a href="${g.url}">${esc(g.h1)}<span>${esc(groupName(g.segs[0]))}</span></a></li>`).join('')}</ul>
-<div class="row-ctas" style="margin-top:30px">${btn(['All guides', '/guides/', ''], 'btn-ghost')}</div></div>
+<section class="sec" id="guides"><div class="wrap">${secRule('05', 'The manual', `${guides.length} guides`)}
+<div class="sec-head"><h2 class="hx">Stuck? Read the fix.</h2><p>Short guides for the errors shops actually hit.</p></div>
+<ul class="toc-list">${glinks.map((g, i) => `<li><a href="${g.url}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${esc(g.h1)}</span><span class="dl"></span><span class="g">${esc(groupName(g.segs[0]))}</span></a></li>`).join('')}</ul>
+<div class="row-ctas" style="margin-top:30px"><a class="tlink" href="/guides/">All ${guides.length} guides ${ARROW}</a></div>
+</div></section>
 
-<section class="scene contact" id="contact" data-stage="7" data-form="6" data-side="center" data-rail="Contact"><div class="wrap"><div class="scene-in"><div class="tag mono" data-rv><b>06</b><i></i><span>Contact</span></div><h2 data-wipe style="--d:1">Got a boring job <em class="hg">for us?</em></h2><p data-rv style="--d:2"><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p><p class="say" data-rv style="--d:3">Questions, bugs, or a tool you wish existed. A person reads every email.</p></div></div></section>`;
+<section class="contact" id="contact"><div class="wrap">${secRule('06', 'Contact')}
+<h2 class="hx">Got a boring job? <span class="dim">Hand it over.</span></h2>
+<p><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
+<p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p>
+<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Apify, Freemius</p></div></div>
+</div></section>`;
 }
 
 export function guidesBody() {
   const guides = registry.filter(r => r.segs[1] === 'help' && r.segs.length > 2);
-  const groups = GUIDE_GROUPS.map(([seg, label]) => { const gs = guides.filter(g => g.segs[0] === seg); if (!gs.length) return ''; return `<section class="glist"><h2>${esc(label)} <span>${String(gs.length).padStart(2, '0')}</span></h2><ul class="glinks">${gs.map(g => `<li><a href="${g.url}">${esc(g.h1)}<span>Read</span></a></li>`).join('')}</ul></section>`; }).join('');
+  const groups = GUIDE_GROUPS.map(([seg, label]) => { const gs = guides.filter(g => g.segs[0] === seg); if (!gs.length) return ''; return `<section class="glist"><h2>${esc(label)} <span>${String(gs.length).padStart(2, '0')}</span></h2><ul class="toc-list">${gs.map((g, i) => `<li><a href="${g.url}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${esc(g.h1)}</span><span class="dl"></span><span class="g">Read</span></a></li>`).join('')}</ul></section>`; }).join('');
   return `<h1>Guides</h1><p>Short, practical fixes for the problems online stores hit most: payments stuck on pending, missing shipping methods, VAT that is a penny out, tables that will not paste. Most apply whichever plugin you use.</p>${groups}`;
 }
 
@@ -294,17 +380,17 @@ function homePage(rel, title, desc, body) {
   const org = ld({ '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': BASE + '/#org', name: 'SKILLMERC', legalName: 'SKILLMERC (Pty) Ltd', url: BASE + '/', email: 'kyle@skillmerc.com', logo: BASE + '/assets/touch.png', address: { '@type': 'PostalAddress', addressCountry: 'ZA' }, sameAs: ['https://profiles.wordpress.org/skillmerc/', 'https://apify.com/skillmerc', 'https://www.youtube.com/@skillmerc', 'https://github.com/skillmerc'] },
     { '@type': 'WebSite', '@id': BASE + '/#site', url: BASE + '/', name: 'SKILLMERC', publisher: { '@id': BASE + '/#org' } }] });
-  return `${head({ title, desc, url: BASE + '/', extra: org + `<link rel="preload" href="/assets/r/parcel.webp" as="image">` })}<body class="home"><div class="grain" aria-hidden="true"></div>${navHtml()}<main id="main">${nod(body)}</main>${footHtml()}${scripts(true)}</body></html>`;
+  return `${head({ title, desc, url: BASE + '/', extra: org })}<body class="home">${navHtml()}<main id="main">${nod(body)}</main>${footHtml()}${scripts()}</body></html>`;
 }
 
 export function notFoundBody() {
-  return `<canvas id="merc" data-form="6" data-side="center" aria-hidden="true"></canvas><section class="lost"><div class="wrap"><div class="num">404</div><h1 class="h2" style="margin-top:14px">This page <em class="hg">evaporated.</em></h1><p style="color:var(--bone2);max-width:30em;margin:18px auto 30px">The link is old or mistyped. Everything we make is one click from the front page.</p><div class="row-ctas" style="justify-content:center">${btn(['Back to the front page', '/', ''], 'btn-cin')}${btn(['Browse the guides', '/guides/', ''], 'btn-ghost')}</div></div></section>`;
+  return `<section class="lost"><div class="wrap"><div class="num">404</div><h1 class="hx">This page is not here.</h1><p>The link is old or mistyped. Everything we make is one click from the front page.</p><div class="row-ctas">${btn(['Back to the front page', '/', ''], '')}<a class="tlink" href="/guides/">Browse the guides ${ARROW}</a></div></div></section>`;
 }
 
 /** Render any page. Same signature as the old gen.mjs template. */
 export function render(rel, title, desc, body) {
   if (rel === 'index.html') return homePage(rel, title, desc, body);
-  if (rel === '404.html') return `${head({ title, desc, url: BASE + '/404.html', extra: '<meta name="robots" content="noindex">' })}<body class="home"><div class="grain" aria-hidden="true"></div>${navHtml()}<main id="main">${body}</main>${footHtml()}${scripts(true)}</body></html>`;
+  if (rel === '404.html') return `${head({ title, desc, url: BASE + '/404.html', extra: '<meta name="robots" content="noindex">' })}<body class="home">${navHtml()}<main id="main">${body}</main>${footHtml()}${scripts()}</body></html>`;
   return docPage(rel, title, desc, body);
 }
 
@@ -318,9 +404,9 @@ export function reshell(rel, html) {
   return docPage(rel, un(t), un(d), m[1]);
 }
 
-/** Copy theme assets into the build output and write the theme's root files. */
+/** Search index for the Cmd+K palette: every tool, then every page. */
 export function searchIndex() {
-  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
+  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
   const seen = new Set(tools.map(x => x[1]));
   const pages = registry.filter(r => !(r.segs[0] === 'form-d' && r.segs.length > 1) && !seen.has(r.url)).map(r => {
     const hub = HUBS[r.segs[0]]; const kind = r.segs[1] === 'help' ? 'Guide' : r.segs[0] === 'apify' ? 'Data tool' : (r.segs[0] === 'privacy' || r.segs.includes('privacy')) ? 'Privacy' : r.segs.includes('terms') ? 'Terms' : (hub ? hub.name : 'Page');
@@ -329,10 +415,11 @@ export function searchIndex() {
   return JSON.stringify(tools.concat(pages));
 }
 
+/** Copy theme assets into the build output and write the theme's root files. */
 export function copyAssets(out) {
   const src = path.join(HERE, 'static/assets'); const walk = (d, rel = '') => { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) walk(p, rel + f + '/'); else { const o = path.join(out, 'assets', rel + f); fs.mkdirSync(path.dirname(o), { recursive: true }); fs.copyFileSync(p, o); } } };
   walk(src);
-  fs.writeFileSync(path.join(out, 'favicon.svg'), LOGO.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ').replace(' aria-hidden="true"', ''));
+  fs.writeFileSync(path.join(out, 'favicon.svg'), FAVICON);
   fs.writeFileSync(path.join(out, 'assets', 'search.json'), searchIndex());
   fs.writeFileSync(path.join(out, '404.html'), render('404.html', 'Page not found: SKILLMERC', 'This page does not exist.', notFoundBody()));
 }
