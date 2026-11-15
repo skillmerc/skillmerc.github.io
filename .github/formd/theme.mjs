@@ -172,7 +172,7 @@ function docPage(rel, title, desc, body) {
 // ---------- homepage ----------
 const money = n => n == null ? '' : n >= 1e9 ? '$' + (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? '$' + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + n;
 const longDate = day => new Date(day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-const scene = ({ i, side, id, rail, n, label, plat, h2, say, fx, ctas, also = '', demo = '' }) => `<section class="scene" id="${id}" data-stage="${i}" data-side="${side}" data-rail="${rail}"><span class="ghost" aria-hidden="true">${n}</span><div class="wrap">${demo}<div class="scene-in"><div class="tag mono" data-rv><b>${n}</b><i></i><span>${label}</span><i></i><span>${plat}</span></div><h2 data-wipe style="--d:1">${h2}</h2><p class="say" data-rv style="--d:2">${say}</p><div data-rv style="--d:3">${facts(fx)}</div><div class="row-ctas" data-rv style="--d:4">${ctas.map((c, k) => btn(c, k ? 'btn-ghost' : 'btn-bone')).join('')}</div>${also ? `<p class="also" data-rv style="--d:5">${also}</p>` : ''}</div></div></section>`;
+const scene = ({ i, side, id, rail, n, label, plat, h2, say, fx, ctas, also = '', demo = '' }) => `<section class="scene" id="${id}" data-stage="${i + 1}" data-form="${i}" data-side="${side}" data-rail="${rail}"><span class="ghost" aria-hidden="true">${n}</span><div class="wrap">${demo}<div class="scene-in"><div class="tag mono" data-rv><b>${n}</b><i></i><span>${label}</span><i></i><span>${plat}</span></div><h2 data-wipe style="--d:1">${h2}</h2><p class="say" data-rv style="--d:2">${say}</p><div data-rv style="--d:3">${facts(fx)}</div><div class="row-ctas" data-rv style="--d:4">${ctas.map((c, k) => btn(c, k ? 'btn-ghost' : 'btn-bone')).join('')}</div>${also ? `<p class="also" data-rv style="--d:5">${also}</p>` : ''}</div></div></section>`;
 
 const DEMOS = {
   ship: `<div class="demo" data-demo="ship" aria-hidden="true"><div class="dh"><span>Checkout &middot; shipping</span><span>Example</span></div><ul class="opts"><li><i></i><b>The Courier Guy</b><em>Door to door</em><s data-v="R 99.00">R 99.00</s></li><li><i></i><b>Fastway Couriers</b><em>Door to door</em><s data-v="R 85.00">R 85.00</s></li><li><i></i><b>Pudo locker</b><em>Sandton City</em><s data-v="R 60.00">R 60.00</s></li></ul><div class="df"><span class="chip">Live rates</span><span class="chip ok">Label PDF ready</span></div></div>`,
@@ -234,7 +234,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 
   return `<canvas id="merc" aria-hidden="true"></canvas><div class="peek" aria-hidden="true"><img alt="" src="${R('parcel')}"></div>
 <div class="rail" aria-hidden="true"><span class="lbl mono">Intro</span><div class="tube"><div class="hgcol"></div><div class="ticks"></div></div><div class="bulb"></div></div>
-<section class="hero" data-stage="0" data-side="right" data-rail="Intro">
+<section class="hero" data-stage="0" data-form="0" data-side="right" data-rail="Intro">
 <span class="anno tl mono">Fig. 01 &middot; Quicksilver, mid-pour</span><span class="anno tr mono">Hg &middot; 80 &middot; Liquid at room temperature</span>
 <div class="wrap">
 <h1><span class="ln"><span>The boring</span></span><span class="ln" style="--d:1"><span>parts, <em class="hg">handled.</em></span></span></h1>
@@ -244,6 +244,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 <div class="hero-foot"><div class="wrap"><ul class="stats"><li><b>4</b><span class="mono">WordPress plugins</span></li><li><b>2</b><span class="mono">Browser add-ons</span></li><li><b>${actors.length}</b><span class="mono">Data tools</span></li><li><b>${guides.length}</b><span class="mono">How-to guides</span></li></ul><div class="coords mono">25.75&deg; S, 28.23&deg; E<br>Made in South Africa</div></div></div>
 </section>
 
+<section class="split" id="split" data-stage="1" data-form="7" data-side="mid" data-rail="Five jobs"><div class="split-head wrap"><div class="tag mono" data-rv><b>Fig. 02</b><i></i><span>The split</span></div><h2 class="h2" data-wipe>One drop. <em class="hg">Five jobs.</em></h2></div><div class="blabels" aria-label="The five jobs">${[['01', 'Shipping', '#shipping'], ['02', 'Payments', '#payments'], ['03', 'Bookkeeping', '#books'], ['04', 'Web tables', '#tables'], ['05', 'Data', '#data']].map(([n, l, h], k) => `<a class="blabel" data-bead="${k + 1}" href="${h}"><span class="mono">${n}</span><b>${l}</b></a>`).join('')}</div><p class="split-foot mono">Scroll to pour each one into shape</p></section>
 <section class="kit" id="kit" data-rail="The kit"><div class="wrap">
 <div class="kit-head"><h2 class="h2" data-wipe>The <em class="hg">kit.</em></h2><p data-rv>Five jobs you can stop doing by hand. Pick one.</p></div>
 <div class="rows">${kit.map(([n, nm, ds, pl, pr, href, r], i) => `<a href="${href}" data-peek="${R(r)}" data-rv style="--d:${i}"><span class="n mono">${n}</span><span class="nm">${nm}</span><span class="ds">${ds}</span><span class="pl mono">${pl}</span><span class="pr mono">${pr}</span><span class="go">${ARROW_DN}</span></a>`).join('')}</div>
@@ -278,7 +279,7 @@ ${dlist}
 <ul class="glinks">${glinks.map(g => `<li data-rv><a href="${g.url}">${esc(g.h1)}<span>${esc(groupName(g.segs[0]))}</span></a></li>`).join('')}</ul>
 <div class="row-ctas" style="margin-top:30px">${btn(['All guides', '/guides/', ''], 'btn-ghost')}</div></div>
 
-<section class="scene contact" id="contact" data-stage="6" data-side="center" data-rail="Contact"><div class="wrap"><div class="scene-in"><div class="tag mono" data-rv><b>06</b><i></i><span>Contact</span></div><h2 data-wipe style="--d:1">Got a boring job <em class="hg">for us?</em></h2><p data-rv style="--d:2"><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p><p class="say" data-rv style="--d:3">Questions, bugs, or a tool you wish existed. A person reads every email.</p></div></div></section>`;
+<section class="scene contact" id="contact" data-stage="7" data-form="6" data-side="center" data-rail="Contact"><div class="wrap"><div class="scene-in"><div class="tag mono" data-rv><b>06</b><i></i><span>Contact</span></div><h2 data-wipe style="--d:1">Got a boring job <em class="hg">for us?</em></h2><p data-rv style="--d:2"><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p><p class="say" data-rv style="--d:3">Questions, bugs, or a tool you wish existed. A person reads every email.</p></div></div></section>`;
 }
 
 export function guidesBody() {
