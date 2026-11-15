@@ -119,5 +119,69 @@
     else { const io = new IntersectionObserver((es) => es.forEach(e => { const el = e.target; el._vis = e.isIntersecting; if (e.isIntersecting) { el.classList.add('shown'); start(el); } }), { threshold: .35 }); demos.forEach(el => io.observe(el)); }
   }
 
+  // command palette: search every tool and guide (Cmd/Ctrl+K or "/")
+  (() => {
+    const btn = d.querySelector('[data-k]'); if (!btn) return;
+    let idx = null, pal = null, input, list, sel = 0, items = [];
+    const escH = (s) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const build = () => {
+      pal = d.createElement('div'); pal.className = 'pal'; pal.setAttribute('role', 'dialog'); pal.setAttribute('aria-modal', 'true'); pal.setAttribute('aria-label', 'Search');
+      pal.innerHTML = '<div class="pal-box"><div class="pal-in"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><input type="search" placeholder="Search tools and guides" aria-label="Search tools and guides" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div><ul class="pal-list" role="listbox"></ul><div class="pal-foot"><span>&uarr; &darr; to move</span><span>Enter to open</span></div></div>';
+      d.body.appendChild(pal); input = pal.querySelector('input'); list = pal.querySelector('.pal-list');
+      pal.addEventListener('click', (e) => { if (e.target === pal) close(); });
+      input.addEventListener('input', () => { sel = 0; draw(); });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(items.length - 1, sel + 1); mark(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); mark(); }
+        else if (e.key === 'Enter' && items[sel]) { e.preventDefault(); location.href = items[sel][1]; }
+      });
+    };
+    const score = (q, t) => { t = t.toLowerCase(); let s = 0; for (const w of q) { const i = t.indexOf(w); if (i < 0) return -1; s += i === 0 ? 3 : (t[i - 1] === ' ' ? 2 : 1); } return s; };
+    const hl = (t, q) => { let h = escH(t); for (const w of q) if (w.length > 1) h = h.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>'); return h; };
+    const draw = () => {
+      const q = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      items = !q.length ? idx.filter(x => x[2] === 'Tool' || x[2] === 'Guides' || x[2] === 'Data') : idx.map(x => [x, score(q, x[0] + ' ' + x[2] + ' ' + (x[3] || ''))]).filter(x => x[1] >= 0).sort((a, b) => b[1] - a[1]).slice(0, 12).map(x => x[0]);
+      list.innerHTML = items.length ? items.map((x, i) => `<li role="option"${i === sel ? ' class="on"' : ''}><a href="${x[1]}"><b>${hl(x[0], q)}</b><span>${escH(x[2])}</span></a></li>`).join('') : '<li class="pal-empty">Nothing found. Try "PayFast", "Pudo" or "Excel".</li>';
+      list.querySelectorAll('li a').forEach((a, i) => a.addEventListener('mousemove', () => { if (sel !== i) { sel = i; mark(); } }));
+    };
+    const mark = () => list.querySelectorAll('li').forEach((li, i) => { li.classList.toggle('on', i === sel); if (i === sel) li.scrollIntoView({ block: 'nearest' }); });
+    const open = async () => {
+      if (!pal) build();
+      pal.classList.add('open'); d.body.style.overflow = 'hidden'; input.value = ''; sel = 0;
+      if (!idx) { list.innerHTML = '<li class="pal-empty">Loading</li>'; try { idx = await (await fetch('/assets/search.json')).json(); } catch { idx = []; } }
+      draw(); setTimeout(() => input.focus(), 30);
+    };
+    const close = () => { if (!pal) return; pal.classList.remove('open'); d.body.style.overflow = ''; btn.focus(); };
+    btn.addEventListener('click', open);
+    addEventListener('keydown', (e) => {
+      const typing = /input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable;
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) { e.preventDefault(); pal && pal.classList.contains('open') ? close() : open(); }
+      else if (e.key === 'Escape' && pal && pal.classList.contains('open')) close();
+    });
+    if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) { const k = btn.querySelector('kbd'); if (k) k.textContent = 'Ctrl K'; }
+  })();
+
+  // tool picker: two or three questions, one answer
+  (() => {
+    const root = d.querySelector('[data-pick]'), data = d.getElementById('pick-data'); if (!root || !data) return;
+    const { tree, picks } = JSON.parse(data.textContent);
+    const pq = root.querySelector('.pq'), pres = root.querySelector('.pres'), title = root.querySelector('.ptitle'), opts = root.querySelector('.opts2'), step = root.querySelector('.step'), back = root.querySelector('.back');
+    let path = [];
+    const node = () => path.reduce((n, i) => n.a[i][1], tree);
+    const show = () => {
+      const n = node();
+      if (typeof n === 'string') { const p = picks[n]; pq.hidden = true; pres.hidden = false;
+        pres.querySelector('img').src = p.r; pres.querySelector('b').textContent = p.n; pres.querySelector('p').textContent = p.p;
+        const c = pres.querySelector('.btn'); c.textContent = p.c + ' '; c.href = p.h; c.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"/></svg>');
+        if (/^https?:/.test(p.h)) c.setAttribute('rel', 'noopener'); else c.removeAttribute('rel');
+        const m = pres.querySelector('.pmore'); m.hidden = !p.m; if (p.m) m.href = p.m; return; }
+      pq.hidden = false; pres.hidden = true; title.textContent = n.q; step.textContent = 'Step ' + String(path.length + 1).padStart(2, '0'); back.hidden = !path.length;
+      opts.innerHTML = ''; n.a.forEach(([label], i) => { const b = d.createElement('button'); b.type = 'button'; b.textContent = label; b.style.setProperty('--i', i); b.addEventListener('click', () => { path.push(i); show(); }); opts.appendChild(b); });
+    };
+    back.addEventListener('click', () => { path.pop(); show(); });
+    root.querySelector('.again').addEventListener('click', () => { path = []; show(); });
+    show();
+  })();
+
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 })();
