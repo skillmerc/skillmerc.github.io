@@ -17,7 +17,7 @@ in vec2 a; void main(){ gl_Position = vec4(a, 0., 1.); }`;
   const FS = `#version 300 es
 precision highp float;
 uniform vec2 uRes; uniform float uTime; uniform vec4 uB[9]; uniform float uK;
-uniform vec4 uW; uniform mat3 uRC, uRL, uRW, uRP; uniform vec2 uOff; uniform float uZoom; uniform float uHQ; uniform float uRip; uniform float uDim; uniform float uStill;
+uniform vec4 uW; uniform mat3 uRC, uRL, uRW, uRP; uniform vec2 uOff; uniform float uZoom; uniform float uHQ; uniform float uRip; uniform float uDim; uniform float uStill; uniform float uSteps;
 out vec4 o;
 const float CAM = 7.0;
 const float BOUND = 2.8;
@@ -150,6 +150,7 @@ void main(){
     h = sqrt(h); float t = -b - h; float tf = -b + h;
     float e = 1e5; vec3 pc = ro; bool hit = false; vec3 p = ro;
     for (int i = 0; i < 110; i++) {
+      if (float(i) >= uSteps) break;
       p = ro + rd*t; float d = map(p); float r = d / t;
       if (r < e) { e = r; pc = p; }
       if (d < .0007 * t) { hit = true; break; }
@@ -178,7 +179,7 @@ void main(){
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = {}; for (const n of ['uRes','uTime','uB','uK','uW','uRC','uRL','uRW','uRP','uOff','uZoom','uHQ','uRip','uDim','uStill']) U[n] = gl.getUniformLocation(prog, n);
+  const U = {}; for (const n of ['uRes','uTime','uB','uK','uW','uRC','uRL','uRW','uRP','uOff','uZoom','uHQ','uRip','uDim','uStill','uSteps']) U[n] = gl.getUniformLocation(prog, n);
 
   // ---------- formations ----------
   const N = 9;
@@ -205,8 +206,9 @@ void main(){
     (t) => zeros([[1.7*Math.cos(t*.55), .5*Math.sin(t*.4), 1.7*Math.sin(t*.55), .19], [0, .05*Math.sin(t*.6), 0, 1.08],
         [1.45*Math.cos(-t*.38+2), .9*Math.sin(t*.3+1), 1.45*Math.sin(-t*.38+2), .11], [1.9*Math.cos(t*.27+4), -.6*Math.sin(t*.33), 1.9*Math.sin(t*.27+4), .07]]),
   ];
+  forms.push((t) => { const o = [[2.3 * Math.cos(t * .45), .35 * Math.sin(t * .7), 1.2 * Math.sin(t * .45), .13]]; for (let k = 0; k < 5; k++) { const a = Math.PI / 2 - k * Math.PI * 2 / 5; o.push([1.62 * Math.cos(a), 1.5 * Math.sin(a), .14 * Math.sin(t * 1.1 + k * 1.3), .4 + .03 * Math.sin(t * 1.4 + k * 1.7)]); } return zeros(o); });
   const LAST = forms.length - 1;
-  const KS = [.42, .12, .24, .2, .09, .14, .36];
+  const KS = [.42, .12, .24, .2, .09, .14, .36, .2];
   const rotY = (a) => { const c = Math.cos(a), s = Math.sin(a); return [c,0,s, 0,1,0, -s,0,c]; };
   const rotX = (a) => { const c = Math.cos(a), s = Math.sin(a); return [1,0,0, 0,c,-s, 0,s,c]; };
   const mul = (A, B) => { const o = new Array(9); for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) o[r*3+c] = A[r*3]*B[c] + A[r*3+1]*B[3+c] + A[r*3+2]*B[6+c]; return o; };
@@ -219,23 +221,24 @@ void main(){
     (t) => mul(rotX(.08*Math.sin(t*.5)), rotY(-.42 + .22*Math.sin(t*.33))),
     (t) => mul(rotX(-.18), rotY(.5*Math.sin(t*.35))),
     (t) => rotY(0),
+    (t) => mul(rotX(.1 * Math.sin(t * .4)), rotY(.22 * Math.sin(t * .3))),
   ];
 
   // ---------- stage tracking ----------
   let stages = [], visible = true, stageT = 0, stage = 0;
-  const collect = () => { stages = [...document.querySelectorAll('[data-stage]')].map(el => ({ el, i: +el.dataset.stage, side: el.dataset.side || 'right' })).sort((a, b) => a.i - b.i); };
+  const collect = () => { stages = [...document.querySelectorAll('[data-stage]')].map(el => ({ el, i: +el.dataset.stage, f: el.dataset.form != null ? +el.dataset.form : +el.dataset.stage, side: el.dataset.side || 'right' })).sort((a, b) => a.i - b.i); };
+  const seq = () => stages.length ? stages : [{ f: +(canvas.dataset.form || 0), side: canvas.dataset.side || 'center' }];
   const readStage = () => {
-    if (!stages.length) { stageT = +(canvas.dataset.form || 0); return; }
-    const vh = innerHeight, mid = vh * .5; let best = stages[0].i, any = false;
-    const cs = stages.map(s => { const r = s.el.getBoundingClientRect(); if (r.bottom > -vh*.15 && r.top < vh*1.15) any = true; return { i: s.i, c: r.top + Math.min(r.height, vh) * .5 }; });
+    if (!stages.length) { stageT = 0; return; }
+    const vh = innerHeight, mid = vh * .5; let best = 0, any = false;
+    const cs = stages.map(s => { const r = s.el.getBoundingClientRect(); if (r.bottom > -vh*.15 && r.top < vh*1.15) any = true; return { c: r.top + Math.min(r.height, vh) * .5 }; });
     visible = any;
-    if (mid <= cs[0].c) best = cs[0].i; else if (mid >= cs[cs.length-1].c) best = cs[cs.length-1].i;
-    else for (let k = 0; k < cs.length - 1; k++) if (mid >= cs[k].c && mid < cs[k+1].c) { best = mix(cs[k].i, cs[k+1].i, (mid - cs[k].c) / (cs[k+1].c - cs[k].c)); break; }
+    if (mid <= cs[0].c) best = 0; else if (mid >= cs[cs.length-1].c) best = cs.length - 1;
+    else for (let k = 0; k < cs.length - 1; k++) if (mid >= cs[k].c && mid < cs[k+1].c) { best = k + (mid - cs[k].c) / (cs[k+1].c - cs[k].c); break; }
     stageT = best;
   };
-  const sideOf = (i) => { const s = stages.find(s => s.i === i); return s ? s.side : (canvas.dataset.side || 'center'); };
-  const place = (i, aspect) => {
-    const side = sideOf(i);
+  const place = (side, aspect) => {
+    if (side === 'mid') return aspect < .9 ? { x: 0, y: 0, z: Math.max(.42, aspect * .62), d: 1 } : { x: 0, y: -.04, z: Math.min(1.05, .62 + aspect * .22), d: 1 };
     if (side === 'still') return { x: 0, y: 0, z: +(canvas.dataset.zoom || 1.35), d: 1 };
     if (side === 'band') { if (aspect < 1.25) return { x: 0, y: -.12, z: .92, d: .95 }; const z = Math.min(1.3, .5 + aspect * .28); return { x: Math.max(0, aspect - .98 * z), y: -.02, z, d: 1 }; }
     if (aspect < .9) return { x: 0, y: side === 'center' ? .46 : .5, z: side === 'center' ? .46 : .5, d: side === 'center' ? .9 : .6 };
@@ -247,7 +250,8 @@ void main(){
   // ---------- render ----------
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const maxScale = Math.min(devicePixelRatio || 1, 2);
-  let scale = still ? 1 : Math.min(maxScale, innerWidth < 800 ? 1.25 : 1), hq = 1;
+  const small = !still && (innerWidth < 800 || matchMedia('(pointer:coarse)').matches);
+  let scale = still ? 1 : Math.min(maxScale, small ? 1.25 : 1), hq = small ? 0 : 1, steps = small ? 72 : 110;
   let W = 0, H = 0, acc = 0, frames = 0, last = performance.now(), time = reduce ? 3.2 : +(canvas.dataset.time || 0), running = false, dirty = true, tries = 0, capped = false;
   const resize = () => { const w = Math.max(2, Math.round(canvas.clientWidth * scale)), h = Math.max(2, Math.round(canvas.clientHeight * scale)); if (w !== W || h !== H) { W = canvas.width = w; H = canvas.height = h; gl.viewport(0, 0, W, H); } };
   const B = new Float32Array(N * 4);
@@ -265,8 +269,9 @@ void main(){
     if (visible && !document.hidden && ((!reduce && !still) || moving || dirty)) {
       dirty = false; resize();
       const aspect = W / H, t = time;
-      const i0 = Math.max(0, Math.min(LAST, Math.floor(stage))), i1 = Math.min(LAST, i0 + 1);
-      const f = sstep(.12, .88, stage - i0);
+      const S = seq(), j0 = Math.max(0, Math.min(S.length - 1, Math.floor(stage))), j1 = Math.min(S.length - 1, j0 + 1);
+      const i0 = S[j0].f, i1 = S[j1].f;
+      const f = sstep(.12, .88, stage - j0);
       const A = forms[i0](t), Bf = forms[i1](t);
       const par = still ? rotY(0) : mul(rotX(-ptr.y * .22), rotY(ptr.x * .32));
       const O0 = mul(par, orient[i0](t)), O1 = mul(par, orient[i1](t));
@@ -285,7 +290,7 @@ void main(){
           B[i*4+1] += (1 - e) * (3.4 + i * .38) * wgt; B[i*4] *= mix(1, mix(.55, 1, e), wgt); B[i*4+3] *= mix(1, mix(.45, 1, e), wgt);
         }
       }
-      const p0h = place(0, aspect);
+      const p0h = place(S[0].side, aspect);
       ptr.live += ((performance.now() - ptr.on < 2600 ? 1 : 0) - ptr.live) * Math.min(1, dt * 3);
       const reach = still || !stages.length ? 0 : ptr.live * Math.max(0, 1 - stage * 2.2);
       if (reach > .002) {
@@ -294,8 +299,8 @@ void main(){
         ptr.sx += (wx * m - ptr.sx) * Math.min(1, dt * 4); ptr.sy += (wy * m - ptr.sy) * Math.min(1, dt * 4);
         B[8*4] = mix(B[8*4], ptr.sx, reach); B[8*4+1] = mix(B[8*4+1], ptr.sy, reach); B[8*4+2] = mix(B[8*4+2], .55, reach); B[8*4+3] = mix(B[8*4+3], .3, reach);
       }
-      const w = (n) => 1 - sstep(.1, .78, Math.abs(stage - n));
-      const p0 = place(i0, aspect), p1 = place(i1, aspect);
+      const w = (n) => (i0 === n ? 1 - sstep(.1, .78, stage - j0) : 0) + (i1 === n && j1 !== j0 ? 1 - sstep(.1, .78, j1 - stage) : 0);
+      const p0 = place(S[j0].side, aspect), p1 = place(S[j1].side, aspect);
       gl.uniform2f(U.uRes, W, H); gl.uniform1f(U.uTime, t); gl.uniform4fv(U.uB, B);
       gl.uniform1f(U.uK, mix(KS[i0], KS[i1], f));
       gl.uniform4f(U.uW, w(2), w(3), w(4), w(1));
@@ -304,13 +309,17 @@ void main(){
       gl.uniformMatrix3fv(U.uRW, false, new Float32Array(mul(par, orient[4](t))));
       gl.uniformMatrix3fv(U.uRP, false, new Float32Array(mul(par, orient[1](t))));
       gl.uniform2f(U.uOff, mix(p0.x, p1.x, f), mix(p0.y, p1.y, f)); gl.uniform1f(U.uZoom, mix(p0.z, p1.z, f)); gl.uniform1f(U.uHQ, hq);
-      gl.uniform1f(U.uRip, mix(1, .25, Math.min(1, stage))); gl.uniform1f(U.uDim, mix(p0.d, p1.d, f)); gl.uniform1f(U.uStill, still ? 1 : 0);
+      gl.uniform1f(U.uRip, mix(i0 === 0 ? 1 : .25, i1 === 0 ? 1 : .25, f)); gl.uniform1f(U.uSteps, steps); gl.uniform1f(U.uDim, mix(p0.d, p1.d, f)); gl.uniform1f(U.uStill, still ? 1 : 0);
+      if (stages.length) { const zx = mix(p0.z, p1.z, f), ox = mix(p0.x, p1.x, f), oy = mix(p0.y, p1.y, f), cw = W / scale, ch = H / scale, pts = window.__mercPts || (window.__mercPts = []);
+        for (let i = 0; i < N; i++) { const d = 7 - B[i*4+2], ux = B[i*4] * 2.75 / d * zx + ox, uy = B[i*4+1] * 2.75 / d * zx + oy; pts[i] = [(ux * ch + cw) / 2, ch - (uy * ch + ch) / 2, B[i*4+3] * 2.75 / d * zx * ch / 2]; }
+        window.__mercForm = f > .5 ? i1 : i0; window.__mercMix = i0 === 7 ? 1 - f : i1 === 7 ? f : 0; }
       if (still) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       if (!reduce && !still) {
         acc += dt * 1000; frames++;
         if (frames >= 40) { const avg = acc / frames; acc = 0; frames = 0;
-          if (avg > 24 && scale > .45) { scale = Math.max(.45, scale * .82); if (scale < .6) hq = 0; }
+          if (avg > 24 && scale > .45) { scale = Math.max(.45, scale * .82); if (scale < .6) { hq = 0; steps = 72; } }
+          else if (avg < 15 && small && !hq && scale >= maxScale * .9) { hq = 1; steps = 96; }
           else if (avg < 17.5 && scale < maxScale && !capped) { scale = Math.min(maxScale, scale * 1.12); if (++tries > 6) capped = true; }
         }
       }

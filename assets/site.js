@@ -183,5 +183,20 @@
     show();
   })();
 
+  // the split: labels ride on the five drops while that formation is on screen
+  (() => {
+    const box = d.querySelector('.blabels'); if (!box) return;
+    const labels = [...box.querySelectorAll('.blabel')];
+    const tick = () => {
+      const pts = window.__mercPts, mixv = window.__mercMix || 0;
+      if (pts && mixv > .02) {
+        labels.forEach(l => { const p = pts[+l.dataset.bead]; if (!p) return; const cx = innerWidth / 2, cy = innerHeight / 2, dx = p[0] - cx, dy = p[1] - cy, len = Math.hypot(dx, dy) || 1, off = p[2] + 34;
+          const x = p[0] + dx / len * off, y = p[1] + dy / len * off; l.style.setProperty('--x', Math.max(8, Math.min(innerWidth - l.offsetWidth - 8, x - l.offsetWidth / 2)).toFixed(1) + 'px'); l.style.setProperty('--y', (y - l.offsetHeight / 2).toFixed(1) + 'px'); l.style.opacity = Math.min(1, (mixv - .35) / .45).toFixed(3); l.classList.toggle('on', mixv > .7); });
+      } else labels.forEach(l => { l.style.opacity = 0; l.classList.remove('on'); });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  })();
+
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 })();
