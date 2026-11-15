@@ -545,3 +545,175 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   .prose td:first-child,.prose th:first-child{position:sticky;left:0;background:var(--bg2);box-shadow:1px 0 0 var(--line)}
 }
 @media (max-width:600px){.crumbs li:last-child{display:none}}
+
+/* ---------- v9 compact (15 Nov 2026): smaller headings, one job on screen at a time, a dense price list, folded product pages ---------- */
+.sec{padding-top:clamp(46px,5.4vw,80px)}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.08em .45em;max-width:none;padding:clamp(18px,2.2vw,28px) 0 clamp(20px,2.4vw,30px);font-size:clamp(1.75rem,3vw,2.7rem)}
+.sec-head p{margin-top:0}
+.hero{min-height:min(92svh,790px)}
+.runs{margin-top:clamp(30px,4.4vw,60px)}
+
+/* the five jobs: tabs, one panel */
+#jobs,#kit,#lab,#guides,#pick{scroll-margin-top:calc(var(--nav) + 18px)}
+.jtabs{display:flex;gap:4px;padding:5px;width:fit-content;max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:999px;background:var(--bg2);scrollbar-width:none}
+.jtabs::-webkit-scrollbar{display:none}
+.jtabs button{display:inline-flex;align-items:center;gap:9px;flex:none;font:500 15px/1 var(--sans);letter-spacing:-.01em;color:var(--fg2);padding:11px 18px;border-radius:999px;white-space:nowrap;transition:background .2s,color .2s}
+.jtabs button b{font:450 11px/1 var(--mono);color:var(--mute);transition:color .2s}
+.jtabs button:hover{color:#fff}
+.jtabs button[aria-selected="true"]{background:#fff;color:#050506}
+.jtabs button[aria-selected="true"] b{color:#6c6c75}
+.jpanel{display:none;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,72px);padding:clamp(22px,3vw,40px) 0 0;border-top:0;min-height:clamp(330px,30vw,420px)}
+.jpanel.on{display:grid;animation:jin .5s var(--ease)}
+@keyframes jin{from{opacity:0;transform:translateY(10px)}}
+.jpanel .ex-doc{min-height:0}
+.jpanel .ex-doc .orb{--s:clamp(230px,24vw,340px)}
+.jpanel .ex-tx h3{font-size:clamp(1.8rem,3.1vw,2.8rem);margin-top:12px}
+.jpanel .tale{font-size:clamp(16.5px,1.25vw,18px);margin-top:14px;max-width:31em}
+.jpanel .say{font-size:15px;margin-top:10px;max-width:37em}
+.jpanel .facts{margin-top:16px}
+.jpanel .facts li{padding:7px 10px;font-size:11px}
+.jpanel .ex-tx .row-ctas{margin-top:20px}
+.jpanel .also{margin-top:14px;font-size:14px}
+.jx{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:12px;align-items:start}
+.jx .ledger{margin-top:0}
+.jx .ledger-head{padding:15px 18px 13px;align-items:center}
+.jx .ledger-head h3{font-size:1.1rem;letter-spacing:-.025em;margin-top:6px!important}
+.jx .ledger-head p{font-size:13px}
+.jx .hide-s{display:none}
+.jx .tbl th,.jx .tbl td{padding-block:9px;font-size:14px}
+.jx .dlist a{padding:10px 18px;font-size:14px}
+.jx .dlist span{font-size:11.5px}
+
+/* price list: one line a tool */
+.pgroup{grid-template-columns:172px minmax(0,1fr)}
+.pgroup>h3{padding:14px 16px 12px 0;font-size:1.02rem;letter-spacing:-.02em}
+.pgroup>h3 small{margin-top:6px;font-size:11px}
+.prow{grid-template-columns:30px minmax(0,2fr) minmax(0,1fr) 182px 16px;gap:4px 18px;padding:11px 14px;margin-inline:-14px;border-radius:10px}
+.prow::before{inset:0 14px auto}
+.prow .no{font-size:11px}
+.prow .job{display:flex;flex-wrap:wrap;align-items:baseline;gap:1px 12px;font:520 15.5px/1.3 var(--sans);letter-spacing:-.015em}
+.prow .job small{display:inline;margin-top:0;font-size:13px;line-height:1.3}
+.prow .pr{font-size:13.5px;line-height:1.3}
+.prow .st{font-size:10.5px;padding:5px 9px;gap:7px}
+.prow .go svg{width:14px;height:14px}
+.pick{padding-top:clamp(30px,3.8vw,52px);align-items:center;gap:clamp(22px,4vw,60px)}
+.pick h2{font-size:clamp(1.5rem,2.4vw,2.1rem)}
+.pick .say{font-size:15.5px;margin-top:8px}
+.pform{min-height:0}
+.pform .ph{padding:12px 20px}
+.pform .pb{padding:18px 20px 20px}
+.opts2{margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.opts2 button{padding:12px 15px;font-size:15.5px}
+
+/* in review and guides, side by side */
+.duo{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:start}
+.duo-h{font-size:clamp(1.55rem,2.5vw,2.2rem);padding:clamp(16px,2vw,24px) 0 clamp(14px,1.8vw,20px)}
+.mini{border-top:1px solid var(--line)}
+.mini li{border-bottom:1px solid var(--line)}
+.mini a{display:flex;align-items:baseline;gap:14px;padding:12px;margin-inline:-12px;border-radius:10px;text-decoration:none;transition:background .2s}
+.mini a:hover{background:rgba(255,255,255,.055)}
+.mini b{font:550 15.5px/1.3 var(--sans);letter-spacing:-.015em;white-space:nowrap}
+.mini .t{flex:1;min-width:0;font-size:14px;line-height:1.35;color:var(--mute)}
+.mini .t1{flex:1;min-width:0;font:500 15.5px/1.35 var(--sans);letter-spacing:-.012em}
+.mini .w{display:inline-flex;align-items:center;gap:7px;font:450 11px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.mini .w::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--warn)}
+.mini svg{width:14px;height:14px;flex:none;align-self:center;color:var(--mute);transition:transform .25s var(--ease),color .2s}
+.mini a:hover svg{color:#fff;transform:translateX(3px)}
+.duo .row-ctas{margin-top:16px}
+
+/* contact */
+.contact{padding:clamp(46px,5.4vw,80px) 0 clamp(50px,6vw,84px)}
+.ct-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(28px,5vw,72px);align-items:end;padding-top:clamp(20px,2.6vw,34px)}
+.contact h2{font-size:clamp(2rem,4.4vw,3.8rem);line-height:.98;letter-spacing:-.05em;margin-top:0}
+.mail{margin-top:clamp(16px,2vw,24px);font-size:clamp(1.1rem,1.8vw,1.5rem)}
+.contact .say{margin-top:12px;font-size:15.5px}
+.sig{grid-template-columns:1fr;gap:0;margin-top:0}
+.sig div{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:12px 0}
+.sig p{margin-top:0;font-size:14px;text-align:right}
+
+/* product and guide pages */
+.band{padding:clamp(28px,3.6vw,48px) 0 clamp(28px,3.6vw,46px)}
+.band h1{font-size:clamp(2rem,3.8vw,3.3rem)}
+.band.hub .display{font-size:clamp(2.3rem,4.7vw,4.4rem)}
+.band.hub .tale{font-size:clamp(16.5px,1.3vw,18.5px);margin-top:18px}
+.band.hub .say{font-size:15.5px}
+.shots{padding-top:clamp(30px,3.6vw,48px)}
+.shots-head{margin-bottom:16px;align-items:baseline}
+.shots-head h2,.more-head h2{font-size:clamp(1.5rem,2.4vw,2.1rem)}
+.strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;margin-inline:calc(-1*var(--pad));padding:0 var(--pad) 12px;scroll-padding-inline:var(--pad);scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.strip .shot{flex:none;scroll-snap-align:start;padding:8px 8px 0;max-width:84vw}
+.strip .shot a{display:block;cursor:zoom-in;border-radius:8px;overflow:hidden}
+.strip .shot img{display:block;height:clamp(190px,21vw,270px);width:auto;max-width:100%;object-fit:cover;object-position:top left;border-radius:8px;transition:opacity .2s}
+.strip .shot a:hover img{opacity:.86}
+.strip .shot figcaption{width:0;min-width:100%;font-size:13px;line-height:1.35;padding:10px 4px 11px;gap:10px}
+.zoom{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:clamp(12px,3vw,44px);background:rgba(3,3,4,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);cursor:zoom-out;animation:jin .25s var(--ease)}
+.zoom img{max-width:100%;max-height:100%;border-radius:10px;border:1px solid var(--line2);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.doc-grid{padding-top:clamp(26px,3.2vw,44px);padding-bottom:clamp(44px,5.4vw,76px)}
+.prose{font-size:16.5px;line-height:1.64}
+.prose h2{margin-top:1.8em;padding-top:.85em;font-size:clamp(1.4rem,2.1vw,1.8rem)}
+.prose .fold{border-top:1px solid var(--line)}
+.prose .fold+.fold{margin-top:0}
+.prose .fold:last-child,.prose .fold:has(+:not(.fold)){border-bottom:1px solid var(--line)}
+.fold>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 2px;cursor:pointer;list-style:none;border-radius:8px}
+.fold>summary::-webkit-details-marker,.qa>summary::-webkit-details-marker{display:none}
+.fold>summary h2{margin:0;padding:0;border:0;font-size:clamp(1.12rem,1.6vw,1.35rem);letter-spacing:-.03em;color:var(--fg);transition:color .2s}
+.fold>summary:hover h2,.fold[open]>summary h2{color:#fff}
+.fold>summary::after{content:"";flex:none;width:9px;height:9px;margin-right:6px;border-right:1.5px solid var(--fg2);border-bottom:1.5px solid var(--fg2);transform:translateY(-3px) rotate(45deg);transition:transform .25s var(--ease)}
+.fold[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.fold-b{padding:0 0 26px}
+.fold-b>*+*{margin-top:1.1em}
+.qa{border-top:1px solid var(--line)}
+.fold-b>.qa+.qa{margin-top:0}
+.qa>summary{display:flex;justify-content:space-between;gap:16px;padding:13px 2px;cursor:pointer;list-style:none;font:550 1rem/1.35 var(--sans);letter-spacing:-.01em;color:#fff}
+.qa>summary::after{content:"+";flex:none;color:var(--mute);font-weight:400}
+.qa[open]>summary::after{content:"\2212"}
+.qa>div{padding:0 2px 16px}
+.qa>div>*+*{margin-top:.9em}
+.more{padding:clamp(30px,3.6vw,48px) 0 clamp(44px,5.4vw,76px)}
+.more-head{margin-bottom:16px}
+
+@media (max-width:1080px){
+  .pgroup{grid-template-columns:1fr}
+  .pgroup>h3{padding:16px 0 2px}
+}
+@media (max-width:900px){
+  .hero{min-height:0}
+  .jpanel,.jpanel.on{grid-template-columns:1fr;gap:18px;min-height:0}
+  .jpanel .ex-doc{padding:6px 0 0}
+  .jpanel .ex-doc .orb{--s:clamp(200px,54vw,270px)}
+  .jx{grid-template-columns:1fr}
+  .duo,.ct-grid{grid-template-columns:1fr}
+  .ct-grid{align-items:start}
+  .pick{align-items:start}
+}
+@media (max-width:680px){
+  .sec-head p{font-size:.72em;letter-spacing:-.035em}
+  .jtabs{margin-inline:calc(-1*var(--pad));padding-inline:var(--pad);border-radius:0;border-inline:0;width:auto;max-width:none}
+  .jtabs button{padding:10px 14px;font-size:14.5px}
+  .prow{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:12px 0;margin-inline:0;align-items:center}
+  .prow::before{inset:0 0 auto}
+  .prow .job small{flex-basis:100%}
+  .mini a{flex-wrap:wrap;gap:3px 12px}
+  .mini .t{flex-basis:100%;order:3}
+  .mini b{flex:1}
+  .sig p{font-size:13.5px}
+  .prose{font-size:16px}
+  .strip .shot img{height:clamp(170px,46vw,230px)}
+}
+@media (prefers-reduced-motion:reduce){.jpanel.on,.zoom{animation:none}}
+@media print{.jpanel{display:grid!important}.jtabs{display:none}}
+/* v9: price list rows are always two short lines (the job, then the tool's name) */
+.prow{padding:10px 14px}
+.prow .job{display:block}
+.prow .job small{display:block;margin-top:2px}
+.hero+.sec{padding-top:clamp(18px,2.4vw,34px)}
+@media (max-width:680px){.prow{padding:12px 0}}
+/* on small screens the folded sections are their own table of contents */
+@media (max-width:1080px){.prose:has(>.fold)~.side .toc{display:none}}
+.fold{scroll-margin-top:calc(var(--nav) + 18px)}
+/* v9 review fixes: the page already offsets anchors for the fixed nav; enlarged screenshots fit the window; phone tabs are a full touch target */
+#jobs,#kit,#lab,#guides,#pick,.fold{scroll-margin-top:0}
+.jpanel{scroll-margin-top:230px}
+.zoom img{max-height:calc(100dvh - 2*clamp(12px,3vw,44px));width:auto;height:auto}
+@media (min-width:681px){.mini b{flex:0 0 9.5em}}
+@media (max-width:680px){.jtabs button{min-height:44px}}

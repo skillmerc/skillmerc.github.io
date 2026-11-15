@@ -97,7 +97,7 @@ void main(){
   // table of contents on long documents
   const prose = d.querySelector('.prose[data-toc]'), side = d.querySelector('.side');
   if (prose && side) {
-    const hs = [...prose.querySelectorAll(':scope > h2')];
+    const hs = [...prose.querySelectorAll(':scope > h2, :scope > details.fold > summary > h2')];
     if (hs.length >= 3) {
       const used = new Set();
       const toc = d.createElement('nav'); toc.className = 'toc'; toc.setAttribute('aria-label', 'On this page');
@@ -105,7 +105,7 @@ void main(){
       const links = hs.map(h => {
         if (!h.id) { let id = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'section', n = id, i = 2; while (used.has(n) || d.getElementById(n)) n = id + '-' + i++; h.id = n; }
         used.add(h.id);
-        const a = d.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent; toc.appendChild(a); return a;
+        const a = d.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent; a.addEventListener('click', () => { const f = h.closest('details'); if (f) f.open = true; }); toc.appendChild(a); return a;
       });
       side.prepend(toc);
       const mark = () => { let i = -1; hs.forEach((h, k) => { if (h.getBoundingClientRect().top < 140) i = k; }); links.forEach((l, k) => l.classList.toggle('on', k === i)); };
@@ -113,6 +113,34 @@ void main(){
     }
   }
   if (side && !side.children.length) side.remove();
+
+  // the five jobs: one panel on screen at a time. Tabs pick it; so does any link to a panel's id (hero orbs, the price list, the nav).
+  (() => {
+    const root = d.querySelector('[data-jobs]'); if (!root) return;
+    const tabs = [...root.querySelectorAll('[role="tab"]')], panels = tabs.map(t => d.getElementById(t.getAttribute('aria-controls')));
+    const pick = (i, focus) => { tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (panels[k]) panels[k].classList.toggle('on', on); }); const tl = tabs[i].parentElement; tl.scrollLeft = tabs[i].offsetLeft - (tl.clientWidth - tabs[i].offsetWidth) / 2; if (focus) tabs[i].focus(); };
+    tabs.forEach((t, i) => { t.addEventListener('click', () => pick(i));
+      t.addEventListener('keydown', (e) => { if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); pick(e.key === 'Home' ? 0 : tabs.length - 1, true); return; } const k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!k) return; e.preventDefault(); pick((i + k + tabs.length) % tabs.length, true); }); });
+    const go = (hash) => { const i = panels.findIndex(p => p && '#' + p.id === hash); if (i < 0) return false; pick(i); (root.closest('section') || root).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); return true; };
+    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="#"],a[href^="/#"]'); if (!a || location.pathname !== '/') return; const h = a.getAttribute('href').replace(/^\//, ''); if (go(h)) { e.preventDefault(); history.pushState(null, '', h); } });
+    addEventListener('hashchange', () => go(location.hash)); go(location.hash);
+  })();
+
+  // folded sections open when a link points inside one
+  (() => {
+    const reveal = () => { if (location.hash.length < 2) return; let el; try { el = d.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) { return; } if (!el) return; let opened = false;
+      for (let p = el; p; p = p.parentElement) if (p.tagName === 'DETAILS' && !p.open) { p.open = true; opened = true; } if (opened) el.scrollIntoView({ block: 'start' }); };
+    if (d.querySelector('details.fold')) { addEventListener('hashchange', reveal); reveal(); }
+  })();
+
+  // screenshots: click one to see it full size; Escape or another click closes it
+  d.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[data-zoom]'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault();
+    const box = d.createElement('div'); box.className = 'zoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Screenshot, full size. ' + ((a.querySelector('img') || {}).alt || '') + ' Press Escape to close.'); box.tabIndex = -1;
+    const img = new Image(); img.src = a.href; img.alt = (a.querySelector('img') || {}).alt || ''; box.appendChild(img);
+    const key = (ev) => { if (ev.key === 'Escape') close(); else if (ev.key === 'Tab') { ev.preventDefault(); box.focus(); } }; const close = () => { box.remove(); removeEventListener('keydown', key); a.focus(); };
+    box.addEventListener('click', close); addEventListener('keydown', key); d.body.appendChild(box); box.focus();
+  });
 
   // wide tables scroll instead of breaking the layout
   d.querySelectorAll('.prose table').forEach(t => { const p = t.parentElement; if (p.style.overflowX === 'auto' || p.classList.contains('tw')) return; const w = d.createElement('div'); w.className = 'tw'; p.insertBefore(w, t); w.appendChild(t); });
