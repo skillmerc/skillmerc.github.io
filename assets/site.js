@@ -200,7 +200,7 @@ void main(){
     const EP = 'https://hq-production-e33c164a.up.railway.app/t';
     const id = Math.random().toString(36).slice(2, 10), t0 = Date.now(); let maxD = 0, tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
-    const send = (o) => { try { const b = JSON.stringify(Object.assign({ v: 1, id, p: location.pathname, w: innerWidth, tz, l: navigator.language || '' }, o)); if (!(navigator.sendBeacon && navigator.sendBeacon(EP, b))) fetch(EP, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' }); } catch {} };
+    const send = (o) => { try { const b = JSON.stringify(Object.assign({ v: 1, id, p: location.pathname, w: innerWidth, tz, l: navigator.language || '' }, o)); fetch(EP, { method: 'POST', body: b, keepalive: true, headers: { 'content-type': 'text/plain' } }).catch(() => { try { navigator.sendBeacon && navigator.sendBeacon(EP, b); } catch {} }); } catch {} };
     let ref = ''; try { if (d.referrer) { const u = new URL(d.referrer); if (u.hostname !== location.hostname) ref = u.hostname + u.pathname; } } catch {}
     const qs = new URLSearchParams(location.search);
     send({ e: 'view', r: ref, us: qs.get('utm_source') || '', um: qs.get('utm_medium') || '', uc: qs.get('utm_campaign') || '', nf: /^Page not found/.test(d.title) ? 1 : 0 });
