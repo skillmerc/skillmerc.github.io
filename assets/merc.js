@@ -255,6 +255,7 @@ void main(){
   const maxScale = Math.min(devicePixelRatio || 1, 2);
   const small = !still && (innerWidth < 800 || matchMedia('(pointer:coarse)').matches);
   let scale = still ? 1 : Math.min(maxScale, small ? 1.25 : 1), hq = small ? 0 : 1, steps = small ? 72 : 110;
+  if (window.__mercFilm) { scale = maxScale; hq = 1; steps = 110; }
   let slow = 0, dead = false;
   let W = 0, H = 0, acc = 0, frames = 0, last = performance.now(), time = reduce ? 3.2 : +(canvas.dataset.time || 0), running = false, dirty = true, tries = 0, capped = false;
   const resize = () => { const w = Math.max(2, Math.round(canvas.clientWidth * scale)), h = Math.max(2, Math.round(canvas.clientHeight * scale)); if (w !== W || h !== H) { W = canvas.width = w; H = canvas.height = h; gl.viewport(0, 0, W, H); } };
@@ -319,7 +320,7 @@ void main(){
         window.__mercForm = f > .5 ? i1 : i0; window.__mercMix = i0 === 7 ? 1 - f : i1 === 7 ? f : 0; }
       if (still) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      if (!reduce && !still) {
+      if (!reduce && !still && !window.__mercFilm) {
         acc += dt * 1000; frames++;
         if (frames >= 40) { const avg = acc / frames; acc = 0; frames = 0;
           if (avg > 70 && scale <= .46 && ++slow > 2) { root.classList.add('no-gl'); dead = true; return; }
