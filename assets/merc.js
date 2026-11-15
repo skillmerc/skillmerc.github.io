@@ -6,10 +6,13 @@
 (() => {
   const canvas = document.getElementById('merc');
   if (!canvas) return;
+  const boot = () => {
   const root = document.documentElement;
   const still = canvas.dataset.still === '1';
   const gl = canvas.getContext('webgl2', { antialias: false, alpha: still, premultipliedAlpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: still || !!window.__mercKeep });
   if (!gl) { root.classList.add('no-gl'); return; }
+  // software rasterisers (SwiftShader, llvmpipe) cannot run this shader at a usable rate: show the still render instead
+  if (!still) { const dbg = gl.getExtension('WEBGL_debug_renderer_info'); const rn = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); if (/swiftshader|llvmpipe|software|basic render/i.test(rn)) { root.classList.add('no-gl'); return; } }
 
   const VS = `#version 300 es
 in vec2 a; void main(){ gl_Position = vec4(a, 0., 1.); }`;
@@ -252,6 +255,7 @@ void main(){
   const maxScale = Math.min(devicePixelRatio || 1, 2);
   const small = !still && (innerWidth < 800 || matchMedia('(pointer:coarse)').matches);
   let scale = still ? 1 : Math.min(maxScale, small ? 1.25 : 1), hq = small ? 0 : 1, steps = small ? 72 : 110;
+  let slow = 0, dead = false;
   let W = 0, H = 0, acc = 0, frames = 0, last = performance.now(), time = reduce ? 3.2 : +(canvas.dataset.time || 0), running = false, dirty = true, tries = 0, capped = false;
   const resize = () => { const w = Math.max(2, Math.round(canvas.clientWidth * scale)), h = Math.max(2, Math.round(canvas.clientHeight * scale)); if (w !== W || h !== H) { W = canvas.width = w; H = canvas.height = h; gl.viewport(0, 0, W, H); } };
   const B = new Float32Array(N * 4);
@@ -318,6 +322,7 @@ void main(){
       if (!reduce && !still) {
         acc += dt * 1000; frames++;
         if (frames >= 40) { const avg = acc / frames; acc = 0; frames = 0;
+          if (avg > 70 && scale <= .46 && ++slow > 2) { root.classList.add('no-gl'); dead = true; return; }
           if (avg > 24 && scale > .45) { scale = Math.max(.45, scale * .82); if (scale < .6) { hq = 0; steps = 72; } }
           else if (avg < 15 && small && !hq && scale >= maxScale * .9) { hq = 1; steps = 96; }
           else if (avg < 17.5 && scale < maxScale && !capped) { scale = Math.min(maxScale, scale * 1.12); if (++tries > 6) capped = true; }
@@ -325,7 +330,7 @@ void main(){
       }
       if (!canvas.classList.contains('on')) canvas.classList.add('on');
     }
-    if (!still) schedule();
+    if (!still && !dead) schedule();
   };
   const schedule = () => { if (!running) { running = true; requestAnimationFrame(frame); } };
   addEventListener('pointermove', (e) => { const r = canvas.getBoundingClientRect(); ptr.tx = (e.clientX / innerWidth) * 2 - 1; ptr.ty = (e.clientY / innerHeight) * 2 - 1; ptr.px = ((e.clientX - r.left) / r.width) * 2 - 1; ptr.py = ((e.clientY - r.top) / r.height) * 2 - 1; if (e.pointerType !== 'touch') ptr.on = performance.now(); }, { passive: true });
@@ -338,4 +343,8 @@ void main(){
   window.__merc = { collect, get stage() { return stage; }, get scale() { return scale; }, set time(v) { time = v; dirty = true; }, snap() { readStage(); stage = stageT; dirty = true; },
     render(form, t) { canvas.dataset.form = form; time = t; readStage(); stage = stageT; dirty = true; frame(performance.now()); } };
   if (still) frame(performance.now()); else schedule();
+  };
+  // start after first paint so text renders first; stills render at once
+  if (canvas.dataset.still === '1') boot();
+  else { const go = () => ('requestIdleCallback' in window ? requestIdleCallback(boot, { timeout: 900 }) : setTimeout(boot, 200)); if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); }
 })();
