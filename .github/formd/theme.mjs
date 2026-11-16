@@ -326,13 +326,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     ['tables', 'clamp(150px,15.5vw,236px)', 80, 52, 2, 1.8, '#tables', 'Web tables into Excel', '36vw', 56, 54],
     ['data', 'clamp(130px,12.5vw,190px)', 69, 71, 5, .9, '#data', 'Public data', '0px', 0, 0, dataOpts],
   ];
-  let formd = '';
-  if (day) {
-    const all = day.rows.filter(r => !r.pooled).sort((a, b) => (b.sold || 0) - (a.sold || 0)); const top = all.slice(0, 5);
-    formd = `<div class="ledger" data-rv><div class="ledger-head"><div><div class="fresh"><i></i>Free list, updated daily</div><h3 style="margin-top:10px">Who raised money on ${longDate(day.day)}</h3></div><a class="tlink" href="/form-d/">See this week ${ARROW}</a></div>
-<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Company</th><th class="hide-s">Where</th><th class="hide-s">Industry</th><th class="n">Raised so far</th></tr></thead><tbody>${top.map(r => `<tr><td>${esc(r.name)}</td><td class="hide-s">${esc([r.city, r.state].filter(Boolean).join(', '))}</td><td class="hide-s">${esc(r.industry || '')}</td><td class="n">${money(r.sold)}</td></tr>`).join('')}</tbody></table></div></div>`;
-  }
-  const dlist = `<div class="ledger" data-rv><div class="ledger-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
+  const dlist = `<div class="ledger" data-rv><div class="ledger-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/" title="${esc(a.title.split(' - ')[0])}"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
   const pickG = ['payfast-order-still-pending', 'courier-guy-no-shipping-method', 'wikipedia-table-to-excel', 'freeagent-shopify-integration-discontinued', 'pudo-woocommerce', 'importhtml-not-working'];
   const glinks = pickG.map(s => guides.find(g => g.segs[2] === s)).filter(Boolean).concat(guides).filter((g, i, a) => a.indexOf(g) === i).slice(0, 6);
   const groupName = (seg) => (GUIDE_GROUPS.find(g => g[0] === seg) || [, 'Guide'])[1];
@@ -363,7 +357,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
   doc: orbFig('card', dataOpts) },
   ];
-  JOBS[JOBS.length - 1].extra = `<div class="jx">${formd}${dlist}</div>`.replace(/ data-rv/g, '');
+  JOBS[JOBS.length - 1].extra = `<div class="jx">${dlist}</div>`.replace(/ data-rv/g, '');
   return `<section class="hero"><canvas id="ribbon" aria-hidden="true"></canvas><div class="ribbon-fb" aria-hidden="true"></div>
 <div class="orbs" data-orbs><span class="orb wire" style="--s:clamp(120px,13vw,200px);--x:90%;--y:38%;--z:1;--k:.4;--i:0;--ms:26vw;--mx:74%;--my:62%">${WIRE}</span>${O.map(([k, s, x, y, z, dep, href, name, ms, mx, my, opts], i) => orb(k, { tag: 'a', opts, attrs: ` href="${href}" aria-label="${esc(name)}" style="--s:${s};--x:${x}%;--y:${y}%;--z:${z};--k:${dep};--i:${i + 1};--bt:${8 + i * 1.3}s;--bd:-${i * 2}s;--ms:${ms};--mx:${mx}%;--my:${my}%"` })).join('')}</div>
 <div class="wrap">
@@ -387,15 +381,14 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <div class="sec-head"><h2 class="hx">The price list.</h2><p>${nLive} tools you can have today.</p></div>
 <div class="plist">${plist.map(([g, sub, rows]) => [g, sub, rows.filter(r => r[4] === 'live'), rows.length]).filter(([, , rows]) => rows.length).map(([g, sub, rows, all]) => `<div class="pgroup"><h3>${esc(g)}${rows.length === all ? `<small>${esc(sub)}</small>` : ''}</h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="no">${no}</span><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="stc"><span class="st ${st}">${esc(stl)}</span></span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
 
-<div class="pick" id="pick"><div><h2 class="hx">Not sure which? <span class="dim">Three clicks at most.</span></h2><p class="say">Answer two or three questions and get the one tool that fits.</p></div>
-<div class="pform" data-pick><div class="ph"><span>Find my tool</span><button class="back" type="button" hidden>Back</button></div><div class="pb"><div class="pq"><span class="lbl step" style="color:var(--mute)">Question 1</span><b class="ptitle" style="margin-top:8px">Where do you sell?</b><div class="opts2"></div></div><div class="pres" hidden><div><span class="lbl">Your tool</span><b class="pn"></b><p></p><div class="row-ctas"><a class="btn" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="again" type="button">Start over</button></div></div></div></div></div>
+<div class="pick" id="pick"><div class="pform" data-pick><div class="ph"><h2>Not sure which? <span class="dim">Three clicks at most.</span></h2><button class="back" type="button" hidden>Back</button></div><div class="pb"><div class="pq"><div><span class="lbl step" style="color:var(--mute)">Question 1</span><b class="ptitle" style="margin-top:8px">Where do you sell?</b></div><div class="opts2"></div></div><div class="pres" hidden><div><span class="lbl">Your tool</span><b class="pn"></b><p></p><div class="row-ctas"><a class="btn" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="again" type="button">Start over</button></div></div></div></div>
 <script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { n: v[0], p: v[1], c: v[2], h: v[3], m: v[4] }])) }).replace(/</g, '\\u003c')}</script></div>
 </div></section>
 
 <section class="sec" id="lab"><div class="wrap"><div class="duo">
 <div>${secRule('04', 'In review', 'Waiting on store review')}
 <h2 class="hx duo-h">Next up. <span class="dim">Built and tested.</span></h2>
-<ul class="mini">${LAB.map(([h, n, p, , who]) => `<li><a href="${h}"><b>${esc(n)}</b><span class="t">${esc(p)}</span><span class="w">${esc(who)}</span></a></li>`).join('')}</ul></div>
+<ul class="mini">${LAB.map(([h, n, p, , who]) => `<li><a href="${h}"><span class="nu"><b>${esc(n)}</b><small>${esc(p)}</small></span><span class="w">${esc(who)}</span></a></li>`).join('')}</ul></div>
 <div id="guides">${secRule('05', 'The manual', `${guides.length} guides`)}
 <h2 class="hx duo-h">Stuck? <span class="dim">Read the fix.</span></h2>
 <ul class="mini">${glinks.map(g => `<li><a href="${g.url}"><span class="t1">${esc(g.h1)}</span>${ARROW}</a></li>`).join('')}</ul>
