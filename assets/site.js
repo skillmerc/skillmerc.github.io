@@ -217,8 +217,8 @@ void main(){
       pq.hidden = false; pres.hidden = true; title.textContent = n.q; step.textContent = 'Question ' + (path.length + 1);
       opts.innerHTML = ''; n.a.forEach(([label], i) => { const b = d.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => { path.push(i); show(); }); opts.appendChild(b); });
     };
-    back.addEventListener('click', () => { path.pop(); show(); });
-    root.querySelector('.again').addEventListener('click', () => { path = []; show(); });
+    back.addEventListener('click', () => { path.pop(); show(); const f = opts.querySelector('button'); if (f) f.focus(); });
+    root.querySelector('.again').addEventListener('click', () => { path = []; show(); const f = opts.querySelector('button'); if (f) f.focus(); });
     show();
   })();
 
