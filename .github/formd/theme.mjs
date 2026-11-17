@@ -30,7 +30,6 @@ const brand = `<a class="brand" href="/" aria-label="SKILLMERC home">${LOGO}<spa
 const WP = (slug) => `https://wordpress.org/plugins/${slug}/`;
 const AMO = (slug) => `https://addons.mozilla.org/firefox/addon/${slug}/`;
 const PRO_SHIP = 'https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/';
-// PayFast Pro is OFF the site since 17 Nov 2026: a buyer-path test showed version 1.0.2 cannot activate a licence. Put the chip, button and offer back only after a retest passes (ventures/wordpress-plugins/payfast-pro/QA-buyer-path-2026-11-17.md).
 const PRO_PAY = 'https://checkout.freemius.com/plugin/40911/plan/70874/licenses/1/'; // read 16 Nov 2026: live, "Skillmerc Payment Gateway for PayFast Pro", annual USD 49, single site
 const CATS = {
   shipping: { label: 'Shipping', n: '01', a: '/#shipping' }, payments: { label: 'Payments', n: '02', a: '/#payments' },
@@ -51,8 +50,8 @@ const HUBS = {
     tag: 'Get paid. <em>The order updates itself.</em>',
     tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself. When a notice fails a check, the log says why.',
     say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
-    facts: ['Free', 'PayFast hosted checkout', 'Signed ITN checks'],
-    cta: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up'], ['Fix a PayFast problem', '/payfast-woocommerce/help/', '']],
+    facts: ['Free plugin', '*Pro USD 49 a year', 'Signed ITN checks'],
+    cta: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up'], ['Get Pro', PRO_PAY, 'up']],
     promo: ['Card and EFT payments that mark orders paid by themselves.', 'Get it free', WP('skillmerc-payment-gateway-for-payfast')] },
   'sage-accounting-woocommerce': { cat: 'books', name: 'WooCommerce to Sage Accounting', doc: 'inv', stamp: 'In Sage', hero: true,
     tag: 'Every sale, <em>already in Sage.</em>',
@@ -115,7 +114,7 @@ const HUBS = {
 // schema.org SoftwareApplication facts for released products (prices as listed on each page)
 const SCHEMA = {
   'sa-shipping-woocommerce': { name: 'Skillmerc Shipping for The Courier Guy, Pudo and PAXI', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0], ['Pro, one site, one year', 49]], url: WP('skillmerc-shipping-courier-guy-pudo-paxi') },
-  'payfast-woocommerce': { name: 'Skillmerc Payment Gateway for PayFast', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-payment-gateway-for-payfast') },
+  'payfast-woocommerce': { name: 'Skillmerc Payment Gateway for PayFast', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0], ['Pro, one site, one year', 49]], url: WP('skillmerc-payment-gateway-for-payfast') },
   'sage-accounting-woocommerce': { name: 'Skillmerc Sync for Sage Accounting', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-sage-accounting') },
   'freeagent-woocommerce': { name: 'Skillmerc Sync for FreeAgent', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-freeagent') },
   'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
@@ -124,7 +123,7 @@ const CARDS = [
   { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and locker pickers. Pro adds booking and labels.', ft: 'Free / Pro', href: '/sa-shipping-woocommerce/' },
   { k: 'shopify-freeagent', m: 'Bookkeeping', b: 'Ledgerline for Shopify', p: 'Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.', ft: 'In review', href: '/shopify-freeagent/' },
   { k: 'list-table-scraper', m: 'Web tables', b: 'List & Table Scraper', p: 'Any web table or list into Excel in one click.', ft: 'Free / Pro', href: '/list-table-scraper/' },
-  { k: 'payfast-woocommerce', m: 'Payments', b: 'PayFast for WooCommerce', p: 'Card and EFT payments that mark orders paid by themselves.', ft: 'Free', href: '/payfast-woocommerce/' },
+  { k: 'payfast-woocommerce', m: 'Payments', b: 'PayFast for WooCommerce', p: 'Card and EFT payments that mark orders paid by themselves.', ft: 'Free / Pro', href: '/payfast-woocommerce/' },
   { k: 'sage-accounting-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to Sage', p: 'Paid orders become Sage invoices with the right VAT.', ft: 'Free', href: '/sage-accounting-woocommerce/' },
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
@@ -134,7 +133,7 @@ const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], [
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
     ['101', 'Show real courier prices at checkout', 'Shipping for WooCommerce: The Courier Guy, Fastway, Pudo, PAXI', '<b>Free.</b> Pro USD 49 a year', 'live', 'Live', '/sa-shipping-woocommerce/'],
-    ['102', 'Take card and EFT payments that mark the order paid', 'PayFast for WooCommerce', '<b>Free</b>', 'live', 'Live', '/payfast-woocommerce/'],
+    ['102', 'Take card and EFT payments that mark the order paid', 'PayFast for WooCommerce', '<b>Free.</b> Pro USD 49 a year', 'live', 'Live', '/payfast-woocommerce/'],
     ['103', 'Put every paid order into Sage, with the VAT right', 'WooCommerce to Sage Accounting', '<b>Free</b>', 'live', 'Live', '/sage-accounting-woocommerce/'],
     ['104', 'Put every paid order into FreeAgent, marked paid', 'WooCommerce to FreeAgent', '<b>Free</b>', 'live', 'Live', '/freeagent-woocommerce/']]],
   ['Shopify', '1 app', [
@@ -343,7 +342,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     { id: 'payments', n: '02', label: 'Payments', plat: 'WooCommerce', h2: 'Get paid. The order updates itself.',
   tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself.',
   say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
-  fx: ['Free', 'PayFast', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') },
+  fx: ['Free plugin', '*Pro USD 49 a year', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') },
     { id: 'books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
   tale: 'Month end. Orders in one window, your accounts in the other, and an afternoon of typing between them. These plugins do the typing the moment an order is paid.',
   say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
