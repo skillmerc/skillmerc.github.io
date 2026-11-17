@@ -30,7 +30,7 @@ const brand = `<a class="brand" href="/" aria-label="SKILLMERC home">${LOGO}<spa
 const WP = (slug) => `https://wordpress.org/plugins/${slug}/`;
 const AMO = (slug) => `https://addons.mozilla.org/firefox/addon/${slug}/`;
 const PRO_SHIP = 'https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/';
-const PRO_PAY = 'https://checkout.freemius.com/plugin/40911/plan/70874/licenses/1/'; // read 16 Nov 2026: live, "Skillmerc Payment Gateway for PayFast Pro", annual USD 49, single site
+const PRO_PAY = 'https://checkout.freemius.com/plugin/40911/plan/70874/licenses/1/'; // Pro is back on sale since 17 Nov 2026: version 1.0.3 (released on Freemius 09:25 SAST, the licence activation fix) passed the buyer-path test. Checkout read 17 Nov 2026 16:20 SAST: "Skillmerc Payment Gateway for PayFast Pro", annual USD 49.00, single site, lifetime USD 149.00, 14-day refund, no questions asked
 const CATS = {
   shipping: { label: 'Shipping', n: '01', a: '/#shipping' }, payments: { label: 'Payments', n: '02', a: '/#payments' },
   books: { label: 'Bookkeeping', n: '03', a: '/#books' }, tables: { label: 'Web tables', n: '04', a: '/#tables' },
@@ -89,7 +89,7 @@ const HUBS = {
     tag: 'DeepSeek chats, <em>saved properly.</em>',
     tale: 'A long DeepSeek chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep saves the whole thing to a file on your own computer.',
     say: 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Long chats are joined in order, and everything stays in your browser.',
-    facts: ['Firefox, in review', 'Chrome coming soon', 'Stays in your browser'], cta: [['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
+    facts: ['Free on Firefox', 'Chrome coming soon', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
     tale: 'The risk register is a spreadsheet. It was last opened at kickoff. Riskwell keeps it inside the Jira project, next to the work, and emails the risk owner when a review is due.',
@@ -144,7 +144,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Your browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
-    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep', 'Free plan and Pro at launch', 'review', 'In review at Firefox', '/threadkeep/']]],
+    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free</b>', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
     ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
     ['502', 'See which companies raised money this week', 'SEC Form D filings, updated daily', '<b>Free</b>', 'live', 'Live', '/form-d/']]],
@@ -227,9 +227,9 @@ const fold = (html) => { const nodes = topNodes(html); if (!nodes) return html; 
   if (out.filter(x => !x.raw).length < 3) return html;
   const real = out.filter(x => !x.raw); const leadSec = real.find(x => /^(how it works|what it does)$/i.test(strip(x.title).trim())) || real.find(x => !/^guides$/i.test(strip(x.title).trim())) || real[0];
   return out.map(x => { if (x.raw) return x.raw; const title = strip(x.title); let body = x.body; if (/frequently asked|^faq/i.test(title)) body = qa(body);
-    // open at the start: how it works (or the first real section), anything with a form or a video, and everything a buyer or a store reviewer must see without a click: limits, prices, licence, privacy, data, permissions, outside services
+    // open at the start: how it works (or the first real section), anything with a form or a video, and everything a buyer or a store reviewer must see without a click: limits, prices, anything about a paid tier ("Pro version", "Pro: ..."), licence, privacy, data, permissions, outside services
     const lead = x === leadSec;
-    const open = lead || /<form[\s>]|<iframe[\s>]|class="yt"|id="(demo|notify)"/.test(body) || /does not do|limits|not affiliated|pricing|free and pro|free tier|licen[cs]e|privacy|stays on your device|^data$|permissions|external services?/i.test(title);
+    const open = lead || /<form[\s>]|<iframe[\s>]|class="yt"|id="(demo|notify)"/.test(body) || /does not do|limits|not affiliated|pricing|free and pro|free tier|^pro version$|^pro:|licen[cs]e|privacy|stays on your device|^data$|permissions|external services?/i.test(title.trim());
     return `<details class="fold"${x.id ? ` id="${x.id}"` : ''}${open ? ' open' : ''}><summary><h2${x.attrs}>${x.title}</h2></summary><div class="fold-b">${body}</div></details>`; }).join(''); };
 
 // ---------- content page shell ----------
@@ -302,12 +302,11 @@ const PICKS = {
   shsage: ['Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
   lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
   data: ['Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
-  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. In review at Firefox Add-ons.', 'See Threadkeep', '/threadkeep/', ''],
+  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Free on Firefox.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
 };
 // In the in-tray: built and tested, waiting on a store's review. Update as reviews land.
 const LAB = [
   ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT. From USD 9 a month, planned.', 'In review', 'Shopify'],
-  ['/threadkeep/', 'Threadkeep', 'Save a DeepSeek chat as PDF, Markdown or Word.', 'In review', 'Firefox'],
   ['/riskwell/', 'Riskwell', 'A risk register and risk matrix inside Jira.', 'In review', 'Atlassian'],
   ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
   ['/ship-rules/', 'Ship Rules', 'Proof before a Jira work item ships.', 'In review', 'Atlassian'],
