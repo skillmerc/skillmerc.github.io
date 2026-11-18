@@ -121,8 +121,8 @@ void main(){
     const pick = (i, focus) => { tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (panels[k]) panels[k].classList.toggle('on', on); }); const tl = tabs[i].parentElement; tl.scrollLeft = tabs[i].offsetLeft - (tl.clientWidth - tabs[i].offsetWidth) / 2; if (focus) tabs[i].focus(); };
     tabs.forEach((t, i) => { t.addEventListener('click', () => pick(i));
       t.addEventListener('keydown', (e) => { if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); pick(e.key === 'Home' ? 0 : tabs.length - 1, true); return; } const k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!k) return; e.preventDefault(); pick((i + k + tabs.length) % tabs.length, true); }); });
-    const go = (hash) => { const i = panels.findIndex(p => p && '#' + p.id === hash); if (i < 0) return false; pick(i); (root.closest('section') || root).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); return true; };
-    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="#"],a[href^="/#"]'); if (!a || location.pathname !== '/') return; const h = a.getAttribute('href').replace(/^\//, ''); if (go(h)) { e.preventDefault(); history.pushState(null, '', h); } });
+    const go = (hash, focus) => { const i = panels.findIndex(p => p && '#' + p.id === hash); if (i < 0) return false; pick(i); if (focus) tabs[i].focus({ preventScroll: true }); (root.closest('section') || root).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); return true; };
+    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[href^="#"],a[href^="/#"]'); if (!a || location.pathname !== '/') return; const h = a.getAttribute('href').replace(/^\//, ''); if (go(h, true)) { e.preventDefault(); history.pushState(null, '', h); } });
     addEventListener('hashchange', () => go(location.hash)); go(location.hash);
   })();
 
@@ -252,4 +252,13 @@ void main(){
   });
 
   d.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
+
+  // v10: a row of the struck list and its orb light up together (mouse and keyboard only)
+  (() => {
+    const list = d.querySelector('[data-struck]'), field = d.querySelector('[data-orbs]'); if (!list || !field) return;
+    const rows = [...list.querySelectorAll('a[href^="#"]')];
+    const set = (h, on) => { const o = field.querySelector('a.orb[href="' + h + '"]'), r = rows.find(x => x.getAttribute('href') === h); if (o) o.classList.toggle('lit', on); if (r) r.classList.toggle('lit', on); field.classList.toggle('has-lit', on && !!o); list.classList.toggle('has-lit', on && !!r); };
+    rows.forEach(r => { const h = r.getAttribute('href'); if (fine) { r.addEventListener('pointerenter', () => set(h, true)); r.addEventListener('pointerleave', () => set(h, false)); } r.addEventListener('focus', () => set(h, true)); r.addEventListener('blur', () => set(h, false)); });
+    if (fine) field.querySelectorAll('a.orb').forEach(o => { const h = o.getAttribute('href'); o.addEventListener('pointerenter', () => set(h, true)); o.addEventListener('pointerleave', () => set(h, false)); });
+  })();
 })();
