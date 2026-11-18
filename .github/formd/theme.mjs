@@ -399,7 +399,7 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <div class="ct-grid"><div><h2 class="hx">Got a boring job? <span class="dim">Hand it over.</span></h2>
 <p><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
 <p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p></div>
-<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Apify, Freemius</p></div></div></div>
+<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Chrome Web Store, Apify, Freemius</p></div></div></div>
 </div></section>`;
 }
 
