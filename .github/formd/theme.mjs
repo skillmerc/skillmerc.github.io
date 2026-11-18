@@ -82,7 +82,7 @@ const HUBS = {
     tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
     say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
     facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month'],
-    cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '#demo', 'dn']],
+    cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
     promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
@@ -117,7 +117,7 @@ const SCHEMA = {
   'payfast-woocommerce': { name: 'Skillmerc Payment Gateway for PayFast', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0], ['Pro, one site, one year', 49]], url: WP('skillmerc-payment-gateway-for-payfast') },
   'sage-accounting-woocommerce': { name: 'Skillmerc Sync for Sage Accounting', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-sage-accounting') },
   'freeagent-woocommerce': { name: 'Skillmerc Sync for FreeAgent', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-freeagent') },
-  'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
+  'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox, Chrome', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
 };
 const CARDS = [
   { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and locker pickers. Pro adds booking and labels.', ft: 'Free / Pro', href: '/sa-shipping-woocommerce/' },
@@ -143,7 +143,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'Not on sale yet', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Your browser', '2 add-ons', [
-    ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
+    ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
     ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free</b>', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
     ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
@@ -300,7 +300,7 @@ const PICKS = {
   fa: ['WooCommerce to FreeAgent', 'Every paid order becomes a contact, a VAT invoice and a payment in FreeAgent. Free.', 'Get it free', WP('skillmerc-sync-for-freeagent'), '/freeagent-woocommerce/'],
   ll: ['Ledgerline for Shopify', 'Paid Shopify orders into FreeAgent as VAT invoices, marked paid. In review at Shopify: get one email at launch.', 'Get the launch email', '/shopify-freeagent/#notify', '/shopify-freeagent/'],
   shsage: ['Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
-  lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
+  lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run, in Firefox and Chrome.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
   data: ['Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
   tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Free on Firefox.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
 };
@@ -347,10 +347,10 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
   fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
   also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', doc: orbFig('inv') },
-    { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox', h2: 'Any web table. Into Excel.',
+    { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox &middot; Chrome', h2: 'Any web table. Into Excel.',
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
-  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
+  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
     { id: 'data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
@@ -366,7 +366,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 <p class="lede">Quoting couriers. Chasing payments. Retyping invoices. Copying tables. <b>One small tool per job.</b></p>
 <div class="row-ctas">${btn(['See the tools', '#jobs', 'dn'], '')}<a class="tlink" href="#pick">Find my tool ${ARROW}</a></div>
 </div>
-<div class="wrap"><div class="runs"><span>Built for</span><a href="#kit">WooCommerce</a><a href="/shopify-freeagent/">Shopify</a><a href="/riskwell/">Jira</a><a href="/decision-log-confluence/">Confluence</a><a href="/list-table-scraper/">Firefox</a><a href="#data">Apify</a></div></div>
+<div class="wrap"><div class="runs"><span>Built for</span><a href="#kit">WooCommerce</a><a href="/shopify-freeagent/">Shopify</a><a href="/riskwell/">Jira</a><a href="/decision-log-confluence/">Confluence</a><a href="/list-table-scraper/">Firefox</a><a href="/list-table-scraper/">Chrome</a><a href="#data">Apify</a></div></div>
 </section>
 
 <section class="sec" id="jobs"><div class="wrap">${secRule('02', 'What they do', 'Example figures')}
@@ -439,7 +439,7 @@ export function reshell(rel, html) {
 
 /** Search index for the Cmd+K palette: every tool, then every page. */
 export function searchIndex() {
-  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
+  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox chrome'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
   const seen = new Set(tools.map(x => x[1]));
   const pages = registry.filter(r => !(r.segs[0] === 'form-d' && r.segs.length > 1) && !seen.has(r.url)).map(r => {
     const hub = HUBS[r.segs[0]]; const kind = r.segs[1] === 'help' ? 'Guide' : r.segs[0] === 'apify' ? 'Data tool' : (r.segs[0] === 'privacy' || r.segs.includes('privacy')) ? 'Privacy' : r.segs.includes('terms') ? 'Terms' : (hub ? hub.name : 'Page');
