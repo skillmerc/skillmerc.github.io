@@ -83,7 +83,8 @@ const HUBS = {
     say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
     facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month'],
     cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
-    promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')] },
+    promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')],
+    alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
     tag: 'DeepSeek chats, <em>saved properly.</em>',
@@ -117,7 +118,7 @@ const SCHEMA = {
   'payfast-woocommerce': { name: 'Skillmerc Payment Gateway for PayFast', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0], ['Pro, one site, one year', 49]], url: WP('skillmerc-payment-gateway-for-payfast') },
   'sage-accounting-woocommerce': { name: 'Skillmerc Sync for Sage Accounting', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-sage-accounting') },
   'freeagent-woocommerce': { name: 'Skillmerc Sync for FreeAgent', os: 'WordPress, WooCommerce', cat: 'BusinessApplication', offers: [['Free', 0]], url: WP('skillmerc-sync-for-freeagent') },
-  'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox, Chrome', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper') },
+  'list-table-scraper': { name: 'List & Table Scraper', os: 'Firefox, Chrome', cat: 'BrowserApplication', offers: [['Free', 0], ['Pro, monthly', 4], ['Pro, yearly', 29], ['Pro, lifetime', 49]], url: AMO('list-table-scraper'), same: [AMO('list-table-scraper'), 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
 };
 const CARDS = [
   { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and locker pickers. Pro adds booking and labels.', ft: 'Free / Pro', href: '/sa-shipping-woocommerce/' },
@@ -252,7 +253,7 @@ function docPage(rel, title, desc, body) {
   const here = strip(h1); crumbs.push([here.length > 54 ? here.slice(0, 52).replace(/\s+\S*$/, '') + '...' : here, null]);
   const crumbHtml = `<ol class="crumbs">${crumbs.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
   const sc = isHub && SCHEMA[segs[0]] ? SCHEMA[segs[0]] : null;
-  const app = sc ? ld({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: sc.name, applicationCategory: sc.cat, operatingSystem: sc.os, url, sameAs: sc.url, description: nod(desc), publisher: { '@type': 'Organization', name: 'SKILLMERC', url: BASE + '/' }, offers: sc.offers.map(([n, p]) => ({ '@type': 'Offer', name: n, price: String(p), priceCurrency: 'USD' })) }) : '';
+  const app = sc ? ld({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: sc.name, applicationCategory: sc.cat, operatingSystem: sc.os, url, sameAs: sc.same || sc.url, description: nod(desc), publisher: { '@type': 'Organization', name: 'SKILLMERC', url: BASE + '/' }, offers: sc.offers.map(([n, p]) => ({ '@type': 'Offer', name: n, price: String(p), priceCurrency: 'USD' })) }) : '';
   const bl = ld({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map(([t, h], i) => ({ '@type': 'ListItem', position: i + 1, name: nod(t), item: h ? BASE + h : url })) });
   const wide = segs[0] === 'form-d' || segs[0] === 'guides';
   const words = strip(rest).split(' ').length;
@@ -267,12 +268,15 @@ function docPage(rel, title, desc, body) {
   const offer = isHub ? (hub.cta[0] ? [hub.say, hub.cta[0][0], hub.cta[0][1]] : null) : (hub.promo || null);
   const ext = offer && /^https?:/.test(offer[2]);
   const promo = offer ? `<a class="promo" href="${offer[2]}"${ext ? ' rel="noopener"' : ''}><span class="ph">${isHub ? 'This tool' : 'The tool for this job'}</span><span class="pb"><b>${esc(hub.name)}</b><p>${esc(isHub ? (hub.promo ? hub.promo[0] : hub.say) : offer[0])}</p></span><span class="go">${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
-  const dock = offer ? `<a class="dock" href="${offer[2]}"${ext ? ' rel="noopener"' : ''} data-dock><b>${esc(hub.name)}</b><span>${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
+  const alt = offer && hub.alt ? hub.alt : null;
+  const short = s => s.replace(/^Add to /, '').replace(/, free$/, '');
+  const promoAlt = alt ? `<a class="promo-alt" href="${alt[1]}" rel="noopener">${esc(alt[0])} ${ARROW_UP}</a>` : '';
+  const dock = !offer ? '' : alt ? `<div class="dock dock2" data-dock><b>${esc(hub.name)}</b><a href="${offer[2]}" rel="noopener" aria-label="${esc(offer[1])}"><span>${esc(short(offer[1]))} ${ARROW_UP}</span></a><a href="${alt[1]}" rel="noopener" aria-label="${esc(alt[0])}"><span>${esc(short(alt[0]))} ${ARROW_UP}</span></a></div>` : `<a class="dock" href="${offer[2]}"${ext ? ' rel="noopener"' : ''} data-dock><b>${esc(hub.name)}</b><span>${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>`;
   const shots = isHub ? (SHOTS[segs[0]] || []) : [];
   const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="shots-head"><h2 class="hx">See it working.</h2><span class="typed">${shots.length} real screenshots. Click one to enlarge.</span></div><div class="strip">${shots.map((s, i) => `<figure class="shot"><a href="${shotSrc(s)}" data-zoom aria-label="Enlarge screenshot ${i + 1}${s.cap ? ': ' + esc(s.cap) : ''}"><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async"></a>${s.cap ? `<figcaption><b>${String(i + 1).padStart(2, '0')}</b>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
   const pick = CARDS.filter(c => c.k !== segs[0]).slice(0, 3);
   const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
-  return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
+  return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}${promoAlt}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
 }
 
 // ---------- homepage ----------
