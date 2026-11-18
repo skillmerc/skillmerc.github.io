@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How to scrape product cards or search results (not a table) into Excel or Google Sheets</title><meta name="description" content="Product grids, search results and directory cards are not HTML tables, so table tools miss them or squash them into one column. Free ways that need no install, what each one cannot do, and a browser add-on that turns each card into a row."><link rel="canonical" href="https://skillmerc.com/list-table-scraper/help/scrape-list-not-table-to-excel/"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="How to scrape product cards or search results (not a table) into Excel or Google Sheets"><meta property="og:description" content="Product grids, search results and directory cards are not HTML tables, so table tools miss them or squash them into one column. Free ways that need no install, what each one cannot do, and a browser add-on that turns each card into a row."><meta property="og:url" content="https://skillmerc.com/list-table-scraper/help/scrape-list-not-table-to-excel/"><meta property="og:image" content="https://skillmerc.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#050506"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=ca9b709b"><script>document.documentElement.classList.add('js')</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://skillmerc.com/"},{"@type":"ListItem","position":2,"name":"Web tables","item":"https://skillmerc.com/#tables"},{"@type":"ListItem","position":3,"name":"List & Table Scraper","item":"https://skillmerc.com/list-table-scraper/"},{"@type":"ListItem","position":4,"name":"Guide","item":"https://skillmerc.com/guides/"},{"@type":"ListItem","position":5,"name":"How to scrape product cards or search results (not...","item":"https://skillmerc.com/list-table-scraper/help/scrape-list-not-table-to-excel/"}]}</script></head><body class="doc-page"><a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg><span>SKILLMERC</span></a><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="/#data">Data</a><a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header><main id="main"><header class="band"><div class="wrap"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/#tables">Web tables</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/guides/">Guide</a></li><li><span aria-current="page">How to scrape product cards or search results (not...</span></li></ol><h1>How to scrape product cards or search results (not a table) into Excel or Google Sheets</h1><div class="meta"><span>6 min read</span><span>List &amp; Table Scraper</span></div></div></header><div class="wrap doc-grid"><article class="prose" data-toc>
+<p><strong>Short answer:</strong> product cards, search results and directory entries are usually repeated blocks, not table tags, so table tools find nothing or put each card&#39;s text in one cell. For a short list, copy and paste plus one formula, or Excel&#39;s <strong>Add Table Using Examples</strong>, works with nothing to install; for long or messy lists, a browser add-on that finds the repeated blocks, such as List &amp; Table Scraper, gives you one row per card with its links.</p>
+<h2>Why table tools miss card layouts</h2>
+<p>On most shops, search pages and directories, each item is a block that holds a title, a price, a link and an image. There is no table behind it.</p>
+<ul>
+<li><strong>Google Sheets IMPORTHTML</strong> only reads <code>table</code> tags and <code>ul</code> or <code>ol</code> lists from the page source. If the cards sit inside a list, <code>&quot;list&quot;</code> returns each card&#39;s text in one cell, not split into columns. If they do not, you get nothing.</li>
+<li><strong>Copy and paste</strong> puts every line of every card on its own row, and the link addresses are usually lost.</li>
+<li><strong>Excel Data, From Web</strong> shows the tables it detects. A grid of cards often shows up as no table at all.</li>
+</ul>
+<h2>Free ways that need no install</h2>
+<h3>1. Copy and paste, then fold the lines into rows</h3>
+<p>Good for one or two pages where every card has the same lines.</p>
+<ol>
+<li>Select the cards on the page, copy, and paste into column A of a new sheet. In Google Sheets use <strong>Ctrl+Shift+V</strong> (Cmd+Shift+V on a Mac) to paste text only.</li>
+<li>Count how many rows one card takes, for example 4 (name, price, rating, stock).</li>
+<li>In an empty cell type <code>=WRAPROWS(A1:A400, 4)</code>, with A400 changed to the last row you pasted. Each group of 4 lines becomes one row. WRAPROWS works in Google Sheets and in Excel for Microsoft 365.</li>
+</ol>
+<p>Limits: it breaks as soon as one card has an extra or missing line, such as a sale price or &quot;Out of stock&quot;. The links behind the titles are lost.</p>
+<h3>2. Excel: From Web, then Add Table Using Examples</h3>
+<p>Excel&#39;s web connector can learn a pattern from a few examples.</p>
+<ol>
+<li>In Excel open <strong>Data</strong>, choose <strong>From Web</strong>, paste the page address and click <strong>OK</strong>.</li>
+<li>In the Navigator window click <strong>Add Table Using Examples</strong> (bottom left).</li>
+<li>Type the first two or three values of a column, for example two product names. Excel suggests matching values as you type and fills in the rest. Add a column for prices the same way.</li>
+<li>Click <strong>OK</strong>, select the new custom table and click <strong>Load</strong>.</li>
+</ol>
+<p>Limits: Microsoft says the feature comes with a Microsoft 365 subscription. Excel downloads the page itself, so pages that need you to be signed in usually do not work, and some sites block these requests. You also need one query per page of results.</p>
+<h3>3. Google Sheets IMPORTXML, when the data is in the page source</h3>
+<p>IMPORTXML takes an XPath, so it can pick parts of each card:</p>
+<ul>
+<li><code>=IMPORTXML(&quot;https://example.com/search?q=lamp&quot;, &quot;//h3&quot;)</code> returns the text of every <code>h3</code> heading.</li>
+<li><code>=IMPORTXML(&quot;https://example.com/search?q=lamp&quot;, &quot;//h3/a/@href&quot;)</code> returns the links inside them.</li>
+</ul>
+<p>Find the right tag by right clicking a product name and choosing <strong>Inspect</strong>. Put one formula per column side by side.</p>
+<p>Limits: like IMPORTHTML, it reads the page source that Google&#39;s servers download, not the page your browser shows. Cards built by JavaScript are not there (see <a href="/list-table-scraper/help/importhtml-not-working/">why IMPORTHTML and IMPORTXML come back empty</a>). If one card lacks a field, that column shifts by one row and the rows no longer line up.</p>
+<h3>4. Your browser&#39;s console, if you are happy to paste one line of code</h3>
+<p>The console sees the page exactly as you do, signed in and after scripts have run. Chrome and Firefox both have a <code>copy()</code> helper that puts text on the clipboard.</p>
+<ol>
+<li>Press <strong>F12</strong> (Cmd+Option+I on a Mac) and open the <strong>Console</strong> tab.</li>
+<li>Paste this line and press Enter. It copies each product heading and its link, separated by a tab:</li>
+</ol>
+<pre><code>copy([...document.querySelectorAll(&quot;h3 a&quot;)].map(a =&gt; a.innerText + &quot;\t&quot; + a.href).join(&quot;\n&quot;))
+</code></pre>
+<ol start="3">
+<li>Paste into a sheet. The tab splits it into two columns.</li>
+</ol>
+<p>Change <code>h3 a</code> to match the site: right click a product name, choose <strong>Inspect</strong>, and look at the tag around it. Your browser may warn you about pasting code and ask you to type &quot;allow pasting&quot; first. Only paste code you understand.</p>
+<p>Limits: you need a selector that matches every card, and each extra column means more code.</p>
+<h2>With a browser add-on</h2>
+<p><a href="/list-table-scraper/">List &amp; Table Scraper</a> is an add-on we make for <a href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">Firefox</a> and <a href="https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf">Chrome</a>. It finds repeated blocks by their structure, so cards, search results and list items work the same way as tables.</p>
+<ol>
+<li>Open the page as you normally would (signed in, filters set) and click the add-on&#39;s toolbar button. It outlines the block it picked on the page and shows a preview with one row per card.</li>
+<li>If it picked the wrong block, click <strong>Try another</strong>.</li>
+<li>Each column holds text, link addresses or image addresses from the cards. Rename a column by typing in its header, or remove it with the x.</li>
+<li>Click <strong>Copy</strong> and paste into Google Sheets or Excel, or download CSV, Excel (.xlsx) or JSON.</li>
+</ol>
+<p>Results split over several pages? Click <strong>Locate Next button</strong>, click the site&#39;s Next, then <strong>Crawl pages</strong> (see <a href="/list-table-scraper/help/scrape-multiple-pages-to-excel/">scraping a list from multiple pages</a>). Pages that load more as you scroll use <strong>Infinite scroll</strong> (see <a href="/list-table-scraper/help/scrape-infinite-scroll-page-to-excel/">infinite scroll pages</a>). The free version reads up to 3 pages per run; <a href="/list-table-scraper/#free-and-pro">Pro</a> reads up to 500. Export is free either way.</p>
+<h2>Limits worth knowing</h2>
+<ul>
+<li>The add-on reads what the page has loaded. It cannot see items the site has not shown yet.</li>
+<li>It cannot read browser pages such as about: pages or the add-on stores.</li>
+<li>Scraped data stays in your browser. The free version needs no account, and the add-on has no server.</li>
+<li>Please respect each website&#39;s terms of use, and take only what you need.</li>
+</ul>
+<h2>Which should I use?</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A few cards, every card has the same lines</td>
+<td>Copy and paste, then WRAPROWS</td>
+</tr>
+<tr>
+<td>You use Excel for Microsoft 365 and the page is public</td>
+<td>Add Table Using Examples</td>
+</tr>
+<tr>
+<td>You want a sheet that refreshes and the cards are in View page source</td>
+<td>IMPORTXML</td>
+</tr>
+<tr>
+<td>You know a little HTML and want one or two columns</td>
+<td>The browser console</td>
+</tr>
+<tr>
+<td>Cards built by scripts, pages behind a login, links and images wanted, several pages</td>
+<td>A browser add-on such as List &amp; Table Scraper</td>
+</tr>
+</tbody></table>
+<h2>Frequently asked questions</h2>
+<h3>Can IMPORTHTML scrape product cards?</h3>
+<p>Only when the cards are inside a <code>ul</code> or <code>ol</code> list in the page source, and then each card&#39;s whole text lands in one cell. IMPORTXML is the better formula for cards, because an XPath can pick the name, price and link separately.</p>
+<h3>How do I keep the links when I copy a list from a website?</h3>
+<p>Plain copy and paste usually keeps the text and drops the addresses. IMPORTXML with <code>/@href</code> at the end of the XPath returns the links, the console line above copies them next to each title, and List &amp; Table Scraper puts link addresses in their own column.</p>
+<h3>Why are my columns out of line after scraping?</h3>
+<p>One card is missing a field, or has an extra one, so every value after it moves up a row. This happens with WRAPROWS and with IMPORTXML formulas placed side by side, and you have to fix the gap by hand. List &amp; Table Scraper reads each card as a whole, so a missing field becomes an empty cell in that card&#39;s row.</p>
+<h3>Is it allowed to scrape a website into a spreadsheet?</h3>
+<p>It depends on the site&#39;s terms of use and the law where you live, so read the terms first. This is not legal advice. Keep a few seconds between pages so you do not load the site heavily.</p>
+<p><a class="cta" href="https://addons.mozilla.org/firefox/addon/list-table-scraper/">Add to Firefox (free)</a></p><p><a class="cta" href="https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf">Add to Chrome (free)</a></p><hr><h2>More guides</h2><ul><li><a href="/list-table-scraper/help/wikipedia-table-to-excel/">How to export a Wikipedia table to Excel, Google Sheets or CSV (3 free ways)</a></li><li><a href="/list-table-scraper/help/scrape-multiple-pages-to-excel/">How to scrape a list from multiple pages into Excel or CSV without code</a></li><li><a href="/list-table-scraper/help/scrape-infinite-scroll-page-to-excel/">How to scrape an infinite scroll page into Excel or CSV</a></li><li><a href="/list-table-scraper/help/importhtml-not-working/">IMPORTHTML not working in Google Sheets? Why it fails and how to get the table anyway</a></li><li><a href="/list-table-scraper/help/scrape-paginated-table-to-excel/">How to scrape a table that spans several pages into Excel or Google Sheets</a></li></ul></article><aside class="side"><a class="promo" href="https://addons.mozilla.org/firefox/addon/list-table-scraper/" rel="noopener"><span class="ph">The tool for this job</span><span class="pb"><b>List &amp; Table Scraper</b><p>Any table or list on the web, into Excel in one click.</p></span><span class="go">Add to Firefox, free <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span></a><a class="promo-alt" href="https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf" rel="noopener">Add to Chrome, free <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></a></aside></div><section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></a></div><div class="tcards"><a class="tcard" href="/sa-shipping-woocommerce/"><span class="lbl">Shipping</span><b>Shipping for WooCommerce</b><p>Live courier rates and locker pickers. Pro adds booking and labels.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/shopify-freeagent/"><span class="lbl">Bookkeeping</span><b>Ledgerline for Shopify</b><p>Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.</p><span class="ft"><span>In review</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/payfast-woocommerce/"><span class="lbl">Payments</span><b>PayFast for WooCommerce</b><p>Card and EFT payments that mark orders paid by themselves.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a></div></div></section></main><footer class="foot"><div class="wrap"><div class="foot-grid">
+<div class="foot-about"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg><span>SKILLMERC</span></a><p>The boring parts, handled. Small tools for online shops, bookkeeping, project teams and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. 2025/673155/07<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li></ul></div>
+<div><h2 class="fh">Data and help</h2><ul><li><a href="/#data">Data tools on Apify</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/guides/">All guides</a></li><li><a href="/support/">Support</a></li><li><a href="/open-books/">Open books: our real numbers</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li></ul></div>
+<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li></ul></div>
+</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. 2025/673155/07</span><span>The boring parts, handled.</span></div></div></footer><div class="dock dock2" data-dock><b>List &amp; Table Scraper</b><a href="https://addons.mozilla.org/firefox/addon/list-table-scraper/" rel="noopener" aria-label="Add to Firefox, free"><span>Firefox <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span></a><a href="https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf" rel="noopener" aria-label="Add to Chrome, free"><span>Chrome <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span></a></div><script src="/assets/site.js?v=ca9b709b" defer></script></body></html>
