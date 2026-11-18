@@ -283,9 +283,9 @@ function docPage(rel, title, desc, body) {
 const money = n => n == null ? '' : n >= 1e9 ? '$' + (n / 1e9).toFixed(2) + 'B' : n >= 1e6 ? '$' + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + n;
 const longDate = day => new Date(day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const shortDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Africa/Johannesburg' });
-const jtab = (j, on) => `<button type="button" role="tab" id="jt-${j.id}" aria-controls="${j.id}" aria-selected="${on}"${on ? '' : ' tabindex="-1"'}><b>${j.n}</b>${j.label}</button>`;
+const jtab = (j, on) => `<button type="button" role="tab" id="jt-${j.id}" aria-controls="${j.id}" aria-selected="${on}"${on ? '' : ' tabindex="-1"'}>${j.label}</button>`;
 // One job: an orb with its small screen, the story in two short paragraphs, the facts and the way in. Only one shows at a time.
-const job = ({ id, n, label, plat, h2, tale, say, fx, ctas, also = '', doc, on = false, extra = '' }) => `<section class="exhibit jpanel${on ? ' on' : ''}" id="${id}" role="tabpanel" aria-labelledby="jt-${id}">${doc}<div class="ex-tx"><p class="kick lbl"><b>${n}</b><span>${label}</span><span>${plat}</span></p><h3 class="hx">${h2}</h3><p class="tale">${tale}</p><p class="say">${say}</p>${facts(fx)}<div class="row-ctas">${ctas.map((c, k) => k ? `<a class="tlink" href="${c[1]}"${c[3] ? ` aria-label="${esc(c[3])}"` : ''}>${esc(c[0])} ${ARROW}</a>` : btn(c, '')).join('')}</div>${also ? `<p class="also">${also}</p>` : ''}</div>${extra}</section>`;
+const job = ({ id, n, label, plat, h2, tale, say, fx, ctas, also = '', doc, on = false, extra = '' }) => `<section class="exhibit jpanel${on ? ' on' : ''}" id="${id}" role="tabpanel" aria-labelledby="jt-${id}">${doc}<div class="ex-tx"><p class="for">${plat}</p><h3 class="hx">${h2}</h3><p class="tale">${tale}</p><p class="fline">${fx.map(f => f.startsWith('*') ? `<b>${esc(f.slice(1))}</b>` : `<span>${esc(f)}</span>`).join('<i aria-hidden="true">&middot;</i>')}</p><div class="row-ctas">${ctas.map((c, k) => k ? `<a class="tlink" href="${c[1]}"${c[3] ? ` aria-label="${esc(c[3])}"` : ''}>${esc(c[0])} ${ARROW}</a>` : btn(c, '')).join('')}</div>${also ? `<p class="also">${also}</p>` : ''}</div>${extra}</section>`;
 
 const PICK = {
   q: 'Where do you sell?', a: [
@@ -337,6 +337,14 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   const plist = PLIST({ nData: actors.length, minPrice });
   const allRows = plist.flatMap(g => g[2]); const nLive = allRows.filter(r => r[4] === 'live').length; const nReview = allRows.filter(r => r[4] === 'review').length; const nFree = allRows.filter(r => /<b>Free/.test(r[3])).length;
 
+  // The hero list: the boring verb is struck out, the handled one stands. Each row opens its job below and lights its orb.
+  const STRUCK = [
+    ['#shipping', 'Courier rates', 'guessed', 'quoted', 'WooCommerce'],
+    ['#payments', 'Payments', 'chased', 'confirmed', 'WooCommerce'],
+    ['#books', 'Invoices', 'retyped', 'filed', 'Sage, FreeAgent'],
+    ['#tables', 'Web tables', 'copied', 'exported', 'Firefox, Chrome'],
+    ['#data', 'Public data', 'dug up', 'delivered', 'Apify'],
+  ];
   const JOBS = [
     { id: 'shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
   tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
@@ -367,40 +375,38 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 <div class="wrap">
 <p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
 <h1><span class="ln">The boring parts,</span> <span class="ln dim">handled.</span></h1>
-<p class="lede">Quoting couriers. Chasing payments. Retyping invoices. Copying tables. <b>One small tool per job.</b></p>
-<div class="row-ctas">${btn(['See the tools', '#jobs', 'dn'], '')}<a class="tlink" href="#pick">Find my tool ${ARROW}</a></div>
+<ul class="struck" data-struck>${STRUCK.map(([h, noun, was, now, where], i) => `<li><a href="${h}" style="--n:${i}" aria-label="${esc(noun)}: ${esc(now)}, not ${esc(was)}. For ${esc(where)}."><span class="sn">${esc(noun)}</span> <span class="sv"><del>${esc(was)}</del> <ins>${esc(now)}.</ins></span> <span class="sm">${esc(where)}</span>${ARROW}</a></li>`).join('')}</ul>
+<p class="struck-more"><a class="tlink" href="#kit">See every price ${ARROW}</a></p>
 </div>
-<div class="wrap"><div class="runs"><span>Built for</span><a href="#kit">WooCommerce</a><a href="/shopify-freeagent/">Shopify</a><a href="/riskwell/">Jira</a><a href="/decision-log-confluence/">Confluence</a><a href="/list-table-scraper/">Firefox</a><a href="/list-table-scraper/">Chrome</a><a href="#data">Apify</a></div></div>
 </section>
 
-<section class="sec" id="jobs"><div class="wrap">${secRule('02', 'What they do', 'Example figures')}
-<div class="sec-head"><h2 class="hx">Five jobs, off your desk.</h2><p>Pick one.</p></div>
+<section class="sec" id="jobs"><div class="wrap"><h2 class="vh">The five jobs</h2>
 <div class="jobs" data-jobs><div class="jtabs" role="tablist" aria-label="The five jobs">${JOBS.map((j, i) => jtab(j, i === 0)).join('')}</div>
 ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 </div>
+<p class="eg">The figures inside the glass are examples.</p>
 <noscript><style>.jtabs{display:none}.jpanel{display:grid!important;margin-top:30px;padding-top:30px;border-top:1px solid var(--line)}</style></noscript>
 </div></section>
 
-<section class="sec" id="kit"><div class="wrap">${secRule('03', 'Price list', 'Prices in US dollars')}
+<section class="sec" id="kit"><div class="wrap">
 <div class="sec-head"><h2 class="hx">The price list.</h2><p>${nLive} tools you can have today.</p></div>
-<div class="plist">${plist.map(([g, sub, rows]) => [g, sub, rows.filter(r => r[4] === 'live'), rows.length]).filter(([, , rows]) => rows.length).map(([g, sub, rows, all]) => `<div class="pgroup"><h3>${esc(g)}${rows.length === all ? `<small>${esc(sub)}</small>` : ''}</h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="no">${no}</span><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="stc"><span class="st ${st}">${esc(stl)}</span></span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
+<div class="plist">${plist.map(([g, sub, rows]) => [g, sub, rows.filter(r => r[4] === 'live'), rows.length]).filter(([, , rows]) => rows.length).map(([g, sub, rows, all]) => `<div class="pgroup"><h3>${esc(g)}${rows.length === all ? `<small>${esc(sub)}</small>` : ''}</h3><div>${rows.map(([no, job, tool, price, st, stl, href]) => `<a class="prow" href="${href}"><span class="job">${esc(job)}<small>${esc(tool)}</small></span><span class="pr">${price}</span><span class="go">${ARROW}</span></a>`).join('')}</div></div>`).join('')}</div>
 
-<div class="pick" id="pick"><div class="pform" data-pick><div class="ph"><h2>Not sure which? <span class="dim">Three clicks at most.</span></h2><button class="back" type="button" hidden>Back</button></div><div class="pb"><div class="pq"><div><span class="lbl step" style="color:var(--mute)">Question 1</span><b class="ptitle" style="margin-top:8px">Where do you sell?</b></div><div class="opts2"></div></div><div class="pres" hidden><div><span class="lbl">Your tool</span><b class="pn"></b><p></p><div class="row-ctas"><a class="btn" href="#"></a><a class="tlink pmore" href="#">How it works ${ARROW}</a><button class="again" type="button">Start over</button></div></div></div></div>
-<script type="application/json" id="pick-data">${JSON.stringify({ tree: PICK, picks: Object.fromEntries(Object.entries(PICKS).map(([k, v]) => [k, { n: v[0], p: v[1], c: v[2], h: v[3], m: v[4] }])) }).replace(/</g, '\\u003c')}</script></div>
+<p class="pnote">Prices in US dollars. Every tool on this list is in its store today.</p>
 </div></section>
 
 <section class="sec" id="lab"><div class="wrap"><div class="duo">
-<div>${secRule('04', 'In review', 'Waiting on store review')}
-<h2 class="hx duo-h">Next up. <span class="dim">Built and tested.</span></h2>
+<div>
+<h2 class="hx duo-h">Next up, in store review</h2>
 <ul class="mini">${LAB.map(([h, n, p, , who]) => `<li><a href="${h}"><span class="nu"><b>${esc(n)}</b><small>${esc(p)}</small></span><span class="w">${esc(who)}</span></a></li>`).join('')}</ul></div>
-<div id="guides">${secRule('05', 'The manual', `${guides.length} guides`)}
-<h2 class="hx duo-h">Stuck? <span class="dim">Read the fix.</span></h2>
+<div id="guides">
+<h2 class="hx duo-h">Stuck? Read the fix.</h2>
 <ul class="mini">${glinks.map(g => `<li><a href="${g.url}"><span class="t1">${esc(g.h1)}</span>${ARROW}</a></li>`).join('')}</ul>
 <div class="row-ctas"><a class="tlink" href="/guides/">All ${guides.length} guides ${ARROW}</a></div></div>
 </div></div></section>
 
-<section class="contact" id="contact"><div class="wrap">${secRule('06', 'Contact')}
-<div class="ct-grid"><div><h2 class="hx">Got a boring job? <span class="dim">Hand it over.</span></h2>
+<section class="contact" id="contact"><div class="wrap">
+<div class="ct-grid"><div><h2 class="hx" aria-label="Got a boring job? Hand it over.">Got a boring job? <del>Keep it.</del> Hand it over.</h2>
 <p><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
 <p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p></div>
 <div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Chrome Web Store, Apify, Freemius</p></div></div></div>
