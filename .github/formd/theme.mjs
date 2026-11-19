@@ -143,7 +143,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['301', 'Keep a risk register and heat map in each Jira project', 'Riskwell', 'Not on sale yet', 'review', 'In review at Atlassian', '/riskwell/'],
     ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'Not on sale yet', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
-  ['Your browser', '2 add-ons', [
+  ['Browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
     ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free</b>', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
@@ -226,7 +226,10 @@ const fold = (html) => { const nodes = topNodes(html); if (!nodes) return html; 
     out.push(...g); if (g.length) seen = true; };
   for (const x of secs) { if (x.raw) run.push(x); else { flush(); out.push(x); seen = true; } } flush();
   if (out.filter(x => !x.raw).length < 3) return html;
-  const real = out.filter(x => !x.raw); const leadSec = real.find(x => /^(how it works|what it does)$/i.test(strip(x.title).trim())) || real.find(x => !/^guides$/i.test(strip(x.title).trim())) || real[0];
+  const real = out.filter(x => !x.raw);
+  // When the page already opens with a real explanation in plain view (500 characters or more before the first section), no section is opened just for being first.
+  const firstSec = out.findIndex(x => !x.raw); const openingText = strip(out.slice(0, firstSec < 0 ? 0 : firstSec).filter(x => x.tag !== 'h1' && !/^<(script|style)\b/i.test(x.raw)).map(x => x.raw).join('')).length;
+  const leadSec = real.find(x => /^(how it works|what it does|what \S+ does( for .*)?)$/i.test(strip(x.title).trim())) || (openingText >= 500 ? null : (real.find(x => !/^guides$/i.test(strip(x.title).trim())) || real[0]));
   return out.map(x => { if (x.raw) return x.raw; const title = strip(x.title); let body = x.body; if (/frequently asked|^faq/i.test(title)) body = qa(body);
     // open at the start: how it works (or the first real section), anything with a form or a video, and everything a buyer or a store reviewer must see without a click: limits, prices, anything about a paid tier ("Pro version", "Pro: ..."), licence, privacy, data, permissions, outside services
     const lead = x === leadSec;
@@ -324,11 +327,11 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   const dataOpts = { rows: ops.slice(0, 4).map(r => [r.name.length > 20 ? r.name.slice(0, 19).replace(/[\s,.]+$/, '') : r.name, money(r.sold)]), date: day ? new Date(day.day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '' };
   // hero orbs: [screen, size, x%, y%, z, parallax depth, link, name, mobile size, mobile x%, mobile y%, opts]
   const O = [
-    ['pay', 'clamp(150px,15vw,228px)', 54, 5, 2, .6, '#payments', 'Payments', '34vw', 2, 2],
+    ['pay', 'clamp(150px,15vw,228px)', 57, 40, 2, .6, '#payments', 'Payments', '34vw', 2, 2],
     ['ship', 'clamp(200px,21.5vw,330px)', 76, 13, 4, 1.4, '#shipping', 'Courier shipping', '50vw', 38, 0],
-    ['books', 'clamp(170px,18vw,276px)', 55, 47, 4, 1.1, '#books', 'Bookkeeping', '42vw', 6, 46],
+    ['books', 'clamp(170px,18vw,276px)', 55, 64, 4, 1.1, '#books', 'Bookkeeping', '42vw', 6, 46],
     ['tables', 'clamp(150px,15.5vw,236px)', 80, 52, 2, 1.8, '#tables', 'Web tables into Excel', '36vw', 56, 54],
-    ['data', 'clamp(130px,12.5vw,190px)', 69, 71, 5, .9, '#data', 'Public data', '0px', 0, 0, dataOpts],
+    ['data', 'clamp(130px,12.5vw,190px)', 73, 73, 5, .9, '#data', 'Public data', '0px', 0, 0, dataOpts],
   ];
   const dlist = `<div class="ledger" data-rv><div class="ledger-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/" title="${esc(a.title.split(' - ')[0])}"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
   const pickG = ['payfast-order-still-pending', 'courier-guy-no-shipping-method', 'wikipedia-table-to-excel', 'freeagent-shopify-integration-discontinued', 'pudo-woocommerce', 'importhtml-not-working'];
@@ -346,7 +349,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     ['#data', 'Public data', 'dug up', 'delivered', 'Apify'],
   ];
   const JOBS = [
-    { id: 'shipping', n: '01', label: 'Shipping', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
+    { id: 'shipping', n: '01', label: 'Courier rates', plat: 'WooCommerce', h2: 'Real courier prices. Zero copy&#8209;paste.',
   tale: 'A flat rate is a guess. Guess high and the shopper leaves. Guess low and you pay the difference. This plugin asks the courier, while the shopper is still at checkout.',
   say: 'Live The Courier Guy and Fastway rates, a Pudo locker picker and a PAXI point picker. Pro books The Courier Guy and downloads the label PDF from the order.',
   fx: ['Free plugin', '*Pro USD 49 a year', 'South Africa'], ctas: [['Get it free', WP('skillmerc-shipping-courier-guy-pudo-paxi'), 'up', 'Get the shipping plugin free on WordPress.org'], ['How it works', '/sa-shipping-woocommerce/', '', 'How the shipping plugin works']], doc: orbFig('label') },
@@ -354,7 +357,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   tale: 'The shopper paid. PayFast has the money. The order still says Pending, so nobody packs the box. This gateway checks each payment notice, then moves the order on by itself.',
   say: 'Card, instant EFT, SnapScan and Mobicred through PayFast. Every payment notice is checked before the order is marked paid.',
   fx: ['Free plugin', '*Pro USD 49 a year', 'Signed ITN checks'], ctas: [['Get it free', WP('skillmerc-payment-gateway-for-payfast'), 'up', 'Get the PayFast gateway free on WordPress.org'], ['PayFast fixes', '/payfast-woocommerce/help/', '']], doc: orbFig('slip') },
-    { id: 'books', n: '03', label: 'Bookkeeping', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
+    { id: 'books', n: '03', label: 'Invoices', plat: 'Sage &middot; FreeAgent', h2: 'Every sale, already in the books.',
   tale: 'Month end. Orders in one window, your accounts in the other, and an afternoon of typing between them. These plugins do the typing the moment an order is paid.',
   say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
   fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
@@ -363,7 +366,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
-    { id: 'data', n: '05', label: 'Data', plat: 'Apify', h2: 'Public data, by the row.',
+    { id: 'data', n: '05', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
   fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
@@ -376,7 +379,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 <p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
 <h1><span class="ln">The boring parts,</span> <span class="ln dim">handled.</span></h1>
 <ul class="struck" data-struck>${STRUCK.map(([h, noun, was, now, where], i) => `<li><a href="${h}" style="--n:${i}" aria-label="${esc(noun)}: ${esc(now)}, not ${esc(was)}. For ${esc(where)}."><span class="sn">${esc(noun)}</span> <span class="sv"><del>${esc(was)}</del> <ins>${esc(now)}.</ins></span> <span class="sm">${esc(where)}</span>${ARROW}</a></li>`).join('')}</ul>
-<p class="struck-more"><a class="tlink" href="#kit">See every price ${ARROW}</a></p>
+<div class="row-ctas struck-go">${btn([`See all ${nLive} tools and prices`, '#kit', 'dn'], '')}</div>
 </div>
 </section>
 
