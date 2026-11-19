@@ -108,7 +108,7 @@ void main(){
         const a = d.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent; a.addEventListener('click', () => { const f = h.closest('details'); if (f) f.open = true; }); toc.appendChild(a); return a;
       });
       side.prepend(toc);
-      const mark = () => { let i = -1; hs.forEach((h, k) => { if (h.getBoundingClientRect().top < 140) i = k; }); links.forEach((l, k) => l.classList.toggle('on', k === i)); };
+      const mark = () => { let i = -1; const lim = Math.max(140, innerHeight * .4); hs.forEach((h, k) => { if (h.getBoundingClientRect().top < lim) i = k; }); links.forEach((l, k) => l.classList.toggle('on', k === i)); };
       addEventListener('scroll', mark, { passive: true }); mark();
     }
   }

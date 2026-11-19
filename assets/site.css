@@ -793,10 +793,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 @keyframes struck-line{from{transform:rotate(-1.4deg) scaleX(0)}to{transform:rotate(-1.4deg) scaleX(1)}}
 @keyframes struck-word{from{color:#fff}}
 @keyframes struck-new{from{opacity:0;transform:translateX(-.35em)}}
-.struck-more{margin-top:16px}
-.struck-more .tlink{font-size:15px}
-.js .hero .struck,.js .hero .struck-more{animation:rise .9s var(--ease) backwards;animation-delay:.3s}
-.js .hero .struck-more{animation-delay:.5s}
+.hero .struck-go{margin-top:clamp(20px,2.4vw,30px)}
+.js .hero .struck,.js .hero .struck-go{animation:rise .9s var(--ease) backwards;animation-delay:.3s}
+.js .hero .struck-go{animation-delay:.5s}
 .orbs .orb{transition:transform .6s var(--ease),opacity .4s,filter .4s}
 .orbs.has-lit .orb:not(.lit){opacity:.3;filter:saturate(.45)}
 .orbs .orb.lit{transform:translate(calc(var(--px,0)*var(--k,1)*1px),calc(var(--py,0)*var(--k,1)*1px)) scale(1.06)}
@@ -831,3 +830,22 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .contact h2 del{position:relative;text-decoration:none;color:var(--mute)}
 .contact h2 del::after{content:"";position:absolute;left:-.06em;right:-.06em;top:56%;height:max(3px,.07em);border-radius:3px;background:linear-gradient(92deg,var(--a2),var(--a1));transform:rotate(-1.4deg)}
 @media (prefers-reduced-motion:reduce){.struck del,.struck del::after,.struck ins{animation:none}}
+
+/* ---------- v10.1 (19 Nov 2026, design audit): one voice on every page ----------
+   Labels in ordinary type instead of typewriter capitals, the same heading size for every section, a readable line length,
+   screenshots that all fit in one row, and the page-contents highlight following what is on screen. Capitals stay only inside the orbs' mock screens and in table headers. */
+.lbl,.crumbs,.typed,.facts li,.fresh,.toc-list .g,.fh,.band .meta span,.band.hub h1,.toc h2,.promo .ph,.tcard .ft,.pal-list span{font-family:var(--sans);text-transform:none;letter-spacing:0}
+.lbl,.toc h2,.promo .ph,.fh,.fresh,.tcard .ft,.toc-list .g{font-size:13px;font-weight:450}
+.crumbs{font-size:13px}
+.typed{font-size:13px}
+.facts li,.band .meta span{font-size:13px;font-weight:450;padding:7px 12px}
+.band.hub h1{font-size:14.5px;font-weight:450;line-height:1.4}
+.sec-head,.duo-h{font-size:clamp(1.6rem,2.6vw,2.4rem)}
+.prose :is(p,li,dd,blockquote){max-width:38em}
+.nav-in{background:rgba(10,10,12,.94)}
+@media (min-width:901px){
+  .strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,360px);overflow:visible;margin-inline:0;padding:0 0 4px}
+  .strip .shot{max-width:none;grid-column:auto}
+  .strip .shot:last-child:nth-child(even){grid-column:auto}
+  .strip .shot img{width:100%;height:clamp(150px,14.5vw,210px)}
+}
