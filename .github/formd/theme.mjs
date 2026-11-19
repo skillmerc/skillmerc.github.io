@@ -145,7 +145,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
-    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free</b>', 'live', 'Live', '/threadkeep/']]],
+    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free.</b> Pro from USD 2.99 a month', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
     ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
     ['502', 'See which companies raised money this week', 'SEC Form D filings, updated daily', '<b>Free</b>', 'live', 'Live', '/form-d/']]],
@@ -332,6 +332,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     ['books', 'clamp(170px,18vw,276px)', 55, 64, 4, 1.1, '#books', 'Bookkeeping', '42vw', 6, 46],
     ['tables', 'clamp(150px,15.5vw,236px)', 80, 52, 2, 1.8, '#tables', 'Web tables into Excel', '36vw', 56, 54],
     ['data', 'clamp(130px,12.5vw,190px)', 73, 73, 5, .9, '#data', 'Public data', '0px', 0, 0, dataOpts],
+    ['chat', 'clamp(118px,11vw,168px)', 87.5, 77, 3, 1.2, '#chats', 'DeepSeek chats', '0px', 0, 0],
   ];
   const dlist = `<div class="ledger" data-rv><div class="ledger-head"><h3>All ${actors.length} data tools</h3><p>Run on Apify. Pay per result.</p></div><div class="dlist">${actors.map(a => `<a href="/apify/${a.name}/" title="${esc(a.title.split(' - ')[0])}"><b>${esc(a.title.split(' - ')[0])}</b><span>${esc((String(priceLine(a)).match(/USD [\d.]+ per 1,000/) || ['Apify'])[0])}</span></a>`).join('')}</div></div>`;
   const pickG = ['payfast-order-still-pending', 'courier-guy-no-shipping-method', 'wikipedia-table-to-excel', 'freeagent-shopify-integration-discontinued', 'pudo-woocommerce', 'importhtml-not-working'];
@@ -346,6 +347,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     ['#payments', 'Payments', 'chased', 'confirmed', 'WooCommerce'],
     ['#books', 'Invoices', 'retyped', 'filed', 'Sage, FreeAgent'],
     ['#tables', 'Web tables', 'copied', 'exported', 'Firefox, Chrome'],
+    ['#chats', 'DeepSeek chats', 'lost', 'saved', 'Firefox'],
     ['#data', 'Public data', 'dug up', 'delivered', 'Apify'],
   ];
   const JOBS = [
@@ -366,7 +368,11 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
-    { id: 'data', n: '05', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
+    { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox', h2: 'DeepSeek chats, saved properly.',
+  tale: HUBS.threadkeep.tale,
+  say: HUBS.threadkeep.say,
+  fx: ['Free', '*Pro from USD 2.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
+    { id: 'data', n: '06', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
   fx: [`${actors.length} data tools`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'Nothing to install'], ctas: [['Browse on Apify', 'https://apify.com/skillmerc', 'up'], ['Who raised money this week', '/form-d/', '']],
@@ -383,8 +389,8 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
 </div>
 </section>
 
-<section class="sec" id="jobs"><div class="wrap"><h2 class="vh">The five jobs</h2>
-<div class="jobs" data-jobs><div class="jtabs" role="tablist" aria-label="The five jobs">${JOBS.map((j, i) => jtab(j, i === 0)).join('')}</div>
+<section class="sec" id="jobs"><div class="wrap"><h2 class="vh">What the tools do</h2>
+<div class="jobs" data-jobs><div class="jtabs" role="tablist" aria-label="The jobs">${JOBS.map((j, i) => jtab(j, i === 0)).join('')}</div>
 ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 </div>
 <p class="eg">The figures inside the glass are examples.</p>
