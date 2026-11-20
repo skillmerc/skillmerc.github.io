@@ -859,3 +859,6 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   .hero>.orbs{height:66vw;margin-top:22px}
   .hero>.orbs .orb{--s:calc(var(--ms)*.8)!important}
 }
+
+/* 21 Nov 2026: one plain line that the company is independent of the brands its tools work with (also asked for by security reviewers) */
+.foot-ind{margin-top:10px;font:400 12px/1.5 var(--sans);color:var(--mute);max-width:60em}
