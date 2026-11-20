@@ -862,3 +862,16 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* 21 Nov 2026: one plain line that the company is independent of the brands its tools work with (also asked for by security reviewers) */
 .foot-ind{margin-top:10px;font:400 12px/1.5 var(--sans);color:var(--mute);max-width:60em}
+/* email-signup-2026-11-21 start: opt-in email list block (plans/email-list/PLAN.md) */
+.su{margin:2.2em 0;padding:20px 22px;border:1px solid var(--line2);border-radius:14px;background:rgba(255,255,255,.03)}
+.su p{margin:0}.su-h{color:var(--fg)}.su-h b{font-weight:600}
+.su-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0 10px}
+.su-row label{flex-basis:100%;font-size:14px;color:var(--fg2)}
+.su-row input[type=email]{flex:1 1 220px;min-width:0;padding:11px 12px;border-radius:9px;border:1px solid var(--line2);background:var(--bg2);color:var(--fg);font:inherit;font-size:16px}
+.su-row button{padding:11px 18px;border-radius:9px;border:0;background:var(--fg);color:var(--bg);font:inherit;font-weight:600;cursor:pointer}
+.su-row input:focus-visible,.su-row button:focus-visible,.su-c a:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.su-ok{display:flex;gap:10px;align-items:flex-start;margin:0 0 10px!important;font-size:15px;color:var(--fg)}.su-ok input{flex:none;width:18px;height:18px;margin:3px 0 0;accent-color:var(--fg)}.su-ok label{cursor:pointer}
+.su-c{font-size:14px;color:var(--fg2)}.su-c a{color:var(--fg)}
+.su-hp{position:absolute!important;left:-10000px;width:1px;height:1px;overflow:hidden}
+.su-band{position:relative;z-index:1;padding:0 0 40px}.su-band .su{max-width:640px;margin-inline:auto}
+/* email-signup-2026-11-21 end */
