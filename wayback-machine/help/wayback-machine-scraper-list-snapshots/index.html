@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wayback Machine scraper: how to list every snapshot of a URL or a whole domain, and keep only the changes</title><meta name="description" content="How to list every Wayback Machine capture of a page or a whole domain with its date and HTTP status, and keep only the captures where the content changed. The free CDX API with a worked example, the Availability API, and an Apify actor that returns the list as a spreadsheet."><link rel="canonical" href="https://skillmerc.com/wayback-machine/help/wayback-machine-scraper-list-snapshots/"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="Wayback Machine scraper: how to list every snapshot of a URL or a whole domain, and keep only the changes"><meta property="og:description" content="How to list every Wayback Machine capture of a page or a whole domain with its date and HTTP status, and keep only the captures where the content changed. The free CDX API with a worked example, the Availability API, and an Apify actor that returns the list as a spreadsheet."><meta property="og:url" content="https://skillmerc.com/wayback-machine/help/wayback-machine-scraper-list-snapshots/"><meta property="og:image" content="https://skillmerc.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#050506"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=ea823863"><script>document.documentElement.classList.add('js')</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://skillmerc.com/"},{"@type":"ListItem","position":2,"name":"Data","item":"https://skillmerc.com/#data"},{"@type":"ListItem","position":3,"name":"Wayback Machine Scraper","item":"https://skillmerc.com/apify/internet-archive-search-scraper/"},{"@type":"ListItem","position":4,"name":"Guide","item":"https://skillmerc.com/guides/"},{"@type":"ListItem","position":5,"name":"Wayback Machine scraper: list every snapshot of a...","item":"https://skillmerc.com/wayback-machine/help/wayback-machine-scraper-list-snapshots/"}]}</script></head><body class="doc-page"><a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg><span>SKILLMERC</span></a><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="/#data">Data</a><a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header><main id="main"><header class="band"><div class="wrap"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/#data">Data</a></li><li><a href="/apify/internet-archive-search-scraper/">Wayback Machine Scraper</a></li><li><a href="/guides/">Guide</a></li><li><span aria-current="page">Wayback Machine scraper: list every snapshot of a...</span></li></ol><h1>Wayback Machine scraper: list every snapshot of a URL or a whole domain</h1><div class="meta"><span>4 min read</span><span>Wayback Machine Scraper</span></div></div></header><div class="wrap doc-grid"><article class="prose" data-toc>
+<p>The Wayback Machine&#39;s CDX API lists every capture of a URL, or of a whole domain, with its date, HTTP status and a content hash. Add <code>collapse=digest</code> and it drops each capture whose content matches the one before it, which leaves the changes.</p>
+<p>It is free and needs no key.</p>
+<p>Not affiliated with the Internet Archive.</p>
+<h2>1. On the Wayback Machine website</h2>
+<ul>
+<li><strong>Calendar:</strong> <code>https://web.archive.org/web/*/example.com</code> shows the captures of one address by date. Blue dots loaded normally, green are redirects, orange and red are errors.</li>
+<li><strong>Every archived address of a site:</strong> <code>https://web.archive.org/*/example.com/*</code>.</li>
+<li><strong>Wayback Changes:</strong> <code>https://web.archive.org/web/changes/example.com</code> lets you pick two captures and shows them side by side with the changes highlighted.</li>
+</ul>
+<p>Where it stops: these are pages to look at, not a list you can sort in a spreadsheet.</p>
+<h2>2. The CDX API</h2>
+<p>Open this in a browser:</p>
+<pre><code>https://web.archive.org/cdx/search/cdx?url=example.com&amp;matchType=exact&amp;from=2015&amp;to=2020&amp;filter=statuscode:200&amp;collapse=digest&amp;output=json&amp;limit=3
+</code></pre>
+<p>On 21 November 2026 it answered with a header row and three captures:</p>
+<pre><code>[[&quot;urlkey&quot;,&quot;timestamp&quot;,&quot;original&quot;,&quot;mimetype&quot;,&quot;statuscode&quot;,&quot;digest&quot;,&quot;length&quot;],
+[&quot;com,example)/&quot;,&quot;20150101013824&quot;,&quot;http://www.example.com/&quot;,&quot;text/html&quot;,&quot;200&quot;,&quot;B2LTWWPUOYAH7UIPQ7ZUPQ4VMBSVC36A&quot;,&quot;862&quot;],
+[&quot;com,example)/&quot;,&quot;20150717015329&quot;,&quot;http://www.example.com/&quot;,&quot;text/html&quot;,&quot;200&quot;,&quot;E3NHKR6EVSCB7UN54HORD7BEWFEUW332&quot;,&quot;385&quot;],
+[&quot;com,example)/&quot;,&quot;20150717023156&quot;,&quot;http://example.com/&quot;,&quot;text/html&quot;,&quot;200&quot;,&quot;B2LTWWPUOYAH7UIPQ7ZUPQ4VMBSVC36A&quot;,&quot;862&quot;]]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>url</code></td>
+<td>The page or site to look up</td>
+</tr>
+<tr>
+<td><code>matchType</code></td>
+<td><code>exact</code> (default), <code>prefix</code> (a folder), <code>host</code> (one host), <code>domain</code> (the host and its subdomains)</td>
+</tr>
+<tr>
+<td><code>from</code>, <code>to</code></td>
+<td>Dates of 1 to 14 digits (yyyyMMddhhmmss), both inclusive</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td><code>field:pattern</code>. <code>statuscode:200</code> keeps status 200.</td>
+</tr>
+<tr>
+<td><code>collapse</code></td>
+<td><code>digest</code> drops unchanged captures. <code>timestamp:8</code> keeps at most one a day, <code>timestamp:4</code> one a year</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>json</code>. Without it you get plain text, one capture per line</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>The first N rows</td>
+</tr>
+</tbody></table>
+<p>The snapshot&#39;s address is <code>https://web.archive.org/web/&lt;timestamp&gt;/&lt;original&gt;</code>. With <code>id_</code> after the timestamp you get the page as archived, without the toolbar. Two rows with the same <code>digest</code> hold the same content.</p>
+<p>Rows one and three share a digest. Collapse only compares a row with the row before it, so content that changes and changes back is listed again.</p>
+<p>For a list longer than one answer, add <code>showResumeKey=true</code>, then pass the key you get back as <code>resumeKey</code> in the next request.</p>
+<h2>3. The Availability API</h2>
+<p><code>https://archive.org/wayback/available?url=example.com&amp;timestamp=20200101</code> returns the one snapshot closest to that date, in JSON. It answers &quot;is there a copy&quot;, not &quot;list them all&quot;.</p>
+<p><strong>Where the free route stops for a non-programmer:</strong> the answer is raw text with no page text in it. Many URLs or long lists need a script to loop and follow the resume key. The Internet Archive blocks clients that ask too fast with a 429 &quot;too many requests&quot; error.</p>
+<h2>4. The same list as a spreadsheet, with an Apify actor</h2>
+<p><a href="https://apify.com/skillmerc/internet-archive-search-scraper">Internet Archive &amp; Wayback Machine Scraper</a> is an actor we make (<a href="/apify/internet-archive-search-scraper/">details on this site</a>). It sends these CDX requests, follows the resume key and returns one row per capture.</p>
+<ol>
+<li>Open the actor on Apify and sign in. A free account works.</li>
+<li><strong>Mode</strong> (<code>mode</code>): choose &quot;Wayback Machine snapshots&quot;. The default is archive.org search.</li>
+<li><strong>URLs or domains</strong> (<code>urls</code>): one or more, such as <code>example.com</code> or a full page address.</li>
+<li><strong>Match type</strong> (<code>matchType</code>): <code>exact</code>, <code>prefix</code>, <code>host</code> or <code>domain</code>.</li>
+<li><strong>Collapse</strong> (<code>collapse</code>): &quot;Content changes only&quot; keeps the changes. &quot;One per day&quot;, &quot;One per month&quot; and &quot;One per year&quot; thin a long history.</li>
+<li><strong>HTTP status filter</strong> (<code>statusFilter</code>): <code>200</code> for pages that loaded, <code>3..</code> for redirects, empty for all. <strong>MIME type filter</strong> (<code>mimeFilter</code>): for example <code>text/html</code>.</li>
+<li><strong>From date</strong> (<code>from</code>) and <strong>To date</strong> (<code>to</code>): YYYY, YYYY-MM or YYYY-MM-DD.</li>
+<li><strong>Max snapshots per URL</strong> (<code>maxSnapshotsPerUrl</code>): 100 by default, up to 100,000.</li>
+<li>Start the run, then export the rows as CSV, Excel or JSON.</li>
+</ol>
+<p>Leave <strong>Download page text</strong> (<code>fetchContent</code>) off for a list. Tick it to add each page&#39;s title and plain text.</p>
+<p>One row holds <code>input_url</code>, <code>original_url</code>, <code>timestamp</code>, <code>captured_at</code> (such as 2015-01-01T01:38:24Z), <code>status_code</code>, <code>mimetype</code>, <code>digest</code>, <code>length</code>, <code>snapshot_url</code> and <code>raw_snapshot_url</code>. Exact repeats in the index are skipped and not charged.</p>
+<p><strong>Cost:</strong> USD 0.50 per 1,000 rows on Apify&#39;s free plan, plus Apify&#39;s small start fee for each run. Apify&#39;s free plan includes USD 5 of credit a month (apify.com/pricing, read 21 November 2026).</p>
+<h2>Limits</h2>
+<ul>
+<li>It lists what archive.org holds. Pages that were never archived, or that the Archive excludes, return no rows.</li>
+<li>On a whole-site list, the day, month and year settings compare each row with the row before it by date alone, so they can skip a page. Use &quot;Content changes only&quot; there.</li>
+<li>There is no &quot;one row per address&quot; setting and no first-and-last summary.</li>
+<li>Archive.org can be slow or refuse requests. The actor waits a second between index pages and retries.</li>
+<li>Respect copyright, the original site&#39;s terms and the Internet Archive&#39;s terms in what you do with archived pages.</li>
+</ul>
+<h2>Questions</h2>
+<p><strong>How do I find the first capture of a page?</strong> Use <code>exact</code> and set <strong>Max snapshots per URL</strong> to 1. The list starts with the oldest capture.</p>
+<p><strong>Why are there 404s and redirects in my list?</strong> The Wayback Machine keeps what its crawler received, errors included. Set the status filter to <code>200</code>.</p>
+<p><a class="cta" href="https://apify.com/skillmerc/internet-archive-search-scraper">Open the actor on Apify</a></p><p><a class="cta alt" href="/apify/internet-archive-search-scraper/">Details and price</a></p><hr><h2>More guides</h2><ul><li><a href="/wayback-machine/help/scrape-articles-from-web-archive-wayback-machine/">How to scrape articles from the web archive (Wayback Machine): the text of one page or a whole site</a></li></ul></article><aside class="side"></aside></div><section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></a></div><div class="tcards"><a class="tcard" href="/sa-shipping-woocommerce/"><span class="lbl">Shipping</span><b>Shipping for WooCommerce</b><p>Live courier rates and locker pickers. Pro adds booking and labels.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/shopify-freeagent/"><span class="lbl">Bookkeeping</span><b>Ledgerline for Shopify</b><p>Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.</p><span class="ft"><span>In review</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/list-table-scraper/"><span class="lbl">Web tables</span><b>List &amp; Table Scraper</b><p>Any web table or list into Excel in one click.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a></div></div></section></main><footer class="foot"><div class="wrap"><div class="foot-grid">
+<div class="foot-about"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg><span>SKILLMERC</span></a><p>The boring parts, handled. Small tools for online shops, bookkeeping, project teams and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. 2025/673155/07<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li></ul></div>
+<div><h2 class="fh">Data and help</h2><ul><li><a href="/#data">Data tools on Apify</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/guides/">All guides</a></li><li><a href="/support/">Support</a></li><li><a href="/open-books/">Open books: our real numbers</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li></ul></div>
+<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li><li><a href="/privacy/email-updates/">Privacy: email updates</a></li></ul></div>
+</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. 2025/673155/07</span><span>The boring parts, handled.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer><script src="/assets/site.js?v=ea823863" defer></script></body></html>
