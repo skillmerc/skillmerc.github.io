@@ -60,7 +60,7 @@ vec3 band(vec2 p,float off,float t){
   float m=smoothstep(1.,.84,abs(v));
   float fold=.5+.5*sin(v*2.6+p.x*1.8+t*.9+off);
   float lines=.8+.2*sin(v*170.+sin(p.x*2.+t)*4.)*(.6+.4*sin(v*23.+p.x*3.));
-  vec3 a=vec3(1.,.56,.24),b=vec3(1.,.22,.16),cc=vec3(1.,.3,.6),e=vec3(.46,.34,1.);
+  vec3 a=vec3(1.,.56,.24),b=vec3(.95,.42,.11),cc=vec3(1.,.69,.18),e=vec3(.30,.36,.44);
   float h=.5+.5*v;
   vec3 col=mix(mix(a,b,smoothstep(0.,.5,h)),mix(cc,e,smoothstep(.72,1.,h)),smoothstep(.45,.82,h));
   float edge=pow(abs(v),6.);
@@ -225,7 +225,7 @@ void main(){
   // page statistics: first-party, no cookies, no storage, nothing personal (see /privacy/website/). Off when the browser asks.
   (() => {
     if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl || !/^(www\.)?skillmerc\.com$/.test(location.hostname)) return;
-    const EP = 'https://hq-production-e33c164a.up.railway.app/t';
+    const EP = 'https://api.skillmerc.com/t';
     const id = Math.random().toString(36).slice(2, 10), t0 = Date.now(); let maxD = 0, tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
     const send = (o) => { try { const b = JSON.stringify(Object.assign({ v: 1, id, p: location.pathname, w: innerWidth, tz, l: navigator.language || '' }, o)); fetch(EP, { method: 'POST', body: b, keepalive: true, headers: { 'content-type': 'text/plain' } }).catch(() => { try { navigator.sendBeacon && navigator.sendBeacon(EP, b); } catch {} }); } catch {} };
@@ -234,8 +234,8 @@ void main(){
     send({ e: 'view', r: ref, us: qs.get('utm_source') || '', um: qs.get('utm_medium') || '', uc: qs.get('utm_campaign') || '', nf: /^Page not found/.test(d.title) ? 1 : 0 });
     addEventListener('scroll', () => { const h = d.documentElement.scrollHeight - innerHeight; if (h > 0) maxD = Math.max(maxD, Math.round(scrollY / h * 100)); }, { passive: true });
     d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a,button'); if (!a) return; const href = a.getAttribute('href') || ''; const ext = /^(https?:|mailto:)/.test(href) && !href.includes('//' + location.hostname);
-      if (!ext && !a.matches('.btn,.cta,.promo,.dock,.prow,.tcard,.orb,.tlink,.tray a,.toc-list a,.opts2 button')) return;
-      const zone = a.closest('.dock,.promo,.hero,.plist,.pform,.exhibit,.band,.tray,.toc-list,.side,.prose,.more,.foot,.nav,.pal');
+      if (!ext && !a.matches('.btn,.cta,.promo,.dock,.prow,.tcard,.orb,.tlink,.tray a,.toc-list a,.opts2 button,.cc,.nx,.lead,.struck a')) return;
+      const zone = a.closest('.dock,.promo,.hero,.tscreen,.crew-grid,.next-grid,.struck,.plist,.pform,.exhibit,.band,.tray,.toc-list,.side,.prose,.more,.foot,.nav,.pal');
       send({ e: ext ? 'out' : 'click', h: href.slice(0, 200), t: (a.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60), z: zone ? zone.className.split(' ')[0] : '' }); }, true);
     let left = false; const leave = () => { if (left) return; left = true; send({ e: 'leave', d: maxD, ms: Date.now() - t0 }); };
     addEventListener('pagehide', leave); d.addEventListener('visibilitychange', () => { if (d.visibilityState === 'hidden') leave(); });
