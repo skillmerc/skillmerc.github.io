@@ -1373,4 +1373,6 @@ body{background:linear-gradient(180deg,#101114 0,var(--bg) 420px) var(--bg)}
 .st-bg{background-position:50% 40%}
 .st-bg::after{background:linear-gradient(90deg,rgba(11,12,14,.88),rgba(11,12,14,.58) 56%,rgba(11,12,14,.22)),linear-gradient(180deg,rgba(11,12,14,.42),rgba(11,12,14,0) 30%,rgba(11,12,14,.55) 78%,var(--bg))}
 @media (max-width:900px){.hero-bg::after{background:linear-gradient(180deg,rgba(11,12,14,.66) 0,rgba(11,12,14,.46) 40%,rgba(11,12,14,.70) 80%,rgba(11,12,14,.92) 100%)}.st-bg::after{background:linear-gradient(180deg,rgba(11,12,14,.66),rgba(11,12,14,.48) 40%,rgba(11,12,14,.76) 82%,var(--bg))}}
+/* the struck list sits below the hero now: no entrance animation, so the words are always there (and the browser test never races it) */
+#tools .struck del,#tools .struck del::after,#tools .struck ins{animation:none}
 /* ================= end v11 ================= */
