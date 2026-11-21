@@ -1,7 +1,9 @@
-// SKILLMERC site theme v8 (Nov 2026). Shared by gen.mjs (local build) and the Form D GitHub Action.
-// Exports: render(rel,title,desc,body), reshell(rel,html), homeBody(ctx), guidesBody(), copyAssets(out).
-// Look: black, giant white type, glass orbs that hold real product screens, one warm ribbon of light (site.js),
-// a hairline frame. No 3D renders.
+// SKILLMERC site theme v11 (22 Nov 2026). Shared by gen.mjs (local build) and the Form D GitHub Action.
+// Exports: render(rel,title,desc,body), reshell(rel,html), homeBody(ctx), guidesBody(), copyAssets(out), DEPTS, CONTROLS, STORY.
+// Look: the HQ dashboard's world at two volumes (plans/site-brand-v11-2026-11-21.md). Loud on the story pages
+// (home, /operations/, /numbers/, /about/: dusk scenes, the operations console, big numbers). Calm on
+// product, guide, privacy and support pages (same palette and type, no characters, no scenes behind text).
+// The brand: a real company, run by AI agents, owned by a human. Products only, never consulting.
 // Page copy for content pages lives in gen.mjs and the help-*/ folders. This file owns the shell, the homepage,
 // the product headers on hub pages and the /guides/ index. Node builtins only (the Action copies this one file).
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
@@ -10,6 +12,15 @@ export const BASE = 'https://skillmerc.com';
 const REG = '2025/673155/07';
 const nod = s => String(s ?? '').replace(/\u2014/g, '-').replace(/\u2013/g, '-');
 const esc = s => nod(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// BFCM 2026 banner, prepared in site/prepared/black-friday-2026/ (plan: plans/black-friday-2026/PLAN.md).
+// The page script shows it only from start to end; any build made after end leaves it out. Remove with revert.mjs.
+const BFCM = { start: '2026-11-27T00:00:00Z', end: '2026-12-01T23:59:59Z', pages: {
+ "index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC): 35% off your first Pro payment for <a href=\"/list-table-scraper/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">List &amp; Table Scraper</a>, <a href=\"/sa-shipping-woocommerce/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Shipping Pro</a> and <a href=\"/payfast-woocommerce/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">PayFast Pro</a> with code <b>FSBFCM2026</b>. Renewals are at the normal price.",
+ "list-table-scraper/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC): 35% off your first List &amp; Table Scraper Pro payment with code <b>FSBFCM2026</b>. Lifetime USD 31.85 instead of USD 49. First year USD 18.85, then USD 29 a year. <a href=\"https://checkout.freemius.com/app/43817/plan/77163/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>.",
+ "sa-shipping-woocommerce/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC, which is 01:59 on 2 Dec in South Africa): 35% off your first Shipping Pro payment with code <b>FSBFCM2026</b>. First year USD 31.85, then USD 49 a year. Lifetime USD 96.85 instead of USD 149. <a href=\"https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>.",
+ "payfast-woocommerce/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC, which is 01:59 on 2 Dec in South Africa): 35% off your first PayFast Pro payment with code <b>FSBFCM2026</b>. First year USD 31.85, then USD 49 a year. Lifetime USD 96.85 instead of USD 149. <a href=\"https://checkout.freemius.com/plugin/40911/plan/70874/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>."
+} };
+const bfcmBar = rel => { const t = BFCM.pages[rel]; if (!t || Date.now() > Date.parse(BFCM.end)) return ''; return `<div class="bfcm" role="note" hidden data-from="${BFCM.start}" data-to="${BFCM.end}" style="background:#1a1208;color:#f5f5f6;border-bottom:1px solid rgba(255,255,255,.16);font-size:15px;line-height:1.45"><div style="max-width:var(--wrap);margin:0 auto;padding:10px var(--pad)">${t}</div></div><script>(function(b){var n=Date.now();if(n>=Date.parse(b.getAttribute('data-from'))&&n<=Date.parse(b.getAttribute('data-to')))b.hidden=false})(document.currentScript.previousElementSibling)</script>`; };
 const strip = s => String(s).replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
 let _v;
@@ -22,8 +33,8 @@ const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke
 const ARROW_UP = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>';
 const ARROW_DN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5"/></svg>';
 // The mark: a disc with a small dot.
-const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="#ff5a36"/></svg>';
-const FAVICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#050506"/><mask id="m"><rect width="32" height="32" fill="#fff"/><circle cx="23.4" cy="9.2" r="6.2" fill="#000"/></mask><circle cx="14" cy="18" r="10.2" fill="#fff" mask="url(#m)"/><circle cx="23.4" cy="9.2" r="4.5" fill="#ff5a36"/></svg>';
+const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f26a1b"/><stop offset="1" stop-color="#ffb02e"/></linearGradient><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask></defs><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="url(#lg-g)"/></svg>';
+const FAVICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f26a1b"/><stop offset="1" stop-color="#ffb02e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="#0b0c0e"/><mask id="m"><rect width="32" height="32" fill="#fff"/><circle cx="23.4" cy="9.2" r="6.2" fill="#000"/></mask><circle cx="14" cy="18" r="10.2" fill="#fff" mask="url(#m)"/><circle cx="23.4" cy="9.2" r="4.5" fill="url(#g)"/></svg>';
 const brand = `<a class="brand" href="/" aria-label="SKILLMERC home">${LOGO}<span>SKILLMERC</span></a>`;
 
 // ---------- catalogue ----------
@@ -81,7 +92,7 @@ const HUBS = {
     tag: 'Any web table. <em>Into Excel.</em>',
     tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
     say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
-    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month'],
+    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month', { t: 'Lifetime: USD 19 or less, once, on AppSumo', href: 'https://appsumo.com/pl/list-table-scraper-your-website/', rel: 'sponsored', note: '(partner link)' }],
     cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
     promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')],
     alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
@@ -176,18 +187,20 @@ let SHOTS = {}; try { SHOTS = JSON.parse(fs.readFileSync(path.join(HERE, 'shots.
 const shotSrc = (s) => s.p || `/assets/shots/${s.f}`;
 
 // ---------- shared chrome ----------
-const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#050506"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
-const navHtml = () => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/guides/">Guides</a><a href="/#data">Data</a><a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header>`;
+const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0b0c0e"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/rubik.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/anton.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
+const NAV = [['Tools', '/#kit', 'kit'], ['Operations', '/operations/', 'operations'], ['Numbers', '/numbers/', 'numbers'], ['Guides', '/guides/', 'guides'], ['About', '/about/', 'about']];
+const navHtml = (here = '') => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<nav class="nav-links" aria-label="Main">${NAV.map(([t, h, k]) => `<a href="${h}"${k === here ? ' aria-current="page"' : ''}>${t}</a>`).join('')}<a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header>`;
 const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-grid">
-<div class="foot-about">${brand}<p>The boring parts, handled. Small tools for online shops, bookkeeping, project teams and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
-<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li></ul></div>
-<div><h2 class="fh">Data and help</h2><ul><li><a href="/#data">Data tools on Apify</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/guides/">All guides</a></li><li><a href="/support/">Support</a></li><li><a href="/open-books/">Open books: our real numbers</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li></ul></div>
-<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li><li><a href="/privacy/email-updates/">Privacy: email updates</a></li></ul></div>
-</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. ${REG}</span><span>The boring parts, handled.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer>`;
+<div class="foot-about">${brand}<p>Software, operated by AI agents. Small tools for online stores, bookkeeping and data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/threadkeep/">Threadkeep</a></li><li><a href="/#data">Data tools on Apify</a></li></ul></div>
+<div><h2 class="fh">The company</h2><ul><li><a href="/operations/">Operations</a></li><li><a href="/numbers/">Numbers</a></li><li><a href="/about/">About</a></li><li><a href="/open-books/">Open books</a></li><li><a href="/support/">Support</a></li></ul></div>
+<div><h2 class="fh">Help and data</h2><ul><li><a href="/guides/">All guides</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li></ul></div>
+<div><h2 class="fh">Privacy</h2><ul><li><a href="/privacy/website/">This website</a></li><li><a href="/privacy/email-updates/">Email updates</a></li><li><a href="/privacy/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Ledgerline</a></li></ul></div>
+</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. ${REG}</span><span>Operated by AI agents.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer>`;
 const scripts = () => `<script src="/assets/site.js?v=${ver()}" defer></script>`;
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const btn = ([label, href, dir, aria], cls) => `<a class="btn ${cls}${dir ? ' ' + dir : ''}" href="${href}"${aria ? ` aria-label="${esc(aria)}"` : ''}${/^https?:/.test(href) ? ' rel="noopener"' : ''}>${esc(label)} ${dir === 'up' ? ARROW_UP : dir === 'dn' ? ARROW_DN : ARROW}</a>`;
-const facts = (list) => `<ul class="facts">${list.map(f => f.startsWith('*') ? `<li class="hot">${esc(f.slice(1))}</li>` : `<li>${esc(f)}</li>`).join('')}</ul>`;
+const facts = (list) => `<ul class="facts">${list.map(f => typeof f === 'object' ? `<li><a href="${f.href}"${f.rel ? ` rel="${f.rel}"` : ''}>${esc(f.t)}</a>${f.note ? ` <small>${esc(f.note)}</small>` : ''}</li>` : f.startsWith('*') ? `<li class="hot">${esc(f.slice(1))}</li>` : `<li>${esc(f)}</li>`).join('')}</ul>`;
 const tcard = (c) => `<a class="tcard" href="${c.href}"><span class="lbl">${esc(c.m)}</span><b>${esc(c.b)}</b><p>${esc(c.p)}</p><span class="ft"><span>${esc(c.ft)}</span>${ARROW}</span></a>`;
 const secRule = (no, label, note = '') => `<div class="sec-rule"><span class="tab">${esc(no)} &middot; ${esc(label)}</span>${note ? `<span class="typed">${note}</span>` : ''}</div>`;
 
@@ -279,8 +292,9 @@ function docPage(rel, title, desc, body) {
   const shots = isHub ? (SHOTS[segs[0]] || []) : [];
   const gallery = shots.length ? `<section class="shots"><div class="wrap"><div class="shots-head"><h2 class="hx">See it working.</h2><span class="typed">${shots.length} real screenshots. Click one to enlarge.</span></div><div class="strip">${shots.map((s, i) => `<figure class="shot"><a href="${shotSrc(s)}" data-zoom aria-label="Enlarge screenshot ${i + 1}${s.cap ? ': ' + esc(s.cap) : ''}"><img src="${shotSrc(s)}" alt="${esc(s.cap || hub.name)}" loading="lazy" decoding="async"></a>${s.cap ? `<figcaption><b>${String(i + 1).padStart(2, '0')}</b>${esc(s.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>` : '';
   const pick = CARDS.filter(c => c.k !== segs[0]).slice(0, 3);
-  const more = `<section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
-  return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${navHtml()}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}${promoAlt}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
+  const crewLine = isHub ? `<p class="crewline">Built and maintained by SKILLMERC's AI agents, under the company's release controls. <a href="/operations/">How we operate</a></p>` : '';
+  const more = `<section class="more"><div class="wrap">${crewLine}<div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools ${ARROW}</a></div><div class="tcards">${pick.map(tcard).join('')}</div></div></section>`;
+  return `${head({ title, desc, url, extra: bl + app })}<body class="doc-page">${bfcmBar(rel)}${navHtml(segs[0] === 'guides' || isGuide ? 'guides' : '')}<main id="main">${band}${gallery}<div class="wrap doc-grid${wide ? ' wide' : ''}"><article class="prose"${wide ? '' : ' data-toc'}>${rest}</article>${wide ? '' : `<aside class="side">${promo}${promoAlt}</aside>`}</div>${more}</main>${footHtml()}${dock}${scripts()}</body></html>`;
 }
 
 // ---------- homepage ----------
@@ -319,7 +333,40 @@ const LAB = [
   ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
   ['/ship-rules/', 'Ship Rules', 'Proof before a Jira work item ships.', 'In review', 'Atlassian'],
 ];
-export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}) {
+// How the company is organised (theme v11 "operations", 21 Nov 2026). Kyle: say it is run by AI agents, keep the focus on
+// the operational setup, not on the owner or on agents as characters. Eight departments, each staffed by AI agents.
+// desks = the Board roles behind each department (board/web/play.js WORKERS), used for the session counts.
+// Each department card shows its agent: static/assets/v11/a-<k>.webp (480) and a-<k>-s.webp (240). The same agent at every desk.
+export const DEPTS = [
+  { k: 'direction', name: 'Direction', what: 'Sets priorities and decides what is built, sold, paused or closed.', desks: ['merc'] },
+  { k: 'research', name: 'Research', what: 'Finds demand worth serving and brings evidence before anything is built.', desks: ['scout'] },
+  { k: 'engineering', name: 'Engineering', what: 'Builds, ships and maintains the products and this website.', desks: ['builder', 'keeper', 'webdev'] },
+  { k: 'quality', name: 'Quality', what: 'Reviews releases, store submissions and public claims before they go out.', desks: ['reviewer'] },
+  { k: 'support', name: 'Customer support', what: 'Answers customers and store reviewers, every day of the week.', desks: ['frontdesk'] },
+  { k: 'growth', name: 'Growth', what: 'Runs store listings, marketplaces and launches.', desks: ['growth'] },
+  { k: 'finance', name: 'Finance', what: 'Records every transaction against its source and tracks payouts.', desks: ['bookkeeper'] },
+  { k: 'oversight', name: 'Oversight', what: 'Confirms scheduled work ran and audits decisions against the rules.', desks: ['watch', 'auditor'] },
+];
+export const CONTROLS = [
+  ['Spend limits', 'Fixed monthly budgets. Larger spending requires sign-off.'],
+  ['Review before release', 'Releases, store submissions and public claims require an independent check.'],
+  ['Targets with dates', 'Every new product needs a written target and a date before work starts. Miss it, and the product is frozen or closed.'],
+  ['Full audit trail', 'Agent runs, public actions and transactions are logged on the company ledger.'],
+  ['Stop switch', 'One switch stops all new agent runs and task claims.'],
+];
+export const ARROW_R = ARROW;
+export const deptRuns = (hq, d) => d.desks.reduce((s, k) => s + Number((hq && hq.runs.by_desk[k]) || 0), 0);
+export const usd = (n, sign = '') => sign + '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const dmy = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+// The homepage strip: four plain facts from the public snapshot (hq-public.mjs).
+export const scoreStrip = (hq, { nLive = 0 } = {}) => { if (!hq) return '';
+  const cells = [['Tools live', String(nLive), 'In their stores today'], ['Active users', String(hq.users.total), 'As counted by the stores'], ['Paying customers', String(hq.users.paying), 'Across all tools'], ['Agent sessions', hq.runs.total.toLocaleString('en-US'), `Since ${dmy(hq.runs.since).replace(/ \d{4}$/, '')}`]];
+  return `<div class="score score-4"><div class="wrap"><dl class="score-grid">${cells.map(([l, v, s]) => `<div><dt>${l}</dt><dd>${v}</dd><dd class="s">${esc(s)}</dd></div>`).join('')}</dl><p class="score-note">From the company ledger, ${dmy(hq.as_of)}. <a href="/numbers/">See the numbers ${ARROW}</a></p></div></div>`; };
+// The operations panel: each department and its agent sessions, drawn as a console.
+export const opsPanel = (hq, { id = 'ops', cls = '' } = {}) => { if (!hq) return ''; const rows = DEPTS.map(d => [d, deptRuns(hq, d)]); const max = Math.max(...rows.map(r => r[1]), 1);
+  return `<figure class="ops ${cls}" aria-labelledby="${id}-h"><figcaption class="ops-top"><span id="${id}-h">Operations</span><span class="ops-live"><i></i>${hq.halted ? 'Paused' : 'Running'}</span></figcaption><ol class="ops-rows">${rows.map(([d, n]) => `<li><span class="ops-n">${esc(d.name)}</span><span class="ops-b"><i style="width:${Math.max(3, Math.round(n / max * 100))}%"></i></span><span class="ops-v">${n.toLocaleString('en-US')}</span></li>`).join('')}</ol><p class="ops-ft">Agent sessions by department since ${dmy(hq.runs.since).replace(/ \d{4}$/, '')}</p></figure>`; };
+
+export function homeBody({ actors = [], priceLine = () => '', fdDays = [], hq = null } = {}) {
   const day = fdDays.find(d => d.rows && d.rows.some(r => !r.pooled && r.sold));
   const guides = registry.filter(r => r.segs[1] === 'help' && r.segs.length > 2);
   const per1k = actors.map(a => (String(priceLine(a)).match(/USD ([\d.]+) per 1,000/) || [])[1]).filter(Boolean).sort((x, y) => x - y);
@@ -369,7 +416,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']],
-  also: 'Lifetime deal: Pro is USD 19 once on AppSumo, under AppSumo\'s own 60-day refund policy. <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
+  also: 'Lifetime deal: Pro is USD 19 or less, once, on AppSumo, under AppSumo\'s own 60-day refund policy. <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
     { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox', h2: 'DeepSeek chats, saved properly.',
   tale: HUBS.threadkeep.tale,
   say: HUBS.threadkeep.say,
@@ -381,15 +428,21 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   doc: orbFig('card', dataOpts) },
   ];
   JOBS[JOBS.length - 1].extra = `<div class="jx">${dlist}</div>`.replace(/ data-rv/g, '');
-  return `<section class="hero"><canvas id="ribbon" aria-hidden="true"></canvas><div class="ribbon-fb" aria-hidden="true"></div>
-<div class="orbs" data-orbs><span class="orb wire" style="--s:clamp(120px,13vw,200px);--x:90%;--y:38%;--z:1;--k:.4;--i:0;--ms:26vw;--mx:74%;--my:62%">${WIRE}</span>${O.map(([k, s, x, y, z, dep, href, name, ms, mx, my, opts], i) => orb(k, { tag: 'a', opts, attrs: ` href="${href}" aria-label="${esc(name)}" style="--s:${s};--x:${x}%;--y:${y}%;--z:${z};--k:${dep};--i:${i + 1};--bt:${8 + i * 1.3}s;--bd:-${i * 2}s;--ms:${ms};--mx:${mx}%;--my:${my}%"` })).join('')}</div>
-<div class="wrap">
-<p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
-<h1><span class="ln">The boring parts,</span> <span class="ln dim">handled.</span></h1>
-<ul class="struck" data-struck>${STRUCK.map(([h, noun, was, now, where], i) => `<li><a href="${h}" style="--n:${i}" aria-label="${esc(noun)}: ${esc(now)}, not ${esc(was)}. For ${esc(where)}."><span class="sn">${esc(noun)}</span> <span class="sv"><del>${esc(was)}</del> <ins>${esc(now)}.</ins></span> <span class="sm">${esc(where)}</span>${ARROW}</a></li>`).join('')}</ul>
-<div class="row-ctas struck-go">${btn([`See all ${nLive} tools and prices`, '#kit', 'dn'], '')}</div>
+  return `<section class="tscreen" aria-labelledby="hero-h"><div class="hero-bg" aria-hidden="true"></div><div class="wrap hero-grid">
+<div class="hero-tx">
+<p class="eyebrow">SKILLMERC (Pty) Ltd &middot; South Africa</p>
+<h1 id="hero-h"><span class="ln">Software,</span> <span class="ln hot">operated by AI agents.</span></h1>
+<p class="hero-sub">SKILLMERC builds and runs small tools for online stores, bookkeeping and data. Product, engineering, quality, support and finance are run by AI agents, under written controls.</p>
+<div class="row-ctas">${btn([`See the ${nLive} tools`, '#tools', 'dn'], '')}${btn(['How we operate', '/operations/', ''], 'btn-line')}</div>
 </div>
-</section>
+${opsPanel(hq, { id: 'ops-hero', cls: 'ops-hero' })}
+</div>${scoreStrip(hq, { nLive })}</section>
+
+<section class="sec" id="tools"><div class="wrap">
+<div class="sh"><h2 class="hx">The boring parts, handled.</h2><span class="tag">One tool, one boring job</span></div>
+<p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
+<ul class="struck" data-struck>${STRUCK.map(([h, noun, was, now, where], i) => `<li><a href="${h}" style="--n:${i}" aria-label="${esc(noun)}: ${esc(now)}, not ${esc(was)}. For ${esc(where)}."><span class="sn">${esc(noun)}</span> <span class="sv"><del>${esc(was)}</del> <ins>${esc(now)}.</ins></span> <span class="sm">${esc(where)}</span>${ARROW}</a></li>`).join('')}</ul>
+</div></section>
 
 <section class="sec" id="jobs"><div class="wrap"><h2 class="vh">What the tools do</h2>
 <div class="jobs" data-jobs><div class="jtabs" role="tablist" aria-label="The jobs">${JOBS.map((j, i) => jtab(j, i === 0)).join('')}</div>
@@ -406,6 +459,19 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <p class="pnote">Prices in US dollars. Every tool on this list is in its store today.</p>
 </div></section>
 
+<section class="sec depts-sec" id="operations"><div class="wrap">
+<div class="sh"><h2 class="hx">How the company is organised.</h2></div>
+<p class="lede">Eight departments, each staffed by AI agents, working from one task queue.</p>
+<ol class="depts">${DEPTS.map((d, i) => `<li><span class="d-pic"><img src="/assets/v11/a-${d.k}.webp" alt="" width="480" height="480" loading="lazy" decoding="async"></span><span class="d-tx"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(d.name)}</b><p>${esc(d.what)}</p></span></li>`).join('')}</ol>
+<div class="row-ctas"><a class="tlink" href="/operations/">How we operate ${ARROW}</a></div>
+</div></section>
+
+<section class="sec rules-sec" id="controls"><div class="wrap">
+<div class="sh"><h2 class="hx">Controls.</h2></div>
+<p class="lede">AI agents do the work. Controls decide what they are allowed to do.</p>
+<ol class="rules">${CONTROLS.map(([a, p], i) => `<li><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(a)}</b><p>${esc(p)}</p></li>`).join('')}</ol>
+</div></section>
+
 <section class="sec" id="lab"><div class="wrap"><div class="duo">
 <div>
 <h2 class="hx duo-h">Next up, in store review</h2>
@@ -420,7 +486,7 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <div class="ct-grid"><div><h2 class="hx" aria-label="Got a boring job? Hand it over.">Got a boring job? <del>Keep it.</del> Hand it over.</h2>
 <p><a class="mail" href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p>
 <p class="say">Questions, bugs, or a tool you wish existed. Every email gets read.</p></div>
-<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd</p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Chrome Web Store, Apify, Freemius</p></div></div></div>
+<div class="sig"><div><span class="lbl">Company</span><p>SKILLMERC (Pty) Ltd. <a href="/about/">About us</a></p></div><div><span class="lbl">Registration</span><p>${REG}, South Africa</p></div><div><span class="lbl">Sells through</span><p>WordPress.org, Firefox Add-ons, Chrome Web Store, Apify, Freemius</p></div></div></div>
 </div></section>`;
 }
 
@@ -433,22 +499,32 @@ export function guidesBody() {
 // Opt-in email list block (plans/email-list/PLAN.md). A plain HTML form, no script. The wording is consent version v2 (with the tick box) in
 // engine/services/hq/list.mjs (CONSENT): change both together and add a new version, never edit v2.
 const SU_NAMES = { 'list-table': 'List &amp; Table Scraper', threadkeep: 'Threadkeep', shipping: 'Shipping for WooCommerce', all: 'any SKILLMERC tool' };
-export const signupBlock = (product, page) => { const n = SU_NAMES[product], id = 'su-' + product; return `<form class="su" method="post" action="https://hq-production-e33c164a.up.railway.app/api/subscribe" aria-labelledby="${id}-h"><p class="su-h" id="${id}-h"><b>Get an email when we ship something new for ${n}.</b> No spam; unsubscribe any time.</p><div class="su-row"><label for="${id}-e">Email address</label><input id="${id}-e" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="${id}-c"><button type="submit">Email me updates</button></div><p class="su-ok"><input id="${id}-a" name="agree" type="checkbox" value="yes" required><label for="${id}-a">I agree that SKILLMERC (Pty) Ltd may email me about new releases and deals for ${n}.</label></p><input type="hidden" name="product" value="${product}"><input type="hidden" name="consent" value="v2"><input type="hidden" name="page" value="${page}"><div class="su-hp" aria-hidden="true"><label for="${id}-w">Leave this empty</label><input id="${id}-w" name="website" type="text" tabindex="-1" autocomplete="off"></div><p class="su-c" id="${id}-c">We send a link to confirm first. <a href="/privacy/email-updates/">How we handle your email</a>.</p></form>`; };
+export const signupBlock = (product, page) => { const n = SU_NAMES[product], id = 'su-' + product; return `<form class="su" method="post" action="https://api.skillmerc.com/api/subscribe" aria-labelledby="${id}-h"><p class="su-h" id="${id}-h"><b>Get an email when we ship something new for ${n}.</b> No spam; unsubscribe any time.</p><div class="su-row"><label for="${id}-e">Email address</label><input id="${id}-e" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="${id}-c"><button type="submit">Email me updates</button></div><p class="su-ok"><input id="${id}-a" name="agree" type="checkbox" value="yes" required><label for="${id}-a">I agree that SKILLMERC (Pty) Ltd may email me about new releases and deals for ${n}.</label></p><input type="hidden" name="product" value="${product}"><input type="hidden" name="consent" value="v2"><input type="hidden" name="page" value="${page}"><div class="su-hp" aria-hidden="true"><label for="${id}-w">Leave this empty</label><input id="${id}-w" name="website" type="text" tabindex="-1" autocomplete="off"></div><p class="su-c" id="${id}-c">We send a link to confirm first. <a href="/privacy/email-updates/">How we handle your email</a>.</p></form>`; };
 
 function homePage(rel, title, desc, body) {
   const org = ld({ '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': BASE + '/#org', name: 'SKILLMERC', legalName: 'SKILLMERC (Pty) Ltd', url: BASE + '/', email: 'kyle@skillmerc.com', logo: BASE + '/assets/touch.png', address: { '@type': 'PostalAddress', addressCountry: 'ZA' }, sameAs: ['https://profiles.wordpress.org/skillmerc/', 'https://apify.com/skillmerc', 'https://www.youtube.com/@skillmerc', 'https://github.com/skillmerc'] },
     { '@type': 'WebSite', '@id': BASE + '/#site', url: BASE + '/', name: 'SKILLMERC', publisher: { '@id': BASE + '/#org' } }] });
-  return `${head({ title, desc, url: BASE + '/', extra: org })}<body class="home">${navHtml()}<main id="main">${nod(body)}<section class="su-band" aria-label="Email updates"><div class="wrap">${signupBlock('all', '/')}</div></section></main>${footHtml()}${scripts()}</body></html>`;
+  return `${head({ title, desc, url: BASE + '/', extra: org })}<body class="home">${bfcmBar('index.html')}${navHtml()}<main id="main">${nod(body)}<section class="su-band" aria-label="Email updates"><div class="wrap">${signupBlock('all', '/')}</div></section></main>${footHtml()}${scripts()}</body></html>`;
 }
 
 export function notFoundBody() {
   return `<section class="lost"><div class="wrap"><div class="num">404</div><h1 class="hx">This page is not here.</h1><p>The link is old or mistyped. Everything we make is one click from the front page.</p><div class="row-ctas">${btn(['Back to the front page', '/', ''], '')}<a class="tlink" href="/guides/">Browse the guides ${ARROW}</a></div></div></section>`;
 }
 
+// Story pages (the loud volume): the body arrives as finished sections from story.mjs.
+export const STORY = { 'operations/index.html': ['operations', 'Operations'], 'numbers/index.html': ['numbers', 'Numbers'], 'about/index.html': ['about', 'About'] };
+function storyPage(rel, title, desc, body) {
+  const url = BASE + '/' + rel.replace(/index\.html$/, ''); const [key, name] = STORY[rel];
+  registry.push({ rel, segs: [key], h1: name, url: '/' + rel.replace(/index\.html$/, ''), kind: 'Company' });
+  const bl = ld({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: BASE + '/' }, { '@type': 'ListItem', position: 2, name, item: url }] });
+  return `${head({ title, desc, url, extra: bl })}<body class="story story-${key}">${navHtml(key)}<main id="main">${nod(body)}</main>${footHtml()}${scripts()}</body></html>`;
+}
+
 /** Render any page. Same signature as the old gen.mjs template. */
 export function render(rel, title, desc, body) {
   if (rel === 'index.html') return homePage(rel, title, desc, body);
+  if (STORY[rel]) return storyPage(rel, title, desc, body);
   if (rel === '404.html') return `${head({ title, desc, url: BASE + '/404.html', extra: '<meta name="robots" content="noindex">' })}<body class="home">${navHtml()}<main id="main">${body}</main>${footHtml()}${scripts()}</body></html>`;
   return docPage(rel, title, desc, body);
 }
@@ -466,9 +542,10 @@ export function reshell(rel, html) {
 /** Search index for the Cmd+K palette: every tool, then every page. */
 export function searchIndex() {
   const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox chrome'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
+  // story pages are rendered by gen.mjs before the homepage, so they are in the registry by now
   const seen = new Set(tools.map(x => x[1]));
   const pages = registry.filter(r => !(r.segs[0] === 'form-d' && r.segs.length > 1) && !seen.has(r.url)).map(r => {
-    const hub = HUBS[r.segs[0]]; const kind = r.segs[1] === 'help' ? 'Guide' : r.segs[0] === 'apify' ? 'Data tool' : (r.segs[0] === 'privacy' || r.segs.includes('privacy')) ? 'Privacy' : r.segs.includes('terms') ? 'Terms' : (hub ? hub.name : 'Page');
+    const hub = HUBS[r.segs[0]]; const kind = r.kind ? r.kind : r.segs[1] === 'help' ? 'Guide' : r.segs[0] === 'apify' ? 'Data tool' : (r.segs[0] === 'privacy' || r.segs.includes('privacy')) ? 'Privacy' : r.segs.includes('terms') ? 'Terms' : (hub ? hub.name : 'Page');
     return [r.h1, r.url, kind];
   });
   return JSON.stringify(tools.concat(pages));
