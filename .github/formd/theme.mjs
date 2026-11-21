@@ -1,7 +1,7 @@
 // SKILLMERC site theme v11 (22 Nov 2026). Shared by gen.mjs (local build) and the Form D GitHub Action.
 // Exports: render(rel,title,desc,body), reshell(rel,html), homeBody(ctx), guidesBody(), copyAssets(out), DEPTS, CONTROLS, STORY.
 // Look: the HQ dashboard's world at two volumes (plans/site-brand-v11-2026-11-21.md). Loud on the story pages
-// (home, /operations/, /numbers/, /about/: dusk scenes, the operations console, big numbers). Calm on
+// (home, /operations/, /about/: dusk scenes, the operations console). No company figures anywhere. Calm on
 // product, guide, privacy and support pages (same palette and type, no characters, no scenes behind text).
 // The brand: a real company, run by AI agents, owned by a human. Products only, never consulting.
 // Page copy for content pages lives in gen.mjs and the help-*/ folders. This file owns the shell, the homepage,
@@ -112,7 +112,6 @@ const HUBS = {
   'form-d': { cat: 'data', name: 'Form D filings' },
   'wayback-machine': { cat: 'data', name: 'Wayback Machine Scraper', link: '/apify/internet-archive-search-scraper/' },
   guides: { cat: 'more', name: 'Guides' },
-  'open-books': { cat: 'more', name: 'Open books' },
   'decision-log-confluence': { cat: 'more', name: 'Decision Keeper for Confluence', doc: 'min', stamp: 'On record', hero: true,
     tag: 'Every decision, <em>on the record.</em>',
     tale: 'Six months on, someone asks why you chose that vendor. The answer was said out loud in a meeting. Decision Keeper gives each decision a record in Confluence and lists them in one register.',
@@ -188,12 +187,12 @@ const shotSrc = (s) => s.p || `/assets/shots/${s.f}`;
 
 // ---------- shared chrome ----------
 const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${BASE}/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0b0c0e"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/rubik.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/anton.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=${ver()}"><script>document.documentElement.classList.add('js')</script>${extra}</head>`;
-const NAV = [['Tools', '/#kit', 'kit'], ['Operations', '/operations/', 'operations'], ['Numbers', '/numbers/', 'numbers'], ['Guides', '/guides/', 'guides'], ['About', '/about/', 'about']];
+const NAV = [['Tools', '/#kit', 'kit'], ['Operations', '/operations/', 'operations'], ['Guides', '/guides/', 'guides'], ['About', '/about/', 'about']];
 const navHtml = (here = '') => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<nav class="nav-links" aria-label="Main">${NAV.map(([t, h, k]) => `<a href="${h}"${k === here ? ' aria-current="page"' : ''}>${t}</a>`).join('')}<a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header>`;
 const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-grid">
 <div class="foot-about">${brand}<p>Software, operated by AI agents. Small tools for online stores, bookkeeping and data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
 <div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/threadkeep/">Threadkeep</a></li><li><a href="/#data">Data tools on Apify</a></li></ul></div>
-<div><h2 class="fh">The company</h2><ul><li><a href="/operations/">Operations</a></li><li><a href="/numbers/">Numbers</a></li><li><a href="/about/">About</a></li><li><a href="/open-books/">Open books</a></li><li><a href="/support/">Support</a></li></ul></div>
+<div><h2 class="fh">The company</h2><ul><li><a href="/operations/">Operations</a></li><li><a href="/about/">About</a></li><li><a href="/support/">Support</a></li></ul></div>
 <div><h2 class="fh">Help and data</h2><ul><li><a href="/guides/">All guides</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li></ul></div>
 <div><h2 class="fh">Privacy</h2><ul><li><a href="/privacy/website/">This website</a></li><li><a href="/privacy/email-updates/">Email updates</a></li><li><a href="/privacy/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Ledgerline</a></li></ul></div>
 </div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. ${REG}</span><span>Operated by AI agents.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer>`;
@@ -335,7 +334,7 @@ const LAB = [
 ];
 // How the company is organised (theme v11 "operations", 21 Nov 2026). Kyle: say it is run by AI agents, keep the focus on
 // the operational setup, not on the owner or on agents as characters. Eight departments, each staffed by AI agents.
-// desks = the Board roles behind each department (board/web/play.js WORKERS), used for the session counts.
+// desks = the Board roles behind each department (board/web/play.js WORKERS). Internal mapping only: no counts are published.
 // Each department card shows its agent: static/assets/v11/a-<k>.webp (480) and a-<k>-s.webp (240). The same agent at every desk.
 export const DEPTS = [
   { k: 'direction', name: 'Direction', what: 'Sets priorities and decides what is built, sold, paused or closed.', desks: ['merc'] },
@@ -355,18 +354,16 @@ export const CONTROLS = [
   ['Stop switch', 'One switch stops all new agent runs and task claims.'],
 ];
 export const ARROW_R = ARROW;
-export const deptRuns = (hq, d) => d.desks.reduce((s, k) => s + Number((hq && hq.runs.by_desk[k]) || 0), 0);
-export const usd = (n, sign = '') => sign + '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-export const dmy = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-// The homepage strip: four plain facts from the public snapshot (hq-public.mjs).
-export const scoreStrip = (hq, { nLive = 0 } = {}) => { if (!hq) return '';
-  const cells = [['Tools live', String(nLive), 'In their stores today'], ['Active users', String(hq.users.total), 'As counted by the stores'], ['Paying customers', String(hq.users.paying), 'Across all tools'], ['Agent sessions', hq.runs.total.toLocaleString('en-US'), `Since ${dmy(hq.runs.since).replace(/ \d{4}$/, '')}`]];
-  return `<div class="score score-4"><div class="wrap"><dl class="score-grid">${cells.map(([l, v, s]) => `<div><dt>${l}</dt><dd>${v}</dd><dd class="s">${esc(s)}</dd></div>`).join('')}</dl><p class="score-note">From the company ledger, ${dmy(hq.as_of)}. <a href="/numbers/">See the numbers ${ARROW}</a></p></div></div>`; };
-// The operations panel: each department and its agent sessions, drawn as a console.
-export const opsPanel = (hq, { id = 'ops', cls = '' } = {}) => { if (!hq) return ''; const rows = DEPTS.map(d => [d, deptRuns(hq, d)]); const max = Math.max(...rows.map(r => r[1]), 1);
-  return `<figure class="ops ${cls}" aria-labelledby="${id}-h"><figcaption class="ops-top"><span id="${id}-h">Operations</span><span class="ops-live"><i></i>${hq.halted ? 'Paused' : 'Running'}</span></figcaption><ol class="ops-rows">${rows.map(([d, n]) => `<li><span class="ops-n">${esc(d.name)}</span><span class="ops-b"><i style="width:${Math.max(3, Math.round(n / max * 100))}%"></i></span><span class="ops-v">${n.toLocaleString('en-US')}</span></li>`).join('')}</ol><p class="ops-ft">Agent sessions by department since ${dmy(hq.runs.since).replace(/ \d{4}$/, '')}</p></figure>`; };
+// NO COMPANY FIGURES ON THE PUBLIC SITE (Kyle, 21 Nov 2026: "we shouldnt show these numbers on the live site ... not sharing
+// confidential info"). Never publish revenue, costs, user counts, customer counts, agent run or session counts, targets or budgets.
+// The strip and the console below show only what the price list already says and how the company is organised.
+export const scoreStrip = ({ nLive = 0, nFree = 0, nReview = 0 } = {}) => { const cells = [['Tools live', String(nLive), 'In their stores today'], ['Free to start', String(nFree), 'No card needed'], ['In store review', String(nReview), 'Coming next'], ['Departments', String(DEPTS.length), 'Staffed by AI agents']];
+  return `<div class="score score-4"><div class="wrap"><dl class="score-grid">${cells.map(([l, v, s]) => `<div><dt>${l}</dt><dd>${v}</dd><dd class="s">${esc(s)}</dd></div>`).join('')}</dl></div></div>`; };
+// The operations panel: the eight departments and what each one covers, drawn as a console. No counts.
+const OPS_TAG = { direction: 'Priorities', research: 'Demand', engineering: 'Build and maintain', quality: 'Review', support: 'Every day', growth: 'Listings', finance: 'Ledger', oversight: 'Audit' };
+export const opsPanel = ({ id = 'ops', cls = '' } = {}) => `<figure class="ops ${cls}" aria-labelledby="${id}-h"><figcaption class="ops-top"><span id="${id}-h">Operations</span><span class="ops-live"><i></i>AI agents</span></figcaption><ol class="ops-rows ops-plain">${DEPTS.map(d => `<li><i class="ops-dot" aria-hidden="true"></i><span class="ops-n">${esc(d.name)}</span><span class="ops-t">${esc(OPS_TAG[d.k] || '')}</span></li>`).join('')}</ol><p class="ops-ft">Eight departments, one task queue</p></figure>`;
 
-export function homeBody({ actors = [], priceLine = () => '', fdDays = [], hq = null } = {}) {
+export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}) {
   const day = fdDays.find(d => d.rows && d.rows.some(r => !r.pooled && r.sold));
   const guides = registry.filter(r => r.segs[1] === 'help' && r.segs.length > 2);
   const per1k = actors.map(a => (String(priceLine(a)).match(/USD ([\d.]+) per 1,000/) || [])[1]).filter(Boolean).sort((x, y) => x - y);
@@ -435,8 +432,8 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [], hq = 
 <p class="hero-sub">SKILLMERC builds and runs small tools for online stores, bookkeeping and data. Product, engineering, quality, support and finance are run by AI agents, under written controls.</p>
 <div class="row-ctas">${btn([`See the ${nLive} tools`, '#tools', 'dn'], '')}${btn(['How we operate', '/operations/', ''], 'btn-line')}</div>
 </div>
-${opsPanel(hq, { id: 'ops-hero', cls: 'ops-hero' })}
-</div>${scoreStrip(hq, { nLive })}</section>
+${opsPanel({ id: 'ops-hero', cls: 'ops-hero' })}
+</div>${scoreStrip({ nLive, nFree, nReview })}</section>
 
 <section class="sec" id="tools"><div class="wrap">
 <div class="sh"><h2 class="hx">The boring parts, handled.</h2><span class="tag">One tool, one boring job</span></div>
@@ -462,12 +459,11 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <section class="sec depts-sec" id="operations"><div class="wrap">
 <div class="sh"><h2 class="hx">How the company is organised.</h2></div>
 <p class="lede">Eight departments, each staffed by AI agents, working from one task queue.</p>
-<ol class="depts">${DEPTS.map((d, i) => `<li><span class="d-pic"><img src="/assets/v11/a-${d.k}.webp" alt="" width="480" height="480" loading="lazy" decoding="async"></span><span class="d-tx"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(d.name)}</b><p>${esc(d.what)}</p></span></li>`).join('')}</ol>
-<div class="row-ctas"><a class="tlink" href="/operations/">How we operate ${ARROW}</a></div>
+<ol class="lineup">${DEPTS.map((d, i) => `<li><a href="/operations/#${d.k}"><span class="d-pic"><img src="/assets/v11/a-${d.k}.webp" alt="" width="480" height="480" loading="lazy" decoding="async"></span><b>${esc(d.name)}</b></a></li>`).join('')}</ol>
 </div></section>
 
 <section class="sec rules-sec" id="controls"><div class="wrap">
-<div class="sh"><h2 class="hx">Controls.</h2></div>
+<div class="sh"><h2 class="hx">Controls.</h2><a class="tlink" href="/operations/">How we operate ${ARROW}</a></div>
 <p class="lede">AI agents do the work. Controls decide what they are allowed to do.</p>
 <ol class="rules">${CONTROLS.map(([a, p], i) => `<li><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(a)}</b><p>${esc(p)}</p></li>`).join('')}</ol>
 </div></section>
@@ -513,7 +509,7 @@ export function notFoundBody() {
 }
 
 // Story pages (the loud volume): the body arrives as finished sections from story.mjs.
-export const STORY = { 'operations/index.html': ['operations', 'Operations'], 'numbers/index.html': ['numbers', 'Numbers'], 'about/index.html': ['about', 'About'] };
+export const STORY = { 'operations/index.html': ['operations', 'Operations'], 'about/index.html': ['about', 'About'] };
 function storyPage(rel, title, desc, body) {
   const url = BASE + '/' + rel.replace(/index\.html$/, ''); const [key, name] = STORY[rel];
   registry.push({ rel, segs: [key], h1: name, url: '/' + rel.replace(/index\.html$/, ''), kind: 'Company' });
