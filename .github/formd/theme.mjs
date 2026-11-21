@@ -99,6 +99,7 @@ const HUBS = {
   apify: { cat: 'data', name: 'Data tools', link: '/#data',
     promo: ['11 scrapers and monitors on Apify. Pay only for the rows you get.', 'Browse on Apify', 'https://apify.com/skillmerc'] },
   'form-d': { cat: 'data', name: 'Form D filings' },
+  'wayback-machine': { cat: 'data', name: 'Wayback Machine Scraper', link: '/apify/internet-archive-search-scraper/' },
   guides: { cat: 'more', name: 'Guides' },
   'open-books': { cat: 'more', name: 'Open books' },
   'decision-log-confluence': { cat: 'more', name: 'Decision Keeper for Confluence', doc: 'min', stamp: 'On record', hero: true,
@@ -129,7 +130,7 @@ const CARDS = [
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
-const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent']];
+const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine']];
 // The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
@@ -181,7 +182,7 @@ const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-
 <div class="foot-about">${brand}<p>The boring parts, handled. Small tools for online shops, bookkeeping, project teams and public data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
 <div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li></ul></div>
 <div><h2 class="fh">Data and help</h2><ul><li><a href="/#data">Data tools on Apify</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/guides/">All guides</a></li><li><a href="/support/">Support</a></li><li><a href="/open-books/">Open books: our real numbers</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li></ul></div>
-<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li></ul></div>
+<div><h2 class="fh">Elsewhere</h2><ul><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li><li><a href="/privacy/list-table-scraper/">Privacy: List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Privacy: Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Privacy: Ledgerline</a></li><li><a href="/privacy/website/">Privacy: this website</a></li><li><a href="/privacy/email-updates/">Privacy: email updates</a></li></ul></div>
 </div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. ${REG}</span><span>The boring parts, handled.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer>`;
 const scripts = () => `<script src="/assets/site.js?v=${ver()}" defer></script>`;
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
@@ -367,7 +368,8 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox &middot; Chrome', h2: 'Any web table. Into Excel.',
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
-  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']], doc: orbFig('print') },
+  fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']],
+  also: 'Lifetime deal: Pro is USD 19 once on AppSumo, under AppSumo\'s own 60-day refund policy. <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
     { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox', h2: 'DeepSeek chats, saved properly.',
   tale: HUBS.threadkeep.tale,
   say: HUBS.threadkeep.say,
@@ -428,11 +430,16 @@ export function guidesBody() {
   return `<h1>Guides</h1><p>Short, practical fixes for the problems online stores hit most: payments stuck on pending, missing shipping methods, VAT that is a penny out, tables that will not paste. Most apply whichever plugin you use.</p>${groups}`;
 }
 
+// Opt-in email list block (plans/email-list/PLAN.md). A plain HTML form, no script. The wording is consent version v2 (with the tick box) in
+// engine/services/hq/list.mjs (CONSENT): change both together and add a new version, never edit v2.
+const SU_NAMES = { 'list-table': 'List &amp; Table Scraper', threadkeep: 'Threadkeep', shipping: 'Shipping for WooCommerce', all: 'any SKILLMERC tool' };
+export const signupBlock = (product, page) => { const n = SU_NAMES[product], id = 'su-' + product; return `<form class="su" method="post" action="https://hq-production-e33c164a.up.railway.app/api/subscribe" aria-labelledby="${id}-h"><p class="su-h" id="${id}-h"><b>Get an email when we ship something new for ${n}.</b> No spam; unsubscribe any time.</p><div class="su-row"><label for="${id}-e">Email address</label><input id="${id}-e" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="${id}-c"><button type="submit">Email me updates</button></div><p class="su-ok"><input id="${id}-a" name="agree" type="checkbox" value="yes" required><label for="${id}-a">I agree that SKILLMERC (Pty) Ltd may email me about new releases and deals for ${n}.</label></p><input type="hidden" name="product" value="${product}"><input type="hidden" name="consent" value="v2"><input type="hidden" name="page" value="${page}"><div class="su-hp" aria-hidden="true"><label for="${id}-w">Leave this empty</label><input id="${id}-w" name="website" type="text" tabindex="-1" autocomplete="off"></div><p class="su-c" id="${id}-c">We send a link to confirm first. <a href="/privacy/email-updates/">How we handle your email</a>.</p></form>`; };
+
 function homePage(rel, title, desc, body) {
   const org = ld({ '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': BASE + '/#org', name: 'SKILLMERC', legalName: 'SKILLMERC (Pty) Ltd', url: BASE + '/', email: 'kyle@skillmerc.com', logo: BASE + '/assets/touch.png', address: { '@type': 'PostalAddress', addressCountry: 'ZA' }, sameAs: ['https://profiles.wordpress.org/skillmerc/', 'https://apify.com/skillmerc', 'https://www.youtube.com/@skillmerc', 'https://github.com/skillmerc'] },
     { '@type': 'WebSite', '@id': BASE + '/#site', url: BASE + '/', name: 'SKILLMERC', publisher: { '@id': BASE + '/#org' } }] });
-  return `${head({ title, desc, url: BASE + '/', extra: org })}<body class="home">${navHtml()}<main id="main">${nod(body)}</main>${footHtml()}${scripts()}</body></html>`;
+  return `${head({ title, desc, url: BASE + '/', extra: org })}<body class="home">${navHtml()}<main id="main">${nod(body)}<section class="su-band" aria-label="Email updates"><div class="wrap">${signupBlock('all', '/')}</div></section></main>${footHtml()}${scripts()}</body></html>`;
 }
 
 export function notFoundBody() {
