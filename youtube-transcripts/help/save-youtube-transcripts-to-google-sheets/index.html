@@ -1,0 +1,111 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>How to save YouTube transcripts to Google Sheets automatically</title><meta name="description" content="Three ways to get YouTube transcripts into Google Sheets: by hand, with a free script, or daily with n8n and an Apify actor. Cost, effort and when each fits."><link rel="canonical" href="https://skillmerc.com/youtube-transcripts/help/save-youtube-transcripts-to-google-sheets/"><meta property="og:type" content="website"><meta property="og:site_name" content="SKILLMERC"><meta property="og:title" content="How to save YouTube transcripts to Google Sheets automatically"><meta property="og:description" content="Three ways to get YouTube transcripts into Google Sheets: by hand, with a free script, or daily with n8n and an Apify actor. Cost, effort and when each fits."><meta property="og:url" content="https://skillmerc.com/youtube-transcripts/help/save-youtube-transcripts-to-google-sheets/"><meta property="og:image" content="https://skillmerc.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0b0c0e"><meta name="color-scheme" content="dark"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/assets/touch.png"><link rel="preload" href="/assets/fonts/rubik.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/anton.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css?v=1074d62c"><script>document.documentElement.classList.add('js')</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://skillmerc.com/"},{"@type":"ListItem","position":2,"name":"Data","item":"https://skillmerc.com/#data"},{"@type":"ListItem","position":3,"name":"YouTube Transcript Scraper","item":"https://skillmerc.com/apify/youtube-transcript-scraper-pro/"},{"@type":"ListItem","position":4,"name":"Guide","item":"https://skillmerc.com/guides/"},{"@type":"ListItem","position":5,"name":"How to save YouTube transcripts to Google Sheets...","item":"https://skillmerc.com/youtube-transcripts/help/save-youtube-transcripts-to-google-sheets/"}]}</script></head><body class="doc-page"><a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f26a1b"/><stop offset="1" stop-color="#ffb02e"/></linearGradient><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask></defs><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="url(#lg-g)"/></svg><span>SKILLMERC</span></a><nav class="nav-links" aria-label="Main"><a href="/#kit">Tools</a><a href="/operations/">Operations</a><a href="/guides/" aria-current="page">Guides</a><a href="/about/">About</a><a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header><main id="main"><header class="band"><div class="wrap"><ol class="crumbs"><li><a href="/">Home</a></li><li><a href="/#data">Data</a></li><li><a href="/apify/youtube-transcript-scraper-pro/">YouTube Transcript Scraper</a></li><li><a href="/guides/">Guide</a></li><li><span aria-current="page">How to save YouTube transcripts to Google Sheets...</span></li></ol><h1>How to save YouTube transcripts to Google Sheets automatically</h1><div class="meta"><span>6 min read</span><span>YouTube Transcript Scraper</span></div></div></header><div class="wrap doc-grid"><article class="prose" data-toc>
+<p>You want the words spoken in YouTube videos in a spreadsheet, one row per video, so you can search, quote or summarise them. There are three ways to do it. The free ways are the right choice more often than you might think, so they come first.</p>
+<h2>The three ways at a glance</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>By hand</th>
+<th>A script</th>
+<th>n8n and an Apify actor</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>What you do</td>
+<td>Open each video&#39;s transcript, copy, paste</td>
+<td>Write or copy a small program that reads the captions and writes the sheet</td>
+<td>Import a ready workflow, connect your accounts, click run</td>
+</tr>
+<tr>
+<td>Effort per video</td>
+<td>One copy and paste each time</td>
+<td>None once it works</td>
+<td>None once it is set up</td>
+</tr>
+<tr>
+<td>Setup</td>
+<td>None</td>
+<td>You write, run and fix code</td>
+<td>5 steps, no code</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Free</td>
+<td>Free</td>
+<td>Apify: USD 1 per 1,000 transcripts on its free plan; n8n: free if you host it yourself, a monthly plan on n8n Cloud after the trial</td>
+</tr>
+<tr>
+<td>Runs by itself every day</td>
+<td>No</td>
+<td>Only if you schedule it on a computer that is on</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>New videos from a whole channel</td>
+<td>You check the channel yourself</td>
+<td>You write the listing and the &quot;seen before&quot; logic</td>
+<td>Built in (&quot;only new videos&quot;)</td>
+</tr>
+<tr>
+<td>Videos without captions</td>
+<td>No transcript to copy</td>
+<td>Your code must catch the error</td>
+<td>Listed in a Failed tab, not charged</td>
+</tr>
+<tr>
+<td>Main limit</td>
+<td>Your time</td>
+<td>YouTube often blocks requests from cloud servers</td>
+<td>Small per-transcript charge; needs captions</td>
+</tr>
+</tbody></table>
+<p>All three read the same thing: the caption track YouTube keeps for a video, written by a person or made automatically. None of them turns audio into text, so a video with no captions has no transcript in any of the three.</p>
+<h2>Way 1: by hand, from YouTube&#39;s transcript panel</h2>
+<ol>
+<li>Open the video on YouTube.</li>
+<li>Under the video, click &quot;...more&quot; to open the description, then click &quot;Show transcript&quot;.</li>
+<li>The transcript opens beside the video, with a time on each line. Select the text and copy it.</li>
+<li>Paste it into a cell in Google Sheets. Put the video title and link in the cells next to it.</li>
+</ol>
+<p><strong>When this is the right choice:</strong> you need a handful of videos, once. It costs nothing and you need no accounts. For five videos, do this and skip the rest of the guide.</p>
+<p><strong>Where it stops working:</strong> every video is a separate copy and paste, the times come out as separate lines mixed into the text, and nothing tells you when a channel posts a new video.</p>
+<h2>Way 2: a script that reads YouTube&#39;s captions</h2>
+<p>If you write code, open-source libraries such as <a href="https://github.com/jdepoix/youtube-transcript-api">youtube-transcript-api</a> for Python fetch the caption track of a video by its id. A tool such as <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> can list the videos of a channel. Your script then writes one row per video, either to a CSV file that you import into Google Sheets, or straight to the sheet through the Google Sheets API.</p>
+<p><strong>When this is the right choice:</strong> you are comfortable with code, the job is a one-off or a few dozen videos, and you run it from your own computer. It is free.</p>
+<p><strong>Where it stops working:</strong> the script is yours to keep working. You write the error handling for videos without captions, the memory of which videos you already saved, and the schedule. YouTube often refuses caption requests from cloud servers. In our own tests on 21 Nov 2026, YouTube refused almost every request from Apify&#39;s data-centre addresses, and 39 of 40 transcripts came through the residential proxy route the actor falls back to. A script on a home connection usually has an easier time, but a script on a cloud server will meet those refusals.</p>
+<h2>Way 3: automatically, with n8n and an Apify actor</h2>
+<p><a href="https://n8n.io">n8n</a> is a workflow tool: you connect boxes on a canvas, and it runs them on a schedule. <a href="https://apify.com">Apify</a> runs ready-made web tools called actors, and you pay per result. Our free n8n workflow, the <a href="/youtube-transcripts/help/youtube-channel-research-desk-n8n/">YouTube channel research desk</a>, joins the two: every morning it sends your list of channels to the YouTube Transcript Scraper on Apify and writes each new video&#39;s transcript to your Google Sheet.</p>
+<p><strong>When this is the right choice:</strong> you follow several channels and want every new video in the sheet without doing anything, or you want hundreds of videos in one go with failures listed for you.</p>
+<p><strong>When it is not worth it:</strong> a handful of videos (use Way 1), or a one-off job you can script yourself at home (use Way 2). It needs three accounts (n8n, Apify, Google), and that setup is not worth it for five videos.</p>
+<h3>How reliable is it?</h3>
+<p>In our reliability test on 21 Nov 2026 we gave the actor 42 hard videos: Shorts, live replays, music videos, long videos, videos in Hindi, Japanese, Arabic, Spanish and Portuguese, and videos with many caption tracks. It delivered a transcript for all 35 that had captions. The 7 without captions (a live stream still on air, a stream that had just ended, two with no captions, two age-restricted and one members-only) failed cleanly, each with its reason, and none of them was charged.</p>
+<h3>What it costs</h3>
+<p>The actor charges USD 1.00 per 1,000 transcripts on Apify&#39;s free plan, and less on paid plans (USD 0.90, 0.80 and 0.70), plus a start fee of up to USD 0.00005 per run. Failed videos are free. For example, 20 channels that post about 3 new videos a day in total make about 90 transcripts a month, which is about USD 0.09 a month. The optional AI summaries run on your own model account and are billed by your model provider. The <a href="/youtube-transcripts/help/youtube-channel-research-desk-n8n/">guide page</a> has the full worked example with a token estimate. Prices can change; the <a href="https://apify.com/skillmerc/youtube-transcript-scraper-pro">actor&#39;s page on Apify</a> is the source.</p>
+<h3>Step by step</h3>
+<p>The <a href="/youtube-transcripts/help/youtube-channel-research-desk-n8n/">YouTube channel research desk guide</a> has the 2:53 setup video, the workflow file and troubleshooting. In short:</p>
+<ol>
+<li><strong>Make a Google Sheet</strong> with four tabs: Sources, Videos, Failed and Run log. In Sources, type Link and Label in the first row, then paste the channels you follow.</li>
+<li><strong>Create a free Apify account and copy your API token.</strong> In n8n, add a Header Auth credential named Authorization with the value Bearer, a space, and your token. Pick it in the four Apify nodes.</li>
+<li><strong>Connect Google Sheets and Gmail</strong> with Sign in with Google. If a Sheets node then shows Map Each Column Manually, switch it back to Map Automatically.</li>
+<li><strong>Open Settings</strong> and paste your sheet link and your email.</li>
+<li><strong>Click Execute workflow</strong>, check the tabs, then activate the workflow so it runs every morning.</li>
+</ol>
+<p>Each new video becomes one row: title, channel, date, views, likes, chapters and the transcript with a time mark about every minute. Run it again and only new uploads come back.</p>
+<p><a class="cta" href="/youtube-transcripts/help/youtube-channel-research-desk-n8n/">Open the guide and the workflow</a></p>
+
+<h2>Common questions</h2>
+<h3>Can I get transcripts without captions?</h3>
+<p>Not with any of these three ways. They all read YouTube&#39;s caption tracks. For a video with no captions you need a speech-to-text tool, which is a different job.</p>
+<h3>Does Google Sheets have a limit?</h3>
+<p>Yes. A cell holds at most 50,000 characters, which is very roughly an hour of talk. The n8n workflow cuts a longer transcript at 49,000 characters and flags it. If you paste by hand, split long transcripts over more than one cell.</p>
+<h3>Can I use Make or Zapier instead of n8n?</h3>
+<p>The actor works in both through Apify&#39;s own app (&quot;Run Actor&quot;, then &quot;Get dataset items&quot;). The ready-made workflow on this site is for n8n only.</p>
+<h2>Who wrote this</h2>
+<p>SKILLMERC publishes the YouTube Transcript Scraper on Apify used in Way 3, and made the n8n workflow. Ways 1 and 2 cost nothing and earn us nothing, and for small jobs they are the better choice.</p>
+<p><a class="cta" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro">Open the actor on Apify</a></p><p><a class="cta alt" href="/apify/youtube-transcript-scraper-pro/">Details and price</a></p><hr><h2>More guides</h2><ul><li><a href="/youtube-transcripts/help/youtube-channel-research-desk-n8n/">Free n8n workflow: YouTube channel transcripts to Google Sheets</a></li></ul></article><aside class="side"><a class="promo" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro" rel="noopener"><span class="ph">The tool for this job</span><span class="pb"><b>YouTube Transcript Scraper</b><p>Transcripts of public YouTube videos, channels and playlists as text with timestamps. USD 1 per 1,000 on Apify's free plan; failed videos are free.</p></span><span class="go">Open on Apify <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span></a></aside></div><section class="more"><div class="wrap"><div class="more-head"><h2 class="hx">More from the price list.</h2><a class="tlink" href="/#kit">All tools <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></a></div><div class="tcards"><a class="tcard" href="/sa-shipping-woocommerce/"><span class="lbl">Shipping</span><b>Shipping for WooCommerce</b><p>Live courier rates and locker pickers. Pro adds booking and labels.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/shopify-freeagent/"><span class="lbl">Bookkeeping</span><b>Ledgerline for Shopify</b><p>Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.</p><span class="ft"><span>In review</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a><a class="tcard" href="/list-table-scraper/"><span class="lbl">Web tables</span><b>List &amp; Table Scraper</b><p>Any web table or list into Excel in one click.</p><span class="ft"><span>Free / Pro</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"/></svg></span></a></div></div></section></main><footer class="foot"><div class="wrap"><div class="foot-grid">
+<div class="foot-about"><a class="brand" href="/" aria-label="SKILLMERC home"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f26a1b"/><stop offset="1" stop-color="#ffb02e"/></linearGradient><mask id="lg-m"><rect width="32" height="32" fill="#fff"/><circle cx="24.6" cy="7.9" r="7" fill="#000"/></mask></defs><circle cx="13.6" cy="18.2" r="11.8" fill="currentColor" mask="url(#lg-m)"/><circle cx="24.6" cy="7.9" r="5.1" fill="url(#lg-g)"/></svg><span>SKILLMERC</span></a><p>Small tools for online stores, bookkeeping and data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. 2025/673155/07<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/threadkeep/">Threadkeep</a></li><li><a href="/#data">Data tools on Apify</a></li></ul></div>
+<div><h2 class="fh">The company</h2><ul><li><a href="/operations/">Operations</a></li><li><a href="/about/">About</a></li><li><a href="/support/">Support</a></li></ul></div>
+<div><h2 class="fh">Help and data</h2><ul><li><a href="/guides/">All guides</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li></ul></div>
+<div><h2 class="fh">Privacy</h2><ul><li><a href="/privacy/website/">This website</a></li><li><a href="/privacy/email-updates/">Email updates</a></li><li><a href="/privacy/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/privacy/transcript-pull/">Transcript Pull</a></li><li><a href="/shopify-freeagent/privacy/">Ledgerline</a></li></ul></div>
+</div><div class="wordmark" aria-hidden="true">SKILLMERC</div><div class="foot-base"><span>&copy; <span data-year>2026</span> SKILLMERC (Pty) Ltd. Reg. 2025/673155/07</span><span>Made by SKILLMERC.</span></div><p class="foot-ind">SKILLMERC is independent. It is not affiliated with PayFast, Sage, FreeAgent, The Courier Guy or DeepSeek. Those names belong to their owners.</p></div></footer><a class="dock" href="https://apify.com/skillmerc/youtube-transcript-scraper-pro" rel="noopener" data-dock><b>YouTube Transcript Scraper</b><span>Open on Apify <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg></span></a><script src="/assets/site.js?v=1074d62c" defer></script></body></html>

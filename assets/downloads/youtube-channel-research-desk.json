@@ -1,0 +1,1428 @@
+{
+  "name": "YouTube channel research desk: transcripts, AI summaries, digest and chat in Google Sheets with Apify",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## YouTube channel research desk: transcripts, summaries, digest and chat in Google Sheets\n\n### How it works\nFor researchers, marketers and creators who follow YouTube channels. Every morning it sends the channels, playlists and videos in your Sources tab to the YouTube Transcript Scraper actor on Apify, which reads each video's caption track. Only new uploads come back, so each video is fetched and paid for once. Each video becomes one row in the Videos tab: title, channel, date, views, likes, chapters and the transcript with [m:ss] marks. Videos that can't be read go to the Failed tab with a reason code. Every run adds a Run log row with counts and the exact charge. Optional: an AI model writes a 5-line summary, key points with timestamps, topics and a \"worth watching\" note; a digest of new videos goes to your email, Slack or Discord; and a chat answers questions from your transcripts with links to the moment.\n\n### Setup\n1. Make a Google Sheet with four tabs: Sources, Videos, Failed, Run log. In Sources, type Link in A1 and Label in B1, then add links below.\n2. Create an Apify account (free plan works). Add a Header Auth credential: name `Authorization`, value `Bearer YOUR_APIFY_TOKEN`. Select it in the four Apify nodes.\n3. Connect Google Sheets and Gmail credentials. If a Sheets node shows Map Each Column Manually, set it back to Map Automatically.\n4. In Settings, paste the sheet link and your email.\n5. Click Execute workflow, check the tabs, then activate.\n\nThe actor is published by SKILLMERC, who made this template.\n\n### Customization\nSet useAI to true and add a model credential to get summaries. Swap the OpenAI model node for Anthropic or Gemini. Enable the Slack or Discord node instead of Gmail.",
+        "width": 620,
+        "height": 1040,
+        "color": 1
+      },
+      "id": "5b83ee34-3f12-4120-af6c-84fc3020879a",
+      "name": "Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        -460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "@[youtube](xOnq9T75-Qw)",
+        "width": 620,
+        "height": 380,
+        "color": 7
+      },
+      "id": "384226af-02c0-4300-a9a2-4efe630a2a45",
+      "name": "Tutorial video",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## What a run costs\nThe actor charges USD 1.00 per 1,000 transcripts on Apify's free plan, less on paid plans. Failed or skipped videos are free. 5 channels posting 2 videos a day each: USD 0.30 a month. maxCostPerRunUsd caps each run. AI calls bill your model account.",
+        "width": 620,
+        "height": 300,
+        "color": 7
+      },
+      "id": "b3ff7dda-b0d6-4615-a96c-22c801ecfbf5",
+      "name": "Cost",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 1. Start and settings\nDaily at 07:00, by hand, from the form (adds a source) or from the chat (asks a question). Settings holds every value you change.",
+        "width": 660,
+        "height": 1180,
+        "color": 7
+      },
+      "id": "a5185a85-8298-4860-ad3f-844c007624a9",
+      "name": "Section: start",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2. Add a source from the form\nChecks the link is a YouTube channel, playlist or video and adds it to the Sources tab once. The next run picks it up.",
+        "width": 510,
+        "height": 300,
+        "color": 7
+      },
+      "id": "07238f51-c530-415c-ab24-3133275c2736",
+      "name": "Section: add source",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        130,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3. Collect new transcripts\nOne Apify run for all sources, capped by maxItemsPerRun and maxCostPerRunUsd. Only new videos come back. The run is checked every 30 seconds until it ends, so long runs never time out. Type no in an Active column to pause a source.",
+        "width": 1530,
+        "height": 560,
+        "color": 7
+      },
+      "id": "504be780-a921-4ed0-a734-b16ab30bc2e1",
+      "name": "Section: collect",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        130,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4. Understand (optional)\nRuns only when useAI is true. Long transcripts are cut to evenly spaced one-minute parts that fit maxAiCharacters, so the summary covers the whole video.",
+        "width": 1080,
+        "height": 400,
+        "color": 7
+      },
+      "id": "59dd0ee4-20e9-4037-ab94-eaeb19a661fc",
+      "name": "Section: understand",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 5. Store in Google Sheets\nVideos and Failed are updated by Video ID, so running twice never adds a duplicate. Every run, failed or not, adds one Run log row.",
+        "width": 1080,
+        "height": 1060,
+        "color": 7
+      },
+      "id": "5f4d14d1-092e-46f5-a270-e3bae2c7401b",
+      "name": "Section: store",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 6. Tell\nOne message per run with the new videos. Nothing is sent when nothing is new. Gmail is on; to use Slack or Discord, enable that node and disable Gmail.",
+        "width": 520,
+        "height": 760,
+        "color": 7
+      },
+      "id": "a25de7bf-f13c-48d1-a6b7-2b4d88f8c074",
+      "name": "Section: tell",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 7. Ask your channels\nOpen the chat and ask a question. It searches the transcripts in your sheet, no vector database needed, and answers with links that open the video at that minute. Long videos are searched up to the sheet cell limit.",
+        "width": 1220,
+        "height": 420,
+        "color": 7
+      },
+      "id": "4717a25c-87ac-45c0-aba0-5213a7012d13",
+      "name": "Section: ask",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        130,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Paste your Google Sheet link and email in Settings before the first run.",
+        "width": 240,
+        "height": 300,
+        "color": 3
+      },
+      "id": "5f766f2f-02ad-497b-a8eb-1520fdf10d5d",
+      "name": "Warning: settings",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "0e0e1f79-449c-43a4-a408-058fbb8c77f5",
+      "name": "Every day at 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        40
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "1068d986-9b75-4013-aa0a-656ec83cb04e",
+      "name": "Run now",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "formTitle": "Add a YouTube source",
+        "formDescription": "Paste a channel, playlist or video link. The next run collects its new videos.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Link",
+              "placeholder": "https://www.youtube.com/@channel",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Label",
+              "placeholder": "Optional: why you follow it"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5f060a81-8d94-4a45-a3e0-0ca74d76ef4f",
+      "name": "Form: add a channel, playlist or video",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        640
+      ],
+      "webhookId": "ad589f9c-23be-45ff-a169-bce5df9ff408"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "fc9c354e-e088-4406-a421-28c66e5121b7",
+      "name": "Chat: ask your channels",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -500,
+        900
+      ],
+      "webhookId": "a93d0e15-1588-4c7f-ab74-11ce4fc273c6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "72bc85c3-de86-4bca-a434-22d8501258f7",
+              "name": "sheetUrl",
+              "type": "string",
+              "value": "PASTE_YOUR_GOOGLE_SHEET_LINK"
+            },
+            {
+              "id": "42856bc8-ed0a-4f48-a101-0a29eabccaf6",
+              "name": "digestEmail",
+              "type": "string",
+              "value": "you@example.com"
+            },
+            {
+              "id": "be575028-ba5b-48fd-a8c3-e9cd22698bb6",
+              "name": "maxVideosPerSource",
+              "type": "number",
+              "value": 5
+            },
+            {
+              "id": "79b4267a-1305-4521-a6ba-4616a4229472",
+              "name": "maxItemsPerRun",
+              "type": "number",
+              "value": 50
+            },
+            {
+              "id": "7b1bb598-7634-44a0-a819-068e7c02712d",
+              "name": "maxCostPerRunUsd",
+              "type": "number",
+              "value": 0.2
+            },
+            {
+              "id": "328f0a44-b39b-4700-ad10-8e7147e6060f",
+              "name": "language",
+              "type": "string",
+              "value": "en"
+            },
+            {
+              "id": "01b12cf4-bba0-4569-a1d1-0dad91e7dea3",
+              "name": "onlyNewVideos",
+              "type": "boolean",
+              "value": true
+            },
+            {
+              "id": "cd5db767-3abd-41c9-a0f1-9712bd66b1e8",
+              "name": "stateKey",
+              "type": "string",
+              "value": "research-desk"
+            },
+            {
+              "id": "f4deb7ee-d0fb-456d-af8e-a6fbd884659a",
+              "name": "useAI",
+              "type": "boolean",
+              "value": false
+            },
+            {
+              "id": "29e92239-187b-48a9-a3b4-5ff28dafd932",
+              "name": "maxAiCharacters",
+              "type": "number",
+              "value": 40000
+            },
+            {
+              "id": "3b99021c-e419-4330-a718-23e475092061",
+              "name": "sendDigest",
+              "type": "boolean",
+              "value": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bdee88b5-2e40-4e15-a481-640d690189c6",
+      "name": "Settings",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c9fbdfd7-3ddc-42f5-add0-6a4e592626c0",
+                    "leftValue": "={{ $('Form: add a channel, playlist or video').isExecuted }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Form"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a715f66f-7860-4aee-a47a-1064e685e83c",
+                    "leftValue": "={{ $('Chat: ask your channels').isExecuted }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Chat"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Collect"
+        }
+      },
+      "id": "7f043868-fe1e-4aad-a15d-eb5a1c18ec86",
+      "name": "What started this run?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -60,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Accepts a YouTube channel, playlist or video link from the form and labels its type.\nconst f = $('Form: add a channel, playlist or video').first().json;\nconst link = String(f.Link || '').trim();\nconst isYouTube = /^(https?:\\/\\/)?(www\\.|m\\.)?(youtube\\.com|youtu\\.be)\\//i.test(link) || /^@[\\w.-]+$/.test(link);\nif (!isYouTube) throw new Error('Not a YouTube link: ' + link);\nreturn [{ json: { Link: link, Label: String(f.Label || '').trim(), 'Added at': new Date().toISOString() } }];"
+      },
+      "id": "659fa3fa-0ec4-4d3e-a312-84714550ce2a",
+      "name": "Check and label the new link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sources"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Link"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "aac11e43-88aa-42c4-ae9e-83df5943584b",
+      "name": "Save it to the Sources tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        440,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sources"
+        },
+        "options": {}
+      },
+      "id": "4323ead4-cf2c-406e-a0dc-f791109819d9",
+      "name": "Read the Sources tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        200,
+        160
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sorts the Sources tab into channel, playlist and video links for the actor. Rows with Active = no are skipped.\nconst s = $('Settings').first().json;\nconst rows = $input.all().map((i) => i.json);\nconst kinds = { channelUrls: new Set(), playlistUrls: new Set(), videoUrls: new Set() };\nfor (const r of rows) {\n  const link = String(r.Link || '').trim();\n  if (!link || String(r.Active || '').trim().toLowerCase() === 'no') continue;\n  if (/[?&]v=|youtu\\.be\\/|\\/shorts\\/|\\/live\\/|\\/embed\\/|^[\\w-]{11}$/.test(link)) kinds.videoUrls.add(link);\n  else if (/[?&]list=/.test(link)) kinds.playlistUrls.add(link);\n  else kinds.channelUrls.add(link);\n}\nconst total = kinds.channelUrls.size + kinds.playlistUrls.size + kinds.videoUrls.size;\nif (!total) throw new Error('The Sources tab has no links. Add a channel, playlist or video link under the Link header.');\nreturn [{ json: {\n  actorInput: {\n    channelUrls: [...kinds.channelUrls],\n    playlistUrls: [...kinds.playlistUrls],\n    videoUrls: [...kinds.videoUrls],\n    maxVideosPerSource: Number(s.maxVideosPerSource) || 5,\n    maxItems: Math.min(Number(s.maxItemsPerRun) || 50, 500),\n    language: s.language || 'en',\n    onlyNewVideos: s.onlyNewVideos !== false,\n    stateKey: s.stateKey || 'research-desk',\n    outputFormats: ['text', 'segments'],\n  },\n  maxCostPerRunUsd: Math.max(Number(s.maxCostPerRunUsd) || 0.2, 0.01),\n  sources: total,\n} }];"
+      },
+      "id": "d87ad79d-8dde-4052-aaf4-f6539fa28f19",
+      "name": "Build the actor input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/skillmerc~youtube-transcript-scraper-pro/runs",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "waitForFinish",
+              "value": "60"
+            },
+            {
+              "name": "timeout",
+              "value": "1800"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "={{ $json.maxCostPerRunUsd }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.actorInput) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "7e9a4b5a-8a8a-4146-ae5d-908dcfb78e35",
+      "name": "Start a transcript run on Apify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        160
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e62d0eb3-ee6f-448a-a3e9-fa8221490589",
+              "leftValue": "={{ !['READY', 'RUNNING', 'TIMING-OUT', 'ABORTING'].includes($json.data.status) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "890850e6-952f-4916-a5e5-1c37b6359404",
+      "name": "Has the run finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "id": "f61bb0f4-1076-4ce7-ac3d-826431c4a47a",
+      "name": "Wait 30 seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        340
+      ],
+      "webhookId": "f76915f5-260f-42b9-a94d-8d3c7bf92df6"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/actor-runs/{{ $json.data.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "waitForFinish",
+              "value": "60"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "a7c2284f-35a8-4727-a668-4e65ecdfbbb6",
+      "name": "Check the run again",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        340
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "// The run has ended (succeeded, failed, aborted or timed out). Keep its record for the next steps.\nreturn [{ json: $input.first().json.data }];"
+      },
+      "id": "f2ed9d4f-def8-403a-af33-1d8512d182cb",
+      "name": "Keep the finished run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/key-value-stores/{{ $json.defaultKeyValueStoreId }}/records/OUTPUT",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "f05e1d7a-ec74-4db9-af85-8a4ceb7597ae",
+      "name": "Read the run summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        140
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/datasets/{{ $('Keep the finished run').first().json.defaultDatasetId }}/items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "clean",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "983e20e9-ca2e-4ddf-af38-0fcd7910bf1b",
+      "name": "Download the transcripts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1520,
+        140
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// One row per delivered video. The transcript gets a [m:ss] mark about every minute.\n// Google Sheets holds at most 50,000 characters in a cell, so longer text is cut and flagged.\nconst LIMIT = 49000;\nconst clock = (t) => { t = Math.floor(t || 0); const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = String(t % 60).padStart(2, '0'); return h ? h + ':' + String(m).padStart(2, '0') + ':' + x : m + ':' + x; };\nconst fetchedAt = new Date().toISOString();\nconst rows = [];\nfor (const { json: v } of $input.all()) {\n  if (!v.video_id) continue;\n  let marked = '';\n  let next = 0;\n  for (const seg of v.segments || []) {\n    if (seg.start >= next) { marked += (marked ? '\\n' : '') + '[' + clock(seg.start) + '] '; next = Math.floor(seg.start / 60) * 60 + 60; }\n    else marked += ' ';\n    marked += String(seg.text || '').replace(/\\s+/g, ' ').trim();\n  }\n  if (!marked) marked = v.transcript_text || '';\n  rows.push({ json: {\n    'Video ID': v.video_id,\n    'Video URL': v.video_url,\n    Title: v.title || '',\n    Channel: v.channel || '',\n    Published: v.published_at ? String(v.published_at).slice(0, 10) : '',\n    'Length (min)': v.duration_seconds ? Math.round(v.duration_seconds / 60) : '',\n    Language: v.language || '',\n    'Auto captions': v.is_auto_generated === true,\n    Views: v.view_count ?? '',\n    Likes: v.like_count ?? '',\n    Words: v.word_count ?? '',\n    Chapters: (v.chapters || []).map((c) => '[' + clock(c.start_seconds) + '] ' + c.title).join('\\n'),\n    Summary: '', 'Key points': '', Topics: '', 'Worth watching': '',\n    Transcript: marked.length > LIMIT ? marked.slice(0, LIMIT) : marked,\n    'Transcript cut': marked.length > LIMIT,\n    'Fetched at': fetchedAt,\n  } });\n}\nreturn rows;"
+      },
+      "id": "593f57b1-31a4-4986-a072-c4618fc4dd1a",
+      "name": "Shape one row per video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "daf79f1a-06f6-44b3-ae07-c32f3287048d",
+              "leftValue": "={{ $('Settings').first().json.useAI }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "9851c2aa-3530-48ab-a744-4c9831c444fe",
+      "name": "AI summaries switched on?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1980,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Builds one prompt per video. A transcript longer than maxAiCharacters is cut to evenly spaced\n// one-minute parts (each keeps its [m:ss] mark), so the model sees the whole video, not only the start.\n// It starts from the full transcript the actor returned, not the copy cut to fit a sheet cell.\nconst max = Number($('Settings').first().json.maxAiCharacters) || 40000;\nconst clock = (t) => { t = Math.floor(t || 0); const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = String(t % 60).padStart(2, '0'); return h ? h + ':' + String(m).padStart(2, '0') + ':' + x : m + ':' + x; };\nconst full = {};\nfor (const { json: v } of $('Download the transcripts').all()) {\n  if (!v.video_id || !(v.segments || []).length) continue;\n  const minutes = {};\n  for (const seg of v.segments) { const k = Math.floor(seg.start / 60); minutes[k] = (minutes[k] ? minutes[k] + ' ' : '[' + clock(k * 60) + '] ') + String(seg.text || '').replace(/\\s+/g, ' ').trim(); }\n  full[v.video_id] = Object.keys(minutes).sort((a, b) => a - b).map((k) => minutes[k]).join('\\n');\n}\nreturn $input.all().map(({ json: row }) => {\n  const parts = String(full[row['Video ID']] || row.Transcript || '').split('\\n');\n  let text = parts.join('\\n');\n  let note = 'full transcript';\n  if (text.length > max) {\n    const avg = text.length / parts.length;\n    const keep = Math.max(1, Math.floor(max / avg));\n    const step = parts.length / keep;\n    const picked = [];\n    for (let i = 0; i < keep; i++) picked.push(parts[Math.floor(i * step)]);\n    text = picked.join('\\n').slice(0, max);\n    note = 'evenly spaced parts of the transcript';\n  }\n  const prompt = [\n    'You write research notes about one YouTube video. Use only the transcript below (' + note + ').',\n    'Each [m:ss] mark is the time in the video where the following words are spoken.',\n    'Reply with JSON only, no code fence, with these keys:',\n    '\"summary\": exactly 5 short lines separated by \\\\n, plain facts from the video;',\n    '\"key_points\": 3 to 6 objects {\"time\": \"m:ss\", \"point\": \"...\"}, each time copied from a mark at or before where the point is made;',\n    '\"topics\": 3 to 8 short lowercase tags;',\n    '\"worth_watching\": one sentence on who should watch it and why, or why it can be skipped.',\n    '',\n    'Title: ' + row.Title,\n    'Channel: ' + row.Channel,\n    row.Chapters ? 'Chapters:\\n' + row.Chapters : 'Chapters: none',\n    '',\n    'Transcript:',\n    text,\n  ].join('\\n');\n  return { json: { ...row, prompt } };\n});"
+      },
+      "id": "ff02b2e8-15eb-475d-a17a-7cbf238137e3",
+      "name": "Prepare transcript for the model",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}"
+      },
+      "id": "dcb28429-ca6c-4f77-aefb-88af30a90ef5",
+      "name": "Summarise each video",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2200,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "39127c59-b8c6-4692-ab0b-937f871e80b6",
+      "name": "Chat model (swap for Anthropic or Gemini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Reads the model's JSON and fills the four AI columns. Key points become links that open the video at that time.\nconst rows = $('Prepare transcript for the model').all();\nconst seconds = (t) => String(t || '0').split(':').reduce((a, b) => a * 60 + (Number(b) || 0), 0);\nreturn $input.all().map((item, i) => {\n  const { prompt, ...row } = rows[i].json;\n  const raw = String(item.json.text || item.json.output || '');\n  let ai = null;\n  try { ai = JSON.parse(raw.replace(/^[^{]*/, '').replace(/[^}]*$/, '')); } catch (e) { ai = null; }\n  if (!ai) return { json: { ...row, Summary: raw.slice(0, 2000), 'Worth watching': '(the model did not return JSON)' } };\n  const base = 'https://youtu.be/' + row['Video ID'] + '?t=';\n  return { json: { ...row,\n    Summary: Array.isArray(ai.summary) ? ai.summary.join('\\n') : String(ai.summary || ''),\n    'Key points': (ai.key_points || []).map((k) => '[' + k.time + '] ' + k.point + ' ' + base + seconds(k.time)).join('\\n'),\n    Topics: (ai.topics || []).join(', '),\n    'Worth watching': String(ai.worth_watching || ''),\n  } };\n});"
+      },
+      "id": "f71f93ea-ee60-4303-a371-441b4d2cd993",
+      "name": "Add the summary to the row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Videos"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Video ID"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "24e1df48-86af-4ba4-ab79-7a0437f0fd19",
+      "name": "Add or update rows in Videos tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2580,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The run summary lists every video the actor could not read, with one of 9 reason codes.\nconst out = $('Read the run summary').first().json || {};\nconst tryLater = new Set(['live_now', 'upcoming', 'stream_processing', 'other']);\nconst checkedAt = new Date().toISOString();\nreturn (out.failures || []).map((f) => ({ json: {\n  'Video ID': f.video_id,\n  'Video URL': f.video_url || ('https://www.youtube.com/watch?v=' + f.video_id),\n  Title: f.title || '',\n  'Reason code': f.reason_code || 'other',\n  Error: f.error || '',\n  'Try again later': tryLater.has(f.reason_code || 'other'),\n  'Checked at': checkedAt,\n} }));"
+      },
+      "id": "14627ac5-e331-4b1f-ae7f-a0daeb1b6689",
+      "name": "Shape one row per failed video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Failed"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Video ID"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "ba90316c-a8ca-4d54-add2-12d9aa2f71f0",
+      "name": "Add or update rows in Failed tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2020,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One Run log row per run: counts from the run summary and the exact charge from Apify's run record.\nconst run = $('Keep the finished run').first().json;\nconst out = $('Read the run summary').first().json || {};\nconst events = (run.pricingInfo && run.pricingInfo.pricingPerEvent && run.pricingInfo.pricingPerEvent.actorChargeEvents) || {};\nlet charged = 0;\nfor (const [name, count] of Object.entries(run.chargedEventCounts || {})) {\n  const e = events[name] || {};\n  const tiers = e.eventTieredPricingUsd || {};\n  const price = e.eventPriceUsd ?? (tiers.FREE && tiers.FREE.tieredEventPriceUsd) ?? 0;\n  charged += count * price;\n}\nconst notes = [];\nif (out.stopped_early) notes.push('stopped at the spend cap or item limit');\nif ((out.not_processed || []).length) notes.push((out.not_processed || []).length + ' not processed (next run tries again)');\nif ((out.warnings || []).length) notes.push(out.warnings.join('; '));\nif (!out.requested && out.requested !== 0) notes.push('no run summary found');\nreturn [{ json: {\n  'Run at': new Date().toISOString(),\n  Status: run.status,\n  Sources: $('Build the actor input').first().json.sources,\n  Requested: out.requested ?? '',\n  Delivered: out.delivered ?? '',\n  Failed: out.failed ?? '',\n  'Charged (USD)': Math.round(charged * 100000) / 100000,\n  'Apify run': 'https://console.apify.com/view/runs/' + run.id,\n  Notes: notes.join('. '),\n} }];"
+      },
+      "id": "fa72d9c2-1873-4f23-a7d9-44d760972864",
+      "name": "Shape the run log row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The Apify call failed after 3 tries (bad token, no credit, Apify down). Log it and say so in the digest.\nconst err = $input.first().json.error || $input.first().json;\nconst message = typeof err === 'string' ? err : (err.message || JSON.stringify(err).slice(0, 500));\nconst inner = String(message).match(/message[^:]*:\\s*[\\\\\"]*([^\"\\\\]+)/);\nconst short = (inner ? String(message).slice(0, 3) + ' ' + inner[1] : String(message)).slice(0, 300);\nreturn [{ json: {\n  'Run at': new Date().toISOString(),\n  Status: 'NOT STARTED',\n  Sources: $('Build the actor input').first().json.sources,\n  Requested: '', Delivered: 0, Failed: '', 'Charged (USD)': 0, 'Apify run': '',\n  Notes: 'Apify call failed: ' + short,\n} }];"
+      },
+      "id": "9fe3c4b5-1bbf-4fd5-a186-8f9fcf08ed47",
+      "name": "Describe what went wrong",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Run log"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "294c9dd1-6320-4c11-afda-46f2dbdc55e3",
+      "name": "Add a row to Run log tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2020,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One message for the whole run. Nothing is sent when there is nothing new.\nconst s = $('Settings').first().json;\nif (s.sendDigest === false) return [];\nconst items = $input.all().map((i) => i.json);\nconst day = new Date().toISOString().slice(0, 10);\nif (items.length && items[0].Status === 'NOT STARTED') {\n  return [{ json: { subject: 'YouTube research desk: run failed ' + day, text: items[0].Notes + '\\nCheck the Apify credential and your Apify credit, then run the workflow again.' } }];\n}\nconst videos = items.filter((v) => v['Video ID']);\nif (!videos.length) return [];\nconst lines = ['New videos today: ' + videos.length, ''];\nfor (const v of videos) {\n  lines.push(v.Title + ' (' + v.Channel + ', ' + v['Length (min)'] + ' min)');\n  lines.push(v['Video URL']);\n  if (v.Summary) lines.push(v.Summary);\n  if (v['Worth watching']) lines.push('Worth watching: ' + v['Worth watching']);\n  lines.push('');\n}\nconst failed = Number(($('Read the run summary').first().json || {}).failed) || 0;\nif (failed) lines.push(failed + ' video(s) could not be read: see the Failed tab.');\nreturn [{ json: { subject: 'YouTube research desk: ' + videos.length + ' new video(s) ' + day, text: lines.join('\\n') } }];"
+      },
+      "id": "e8d529fe-cf14-4a25-a972-00f4a9bceab9",
+      "name": "Write the digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2920,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Settings').first().json.digestEmail }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "ad29aedf-543d-4c32-a54c-6986f256f41e",
+      "name": "Send the digest by Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3160,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#youtube-research"
+        },
+        "text": "={{ $json.subject }}\n\n{{ $json.text }}",
+        "otherOptions": {}
+      },
+      "id": "e5c2d7b3-41d5-4984-a9d3-b78243d5ffb8",
+      "name": "Send the digest to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        3160,
+        0
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ ($json.subject + \"\\n\\n\" + $json.text).slice(0, 1990) }}",
+        "options": {}
+      },
+      "id": "09cc63c9-fde6-48a1-afe0-dda1deff24ba",
+      "name": "Send the digest to Discord",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        3160,
+        200
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('Settings').first().json.sheetUrl }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Videos"
+        },
+        "options": {}
+      },
+      "id": "3e8ee5c6-a241-4189-a184-f5988ae24d52",
+      "name": "Read the Videos tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        200,
+        1060
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Plain keyword search over the transcripts in the sheet: scores each one-minute part by how many different\n// question words it holds, keeps the best 6 parts, and builds a link that opens the video at that minute.\nconst question = String($('Chat: ask your channels').first().json.chatInput || '');\nconst stop = new Set('the and for with that this what which who how why when where does did are was were have has from into about your you they them their there then than but not can could would should will just also its it is in on of to a an or be by as at do i me my we our'.split(' '));\nconst stem = (w) => (w.length > 4 ? w.replace(/(ing|ed|es|s)$/, \"\") : w);\nconst words = [...new Set((question.toLowerCase().match(/[\\p{L}\\p{N}']+/gu) || []).filter((w) => w.length > 2 && !stop.has(w)).map(stem))];\nconst seconds = (t) => t.split(':').reduce((a, b) => a * 60 + Number(b), 0);\nconst parts = [];\nfor (const { json: v } of $input.all()) {\n  if (!v['Video ID'] || !v.Transcript) continue;\n  const lines = String(v.Transcript).split('\\n').filter((l) => l.trim());\n  lines.forEach((line, i) => {\n    const m = line.match(/^\\[(\\d+(?::\\d+){1,2})\\]\\s*(.*)$/);\n    const text = m ? m[2] : line;\n    // Whole words with a light stem. Score: how many different question words the part holds (counts most),\n    // then up to 3 hits per word, so a word that fills the whole video cannot outrank the part that answers.\n    const counts = {};\n    for (const t of text.toLowerCase().match(/[\\p{L}\\p{N}']+/gu) || []) { const k = stem(t); counts[k] = (counts[k] || 0) + 1; }\n    let distinct = 0, hits = 0;\n    for (const w of words) if (counts[w]) { distinct++; hits += Math.min(counts[w], 3); }\n    if (!distinct) return;\n    const score = distinct * 10 + hits + (titleHit(v, words) ? 0.5 : 0);\n    // Send this minute and the next one, so an answer that runs over the minute mark is not cut off.\n    const next = lines[i + 1] ? String(lines[i + 1]).replace(/^\\[[\\d:]+\\]\\s*/, '') : '';\n    parts.push({ score, title: v.Title, channel: v.Channel, at: m ? m[1] : '0:00', link: 'https://youtu.be/' + v['Video ID'] + '?t=' + (m ? seconds(m[1]) : 0), text: (text + ' ' + next).slice(0, 2400) });\n  });\n}\nfunction titleHit(v, ws) { const t = String(v.Title || '').toLowerCase(); return ws.some((w) => t.includes(w)); }\nparts.sort((a, b) => b.score - a.score);\nconst best = parts.slice(0, 6);\nconst context = best.length\n  ? best.map((p, i) => '(' + (i + 1) + ') \"' + p.title + '\" by ' + p.channel + ' at ' + p.at + ' ' + p.link + '\\n' + p.text).join('\\n\\n')\n  : 'No passage in the collected transcripts matches the question.';\nreturn [{ json: { question, context, found: best.length } }];"
+      },
+      "id": "8cc663a5-dd0f-4e9a-a921-d737b3171f9f",
+      "name": "Find the best passages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Answer the question using only the transcript passages below. They come from YouTube videos the user collected.\nCite every fact with the video title and its link, written as: \"Title\" at m:ss (link).\nIf the passages do not answer the question, say that the collected videos do not cover it and suggest a better search word. Keep it under 200 words.\n\nQuestion: {{ $json.question }}\n\nPassages:\n{{ $json.context }}"
+      },
+      "id": "b650964f-1b7b-4df6-a326-a81782784d28",
+      "name": "Answer with links to the moment",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        640,
+        1060
+      ]
+    }
+  ],
+  "connections": {
+    "Every day at 07:00": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run now": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form: add a channel, playlist or video": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat: ask your channels": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "What started this run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "What started this run?": {
+      "main": [
+        [
+          {
+            "node": "Check and label the new link",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read the Videos tab",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read the Sources tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check and label the new link": {
+      "main": [
+        [
+          {
+            "node": "Save it to the Sources tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read the Sources tab": {
+      "main": [
+        [
+          {
+            "node": "Build the actor input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build the actor input": {
+      "main": [
+        [
+          {
+            "node": "Start a transcript run on Apify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start a transcript run on Apify": {
+      "main": [
+        [
+          {
+            "node": "Has the run finished?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Describe what went wrong",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has the run finished?": {
+      "main": [
+        [
+          {
+            "node": "Keep the finished run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 30 seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 30 seconds": {
+      "main": [
+        [
+          {
+            "node": "Check the run again",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the run again": {
+      "main": [
+        [
+          {
+            "node": "Has the run finished?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep the finished run": {
+      "main": [
+        [
+          {
+            "node": "Read the run summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read the run summary": {
+      "main": [
+        [
+          {
+            "node": "Download the transcripts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download the transcripts": {
+      "main": [
+        [
+          {
+            "node": "Shape one row per video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Shape one row per failed video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Shape the run log row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape one row per video": {
+      "main": [
+        [
+          {
+            "node": "AI summaries switched on?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI summaries switched on?": {
+      "main": [
+        [
+          {
+            "node": "Prepare transcript for the model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add or update rows in Videos tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare transcript for the model": {
+      "main": [
+        [
+          {
+            "node": "Summarise each video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarise each video": {
+      "main": [
+        [
+          {
+            "node": "Add the summary to the row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add the summary to the row": {
+      "main": [
+        [
+          {
+            "node": "Add or update rows in Videos tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add or update rows in Videos tab": {
+      "main": [
+        [
+          {
+            "node": "Write the digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape one row per failed video": {
+      "main": [
+        [
+          {
+            "node": "Add or update rows in Failed tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape the run log row": {
+      "main": [
+        [
+          {
+            "node": "Add a row to Run log tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describe what went wrong": {
+      "main": [
+        [
+          {
+            "node": "Add a row to Run log tab",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Write the digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write the digest": {
+      "main": [
+        [
+          {
+            "node": "Send the digest by Gmail",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send the digest to Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send the digest to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read the Videos tab": {
+      "main": [
+        [
+          {
+            "node": "Find the best passages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find the best passages": {
+      "main": [
+        [
+          {
+            "node": "Answer with links to the moment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat model (swap for Anthropic or Gemini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarise each video",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Answer with links to the moment",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
