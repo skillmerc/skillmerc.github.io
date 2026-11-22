@@ -112,6 +112,7 @@ const HUBS = {
     promo: ['11 scrapers and monitors on Apify. Pay only for the rows you get.', 'Browse on Apify', 'https://apify.com/skillmerc'] },
   'form-d': { cat: 'data', name: 'Form D filings' },
   'wayback-machine': { cat: 'data', name: 'Wayback Machine Scraper', link: '/apify/internet-archive-search-scraper/' },
+  'youtube-transcripts': { cat: 'data', name: 'YouTube Transcript Scraper', link: '/apify/youtube-transcript-scraper-pro/', promo: ['Transcripts of public YouTube videos, channels and playlists as text with timestamps. USD 1 per 1,000 on Apify\'s free plan; failed videos are free.', 'Open on Apify', 'https://apify.com/skillmerc/youtube-transcript-scraper-pro'] },
   guides: { cat: 'more', name: 'Guides' },
   'decision-log-confluence': { cat: 'more', name: 'Decision Keeper for Confluence', doc: 'min', stamp: 'On record', hero: true,
     tag: 'Every decision, <em>on the record.</em>',
@@ -141,7 +142,7 @@ const CARDS = [
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
-const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine']];
+const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
 // The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
@@ -495,7 +496,7 @@ export function guidesBody() {
 
 // Opt-in email list block (plans/email-list/PLAN.md). A plain HTML form, no script. The wording is consent version v2 (with the tick box) in
 // engine/services/hq/list.mjs (CONSENT): change both together and add a new version, never edit v2.
-const SU_NAMES = { 'list-table': 'List &amp; Table Scraper', threadkeep: 'Threadkeep', shipping: 'Shipping for WooCommerce', all: 'any SKILLMERC tool' };
+const SU_NAMES = { 'list-table': 'List &amp; Table Scraper', threadkeep: 'Threadkeep', shipping: 'Shipping for WooCommerce', changekeep: 'Changekeep', all: 'any SKILLMERC tool' };
 export const signupBlock = (product, page) => { const n = SU_NAMES[product], id = 'su-' + product; return `<form class="su" method="post" action="https://api.skillmerc.com/api/subscribe" aria-labelledby="${id}-h"><p class="su-h" id="${id}-h"><b>Get an email when we ship something new for ${n}.</b> No spam; unsubscribe any time.</p><div class="su-row"><label for="${id}-e">Email address</label><input id="${id}-e" name="email" type="email" required maxlength="254" autocomplete="email" aria-describedby="${id}-c"><button type="submit">Email me updates</button></div><p class="su-ok"><input id="${id}-a" name="agree" type="checkbox" value="yes" required><label for="${id}-a">I agree that SKILLMERC (Pty) Ltd may email me about new releases and deals for ${n}.</label></p><input type="hidden" name="product" value="${product}"><input type="hidden" name="consent" value="v2"><input type="hidden" name="page" value="${page}"><div class="su-hp" aria-hidden="true"><label for="${id}-w">Leave this empty</label><input id="${id}-w" name="website" type="text" tabindex="-1" autocomplete="off"></div><p class="su-c" id="${id}-c">We send a link to confirm first. <a href="/privacy/email-updates/">How we handle your email</a>.</p></form>`; };
 
 function homePage(rel, title, desc, body) {
