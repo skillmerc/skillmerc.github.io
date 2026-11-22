@@ -3,7 +3,8 @@
 // Look: the HQ dashboard's world at two volumes (plans/site-brand-v11-2026-11-21.md). Loud on the story pages
 // (home, /operations/, /about/: dusk scenes, the operations console). No company figures anywhere. Calm on
 // product, guide, privacy and support pages (same palette and type, no characters, no scenes behind text).
-// The brand: a real company, run by AI agents, owned by a human. Products only, never consulting.
+// The brand: a real company that makes small tools. Products only, never consulting. Credit rule (.merc/rules.yaml credit_and_ai,
+// CEO 22 Nov 2026): public copy says "Made by SKILLMERC" and does not advertise AI; never claim the work is done by people or without AI.
 // Page copy for content pages lives in gen.mjs and the help-*/ folders. This file owns the shell, the homepage,
 // the product headers on hub pages and the /guides/ index. Node builtins only (the Action copies this one file).
 import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
@@ -332,8 +333,8 @@ const LAB = [
   ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
   ['/ship-rules/', 'Ship Rules', 'Proof before a Jira work item ships.', 'In review', 'Atlassian'],
 ];
-// How the company is organised (theme v11 "operations", 21 Nov 2026). Kyle: say it is run by AI agents, keep the focus on
-// the operational setup, not on the owner or on agents as characters. Eight departments, each staffed by AI agents.
+// How the company is organised (theme v11 "operations", 21 Nov 2026). Keep the focus on the operational setup, not on the
+// owner. Credit rule (22 Nov 2026): no "AI agents" in public copy; eight departments, one task queue, shared controls.
 // desks = the Board roles behind each department (board/web/play.js WORKERS). Internal mapping only: no counts are published.
 // Each department card shows its agent: static/assets/v11/a-<k>.webp (480) and a-<k>-s.webp (240). The same agent at every desk.
 export const DEPTS = [
@@ -350,18 +351,18 @@ export const CONTROLS = [
   ['Spend limits', 'Fixed monthly budgets. Larger spending requires sign-off.'],
   ['Review before release', 'Releases, store submissions and public claims require an independent check.'],
   ['Targets with dates', 'Every new product needs a written target and a date before work starts. Miss it, and the product is frozen or closed.'],
-  ['Full audit trail', 'Agent runs, public actions and transactions are logged on the company ledger.'],
-  ['Stop switch', 'One switch stops all new agent runs and task claims.'],
+  ['Full audit trail', 'Work, public actions and transactions are logged on the company ledger.'],
+  ['Stop switch', 'One switch stops all new work and task claims.'],
 ];
 export const ARROW_R = ARROW;
 // NO COMPANY FIGURES ON THE PUBLIC SITE (Kyle, 21 Nov 2026: "we shouldnt show these numbers on the live site ... not sharing
 // confidential info"). Never publish revenue, costs, user counts, customer counts, agent run or session counts, targets or budgets.
 // The strip and the console below show only what the price list already says and how the company is organised.
-export const scoreStrip = ({ nLive = 0, nFree = 0, nReview = 0 } = {}) => { const cells = [['Tools live', String(nLive), 'In their stores today'], ['Free to start', String(nFree), 'No card needed'], ['In store review', String(nReview), 'Coming next'], ['Departments', String(DEPTS.length), 'Staffed by AI agents']];
+export const scoreStrip = ({ nLive = 0, nFree = 0, nReview = 0 } = {}) => { const cells = [['Tools live', String(nLive), 'In their stores today'], ['Free to start', String(nFree), 'No card needed'], ['In store review', String(nReview), 'Coming next'], ['Departments', String(DEPTS.length), 'One task queue']];
   return `<div class="score score-4"><div class="wrap"><dl class="score-grid">${cells.map(([l, v, s]) => `<div><dt>${l}</dt><dd>${v}</dd><dd class="s">${esc(s)}</dd></div>`).join('')}</dl></div></div>`; };
 // The operations panel: the eight departments and what each one covers, drawn as a console. No counts.
 const OPS_TAG = { direction: 'Priorities', research: 'Demand', engineering: 'Build and maintain', quality: 'Review', support: 'Every day', growth: 'Listings', finance: 'Ledger', oversight: 'Audit' };
-export const opsPanel = ({ id = 'ops', cls = '' } = {}) => `<figure class="ops ${cls}" aria-labelledby="${id}-h"><figcaption class="ops-top"><span id="${id}-h">Operations</span><span class="ops-live"><i></i>AI agents</span></figcaption><ol class="ops-rows ops-plain">${DEPTS.map(d => `<li><i class="ops-dot" aria-hidden="true"></i><span class="ops-n">${esc(d.name)}</span><span class="ops-t">${esc(OPS_TAG[d.k] || '')}</span></li>`).join('')}</ol><p class="ops-ft">Eight departments, one task queue</p></figure>`;
+export const opsPanel = ({ id = 'ops', cls = '' } = {}) => `<figure class="ops ${cls}" aria-labelledby="${id}-h"><figcaption class="ops-top"><span id="${id}-h">Operations</span><span class="ops-live"><i></i>Running</span></figcaption><ol class="ops-rows ops-plain">${DEPTS.map(d => `<li><i class="ops-dot" aria-hidden="true"></i><span class="ops-n">${esc(d.name)}</span><span class="ops-t">${esc(OPS_TAG[d.k] || '')}</span></li>`).join('')}</ol><p class="ops-ft">Eight departments, one task queue</p></figure>`;
 
 export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}) {
   const day = fdDays.find(d => d.rows && d.rows.some(r => !r.pooled && r.sold));
@@ -428,8 +429,8 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   return `<section class="tscreen" aria-labelledby="hero-h"><div class="hero-bg" aria-hidden="true"></div><div class="wrap hero-grid">
 <div class="hero-tx">
 <p class="eyebrow">SKILLMERC (Pty) Ltd &middot; South Africa</p>
-<h1 id="hero-h"><span class="ln">Software,</span> <span class="ln hot">operated by AI agents.</span></h1>
-<p class="hero-sub">SKILLMERC builds and runs small tools for online stores, bookkeeping and data. Product, engineering, quality, support and finance are run by AI agents, under written controls.</p>
+<h1 id="hero-h"><span class="ln">Small software,</span> <span class="ln hot">made by SKILLMERC.</span></h1>
+<p class="hero-sub">Small tools for online stores, bookkeeping and data. Each one does one boring job and is offered through a store you already use.</p>
 <div class="row-ctas">${btn([`See the ${nLive} tools`, '#tools', 'dn'], '')}${btn(['How we operate', '/operations/', ''], 'btn-line')}</div>
 </div>
 ${opsPanel({ id: 'ops-hero', cls: 'ops-hero' })}
@@ -458,13 +459,13 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 
 <section class="sec depts-sec" id="operations"><div class="wrap">
 <div class="sh"><h2 class="hx">How the company is organised.</h2></div>
-<p class="lede">Eight departments, each staffed by AI agents, working from one task queue.</p>
+<p class="lede">Eight departments, working from one task queue.</p>
 <ol class="lineup">${DEPTS.map((d, i) => `<li><a href="/operations/#${d.k}"><span class="d-pic"><img src="/assets/v11/a-${d.k}.webp" alt="" width="480" height="480" loading="lazy" decoding="async"></span><b>${esc(d.name)}</b></a></li>`).join('')}</ol>
 </div></section>
 
 <section class="sec rules-sec" id="controls"><div class="wrap">
 <div class="sh"><h2 class="hx">Controls.</h2><a class="tlink" href="/operations/">How we operate ${ARROW}</a></div>
-<p class="lede">AI agents do the work. Controls decide what they are allowed to do.</p>
+<p class="lede">Written rules decide what may ship, what may be spent and what may be said.</p>
 <ol class="rules">${CONTROLS.map(([a, p], i) => `<li><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(a)}</b><p>${esc(p)}</p></li>`).join('')}</ol>
 </div></section>
 
