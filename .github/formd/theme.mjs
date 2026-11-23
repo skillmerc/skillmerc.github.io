@@ -104,12 +104,21 @@ const HUBS = {
     say: 'For people who build with Claude Code, Cursor or Codex, with or without tests. Runs on your computer.',
     facts: ['Runs on your computer', 'Free: 30 open tasks', 'Coming soon'], cta: [['Install', '#install', 'dn'], ['How it works', '#how', 'dn']],
     promo: ['Your AI coding tool says done. Sealboard runs the check on your computer first.', 'How it works', '/sealboard/'] },
+  // Rowrecipe: its pages are built only when switches.json rowrecipe is true (gen.mjs). This entry changes no other page.
+  // img: a real screenshot in the hero instead of the orb (only this hub uses it).
+  rowrecipe: { cat: 'more', name: 'Rowrecipe', doc: 'print', stamp: 'Not yet', hero: true,
+    tag: 'Combine monthly files. <em>Repeat it next month.</em>',
+    tale: 'Rowrecipe cleans messy tables and combines many files into one sheet, in your browser. Next month, run the recipe on the new files: the same sheet, and a list of what changed.',
+    say: 'For people who copy data into spreadsheets every month: branch reports, supplier price lists, bank and order exports.',
+    facts: ['Runs in your browser', 'Excel and CSV', 'Coming soon'], cta: [['Open Rowrecipe', '#open', 'dn'], ['How it works', '#jobs', 'dn']],
+    img: { src: '/rowrecipe/img/month-two.png', w: 1232, h: 568, alt: 'Rowrecipe, month two of the sample recipe Monthly branch report: Rows: 13. Columns: 7. Files: 3. A card, What is different from last month: branch-pretoria-2026-11.csv has a new column "Discount". It is left out, so the sheet keeps last month\'s columns. Buttons Add column, Update recipe and Save as a new recipe.', cap: 'Month two of the sample recipe: one new column, named before you save.' },
+    promo: ['Combine your monthly files into one clean sheet. Next month, run the recipe again.', 'How it works', '/rowrecipe/'] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
     tag: 'DeepSeek chats, <em>saved properly.</em>',
     tale: 'A long DeepSeek chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep saves the whole thing to a file on your own computer.',
     say: 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Long chats are joined in order, and everything stays in your browser.',
-    facts: ['Free on Firefox', 'Chrome coming soon', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
+    facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
     tale: 'The risk register is a spreadsheet. It was last opened at kickoff. Riskwell keeps it inside the Jira project, next to the work, and emails the risk owner when a review is due.',
@@ -149,7 +158,7 @@ const CARDS = [
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
-const GUIDE_GROUPS = [['sealboard', 'Sealboard for AI coding tools'], ['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
+const GUIDE_GROUPS = [['sealboard', 'Sealboard for AI coding tools'], ['rowrecipe', 'Rowrecipe: clean and combine tables'], ['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
 // The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
@@ -165,7 +174,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
-    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox', '<b>Free.</b> Pro from USD 2.99 a month', 'live', 'Live', '/threadkeep/']]],
+    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox and Chrome', '<b>Free.</b> Pro from USD 2.99 a month', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
     ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
     ['502', 'See which companies raised money this week', 'SEC Form D filings, updated daily', '<b>Free</b>', 'live', 'Live', '/form-d/']]],
@@ -285,7 +294,7 @@ function docPage(rel, title, desc, body) {
   const meta = isGuide ? [`${Math.max(2, Math.round(words / 220))} min read`, hub.name] : segs[0] === 'apify' ? ['Runs on Apify', 'Pay per result'] : [];
   let band;
   if (isHub) {
-    band = `<header class="band hub"><canvas id="ribbon" aria-hidden="true"></canvas><div class="wrap">${crumbHtml}<div class="hub-grid"><div class="ex-tx"><h1>${h1}</h1><p class="display">${hub.tag}</p>${hub.tale ? `<p class="tale">${esc(hub.tale)}</p>` : ''}<p class="say">${esc(hub.say)}</p>${facts(hub.facts)}${hub.cta.length ? `<div class="row-ctas">${hub.cta.map((c, i) => btn(c, i ? 'btn-line' : '')).join('')}</div>` : ''}</div>${orbFig(hub.doc, hub.docNo ? { no: hub.docNo } : undefined)}</div></div></header>`;
+    band = `<header class="band hub"><canvas id="ribbon" aria-hidden="true"></canvas><div class="wrap">${crumbHtml}<div class="hub-grid"><div class="ex-tx"><h1>${h1}</h1><p class="display">${hub.tag}</p>${hub.tale ? `<p class="tale">${esc(hub.tale)}</p>` : ''}<p class="say">${esc(hub.say)}</p>${facts(hub.facts)}${hub.cta.length ? `<div class="row-ctas">${hub.cta.map((c, i) => btn(c, i ? 'btn-line' : '')).join('')}</div>` : ''}</div>${hub.img ? `<figure class="ex-shot" style="margin:0;align-self:center;min-width:0"><img src="${hub.img.src}" alt="${esc(hub.img.alt)}" width="${hub.img.w}" height="${hub.img.h}" decoding="async" style="display:block;width:100%;height:auto;border-radius:12px;border:1px solid rgba(255,255,255,.16)"><figcaption style="font-size:.85em;opacity:.75;margin-top:8px">${esc(hub.img.cap)}</figcaption></figure>` : orbFig(hub.doc, hub.docNo ? { no: hub.docNo } : undefined)}</div></div></header>`;
   } else {
     band = `<header class="band"><div class="wrap">${crumbHtml}<h1>${h1}</h1>${meta.length ? `<div class="meta">${meta.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</div></header>`;
   }
@@ -332,7 +341,7 @@ const PICKS = {
   shsage: ['Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
   lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run, in Firefox and Chrome.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
   data: ['Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
-  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Free on Firefox.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
+  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Free on Firefox and Chrome.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
 };
 // In the in-tray: built and tested, waiting on a store's review. Update as reviews land.
 const LAB = [
@@ -445,10 +454,10 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']],
   also: 'Lifetime deal: Pro is USD 19 or less, once, on AppSumo, under AppSumo\'s own 60-day refund policy. <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
-    { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox', h2: 'DeepSeek chats, saved properly.',
+    { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox &middot; Chrome', h2: 'DeepSeek chats, saved properly.',
   tale: HUBS.threadkeep.tale,
   say: HUBS.threadkeep.say,
-  fx: ['Free', '*Pro from USD 2.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
+  fx: ['Free', '*Pro from USD 2.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', ''], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
     { id: 'data', n: '06', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
@@ -568,7 +577,7 @@ export function reshell(rel, html) {
 
 /** Search index for the Cmd+K palette: every tool, then every page. */
 export function searchIndex() {
-  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox chrome'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
+  const tools = [['Shipping for WooCommerce', '/sa-shipping-woocommerce/', 'Tool', 'courier guy fastway pudo paxi locker rates label'], ['PayFast for WooCommerce', '/payfast-woocommerce/', 'Tool', 'payment gateway card eft snapscan mobicred itn'], ['WooCommerce to Sage Accounting', '/sage-accounting-woocommerce/', 'Tool', 'sage invoices vat bookkeeping'], ['WooCommerce to FreeAgent', '/freeagent-woocommerce/', 'Tool', 'freeagent invoices vat bookkeeping'], ['Ledgerline: Shopify to FreeAgent', '/shopify-freeagent/', 'Tool', 'shopify freeagent invoices vat'], ['List & Table Scraper', '/list-table-scraper/', 'Tool', 'scraper excel csv json table list firefox chrome'], ['Threadkeep', '/threadkeep/', 'Tool', 'deepseek chat export pdf markdown word firefox chrome'], ['Riskwell for Jira', '/riskwell/', 'Tool', 'risk register matrix heat map jira'], ['Decision Keeper for Confluence', '/decision-log-confluence/', 'Tool', 'decision log record register confluence'], ['Ship Rules for Jira', '/ship-rules/', 'Tool', 'ship rules evidence release jira'], ['Data tools on Apify', '/#data', 'Tool', 'scraper companies house sec edgar form d youtube transcripts threads wayback'], ['Form D filings this week', '/form-d/', 'Data'], ['All guides', '/guides/', 'Guides']];
   // story pages are rendered by gen.mjs before the homepage, so they are in the registry by now
   const seen = new Set(tools.map(x => x[1]));
   const pages = registry.filter(r => !(r.segs[0] === 'form-d' && r.segs.length > 1) && !seen.has(r.url)).map(r => {
