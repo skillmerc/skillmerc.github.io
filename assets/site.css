@@ -1376,3 +1376,27 @@ body{background:linear-gradient(180deg,#101114 0,var(--bg) 420px) var(--bg)}
 /* the struck list sits below the hero now: no entrance animation, so the words are always there (and the browser test never races it) */
 #tools .struck del,#tools .struck del::after,#tools .struck ins{animation:none}
 /* ================= end v11 ================= */
+/* department marks (task 1162, 23 Nov 2026): abstract line marks drawn in code, one per department, no people.
+   A dark tile, a faint dot grid, a low amber glow; grey lines for context, white for the subject, amber for the result. */
+.d-art{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:radial-gradient(62% 54% at 50% 44%,rgba(255,176,46,.13),transparent 72%),radial-gradient(circle at 1px 1px,rgba(255,255,255,.075) 1px,transparent 1.5px) 0 0/12px 12px,linear-gradient(180deg,#17191e 0,#0d0e11 100%)}
+.d-art svg{width:84%;height:84%;overflow:visible;filter:drop-shadow(0 0 6px rgba(255,176,46,.22));transition:transform .6s var(--ease)}
+.d-art svg *{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.d-art .k0{stroke:rgba(255,255,255,.2);stroke-width:1px}
+.d-art .k1{stroke:rgba(244,242,236,.7);stroke-width:1.4px}
+.d-art .k2{stroke:var(--a2);stroke-width:2.2px}
+.d-art .f1{fill:var(--fg);stroke:none}
+.d-art .f2{fill:var(--a2);stroke:none}
+.lineup .d-art svg{width:78%;height:78%;margin-top:-10%}
+.lineup a:hover .d-art svg,.lineup a:focus-visible .d-art svg{transform:scale(1.06)}
+.d-av.d-art{display:flex;width:52px;height:52px;background-size:auto,8px 8px,auto;object-fit:initial}
+.d-av.d-art svg{width:88%;height:88%;filter:none}
+.d-av.d-art .k0{stroke:rgba(255,255,255,.26)}
+.d-av.d-art .k2{stroke-width:1.8px}
+@media (prefers-reduced-motion:reduce){.d-art svg{transition:none}}
+/* department labels never cut off (task 1166, 23 Nov 2026): "Customer support" overran its card at 1440 wide under nowrap.
+   Every label may wrap to a second line at any width; the label box keeps two lines of room (plus its bottom padding: boxes are border-box) and sits on the card's bottom edge,
+   so one-line and two-line labels line up and every card stays the same height. A word too long for its card breaks, never clips. */
+.lineup b{white-space:normal;min-height:calc(2.2em + 11px);display:flex;align-items:flex-end;justify-content:center;letter-spacing:.04em;overflow-wrap:anywhere;min-width:0}
+@media (max-width:680px){.lineup b{letter-spacing:.03em;min-height:calc(2.2em + 8px)}}
+.dept-list dt{min-width:0;overflow-wrap:anywhere}
+.dept-list dt i{flex:none}
