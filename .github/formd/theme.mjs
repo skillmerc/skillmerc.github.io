@@ -97,6 +97,13 @@ const HUBS = {
     cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
     promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')],
     alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
+  // Sealboard: its pages are built only when switches.json sealboard is true (gen.mjs). This entry changes no other page.
+  sealboard: { cat: 'more', name: 'Sealboard', doc: 'tag', stamp: 'Not yet', hero: true,
+    tag: 'Your AI coding tool says done. <em>Sealboard checks first.</em>',
+    tale: 'Your AI coding tool says the task is done. Sometimes it is. Sealboard runs the check on your own computer before the task counts, and holds the work you flagged until you have looked.',
+    say: 'For people who build with Claude Code, Cursor or Codex, with or without tests. Runs on your computer.',
+    facts: ['Runs on your computer', 'Free: 30 open tasks', 'Coming soon'], cta: [['Install', '#install', 'dn'], ['How it works', '#how', 'dn']],
+    promo: ['Your AI coding tool says done. Sealboard runs the check on your computer first.', 'How it works', '/sealboard/'] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
     tag: 'DeepSeek chats, <em>saved properly.</em>',
@@ -142,7 +149,7 @@ const CARDS = [
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
-const GUIDE_GROUPS = [['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
+const GUIDE_GROUPS = [['sealboard', 'Sealboard for AI coding tools'], ['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'DeepSeek chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
 // The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
@@ -248,7 +255,7 @@ const fold = (html) => { const nodes = topNodes(html); if (!nodes) return html; 
   return out.map(x => { if (x.raw) return x.raw; const title = strip(x.title); let body = x.body; if (/frequently asked|^faq/i.test(title)) body = qa(body);
     // open at the start: how it works (or the first real section), anything with a form or a video, and everything a buyer or a store reviewer must see without a click: limits, prices, anything about a paid tier ("Pro version", "Pro: ..."), licence, privacy, data, permissions, outside services
     const lead = x === leadSec;
-    const open = lead || /<form[\s>]|<iframe[\s>]|class="yt"|id="(demo|notify)"/.test(body) || /does not do|limits|not affiliated|pricing|free and pro|free tier|^pro version$|^pro:|licen[cs]e|privacy|stays on your device|^data$|permissions|external services?/i.test(title.trim());
+    const open = lead || /<form[\s>]|<iframe[\s>]|class="yt"|id="(demo|notify)"/.test(body) || /does not do|does not stop|^no tests|limits|not affiliated|pricing|free and pro|free tier|^pro version$|^pro:|licen[cs]e|privacy|stays on your device|^data$|permissions|external services?/i.test(title.trim());
     return `<details class="fold"${x.id ? ` id="${x.id}"` : ''}${open ? ' open' : ''}><summary><h2${x.attrs}>${x.title}</h2></summary><div class="fold-b">${body}</div></details>`; }).join(''); };
 
 // ---------- content page shell ----------
@@ -337,7 +344,29 @@ const LAB = [
 // How the company is organised (theme v11 "operations", 21 Nov 2026). Keep the focus on the operational setup, not on the
 // owner. Credit rule (22 Nov 2026): no "AI agents" in public copy; eight departments, one task queue, shared controls.
 // desks = the Board roles behind each department (board/web/play.js WORKERS). Internal mapping only: no counts are published.
-// Each department card shows its agent: static/assets/v11/a-<k>.webp (480) and a-<k>-s.webp (240). The same agent at every desk.
+// Each department card shows an abstract mark drawn in code (23 Nov 2026, task 1162): line, glyph and amber accent on a dark tile,
+// one family, no people and no faces (the earlier pictures showed the same man at every desk and could read as staff).
+// Decorative: aria-hidden, the department name beside it carries the meaning. Styles: ".d-art" in static/assets/site.css.
+const dialTicks = () => Array.from({ length: 24 }, (_, i) => { const a = (i / 24) * Math.PI * 2, r1 = i % 6 ? 36 : 33, r2 = 40, c = Math.cos(a), s = Math.sin(a); return `M${(60 + r1 * c).toFixed(1)} ${(54 + r1 * s).toFixed(1)}L${(60 + r2 * c).toFixed(1)} ${(54 + r2 * s).toFixed(1)}`; }).join('');
+const DEPT_ART = {
+  // a fan of possible routes, one chosen and carried through
+  direction: '<path class="k0" d="M28 88C50 82 72 78 96 76M28 88C40 70 54 58 70 50M28 88C32 68 34 48 32 26"/><path class="k2" d="M28 88C48 68 66 46 90 28"/><path class="k2" d="M77 27L90 28L88 41"/><circle class="f1" cx="28" cy="88" r="3"/><circle class="k1" cx="96" cy="76" r="2"/><circle class="k1" cx="70" cy="50" r="2"/><circle class="k1" cx="32" cy="26" r="2"/>',
+  // rings of a scan, one signal found
+  research: '<circle class="k0" cx="56" cy="56" r="14"/><circle class="k0" cx="56" cy="56" r="28"/><circle class="k0" cx="56" cy="56" r="42"/><path class="k1" d="M56 56L83 30"/><circle class="k1" cx="34" cy="70" r="1.6"/><circle class="k1" cx="40" cy="34" r="1.6"/><circle class="k1" cx="74" cy="76" r="1.6"/><circle class="k1" cx="24" cy="50" r="1.6"/><circle class="k2" cx="83" cy="30" r="7"/><circle class="f2" cx="83" cy="30" r="3"/>',
+  // layers stacked into one build
+  engineering: '<path class="k0" d="M32 72V40M88 72V40M60 86V54"/><path class="k0" d="M60 58L88 72L60 86L32 72Z"/><path class="k1" d="M60 42L88 56L60 70L32 56Z"/><path class="k2" d="M60 26L88 40L60 54L32 40Z"/>',
+  // a checklist, every line passed
+  quality: '<path class="k0" d="M28 26H40V38H28ZM28 46H40V58H28ZM28 66H40V78H28Z"/><path class="k0" d="M50 32H92M50 52H86M50 72H90"/><path class="k1" d="M50 32H76M50 52H70M50 72H80"/><path class="k2" d="M30 32L34 36L42 25M30 52L34 56L42 45M30 72L34 76L42 65"/>',
+  // two messages, one answered
+  support: '<path class="k1" d="M24 30H66Q70 30 70 34V56Q70 60 66 60H40L30 69V60H24Q20 60 20 56V34Q20 30 24 30Z"/><path class="k2" d="M54 48H96Q100 48 100 52V74Q100 78 96 78H90V87L80 78H54Q50 78 50 74V52Q50 48 54 48Z"/><circle class="f2" cx="65" cy="63" r="2.6"/><circle class="f2" cx="75" cy="63" r="2.6"/><circle class="f2" cx="85" cy="63" r="2.6"/>',
+  // steps that rise, with the line they make
+  growth: '<path class="k0" d="M22 88H98"/><path class="k0" d="M30 88V72M44 88V64M58 88V58M72 88V44M86 88V32"/><path class="k2" d="M30 72L44 64L58 58L72 44L86 32"/><path class="k2" d="M76 31L86 32L85 42"/><circle class="f2" cx="30" cy="72" r="2.4"/><circle class="f2" cx="44" cy="64" r="2.4"/><circle class="f2" cx="58" cy="58" r="2.4"/><circle class="f2" cx="72" cy="44" r="2.4"/>',
+  // ledger lines that come to one total
+  finance: '<path class="k0" d="M24 26H96M24 40H96M24 54H96M24 68H96"/><path class="k0" d="M24 26V68M78 26V68"/><path class="k1" d="M30 33H54M30 47H48M30 61H58M84 33H92M82 47H92M86 61H92"/><path class="k2" d="M60 76H96M60 81H96"/><path class="k2" d="M74 90H96"/>',
+  // a clock face with the scheduled runs swept
+  oversight: `<path class="k0" d="${dialTicks()}"/><path class="k2" d="M60 14A40 40 0 1 1 25.4 74"/><path class="k1" d="M60 54L60 32M60 54L72 64"/><circle class="f2" cx="60" cy="14" r="2.6"/><circle class="f2" cx="25.4" cy="74" r="2.6"/><circle class="f1" cx="60" cy="54" r="2.6"/>`,
+};
+export const deptArt = (k, cls = '') => `<span class="d-art ${cls}"><svg viewBox="0 0 120 108" aria-hidden="true" focusable="false">${DEPT_ART[k] || ''}</svg></span>`;
 export const DEPTS = [
   { k: 'direction', name: 'Direction', what: 'Sets priorities and decides what is built, sold, paused or closed.', desks: ['merc'] },
   { k: 'research', name: 'Research', what: 'Finds demand worth serving and brings evidence before anything is built.', desks: ['scout'] },
@@ -461,7 +490,7 @@ ${JOBS.map((j, i) => job({ ...j, on: i === 0 })).join('\n')}
 <section class="sec depts-sec" id="operations"><div class="wrap">
 <div class="sh"><h2 class="hx">How the company is organised.</h2></div>
 <p class="lede">Eight departments, working from one task queue.</p>
-<ol class="lineup">${DEPTS.map((d, i) => `<li><a href="/operations/#${d.k}"><span class="d-pic"><img src="/assets/v11/a-${d.k}.webp" alt="" width="480" height="480" loading="lazy" decoding="async"></span><b>${esc(d.name)}</b></a></li>`).join('')}</ol>
+<ol class="lineup">${DEPTS.map((d, i) => `<li><a href="/operations/#${d.k}"><span class="d-pic">${deptArt(d.k)}</span><b>${esc(d.name)}</b></a></li>`).join('')}</ol>
 </div></section>
 
 <section class="sec rules-sec" id="controls"><div class="wrap">
