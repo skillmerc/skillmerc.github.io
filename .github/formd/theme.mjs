@@ -50,6 +50,10 @@ const CATS = {
 };
 // Hub pages: first URL segment -> product meta. `hero` turns the header into a full product header.
 // doc = which specimen document stands for the product, stamp = what gets stamped on it, tale = the job in a few plain sentences.
+// AppSumo Black Friday line (plans/black-friday-2026-11-24/PACK.md item 1). AppSumo's 10% ends 1 Dec 2026 noon CT = 2026-12-01T18:00:00Z.
+// A build made after the end uses the normal words again; rebuild and push once after the end (publish task).
+const ASBF_END = '2026-12-01T18:00:00Z';
+const asbfOn = () => Date.now() < Date.parse(ASBF_END);
 const HUBS = {
   'sa-shipping-woocommerce': { cat: 'shipping', name: 'Shipping for WooCommerce', doc: 'label', stamp: 'Quoted', hero: true,
     tag: 'Real courier prices. <em>Zero copy&#8209;paste.</em>',
@@ -93,9 +97,9 @@ const HUBS = {
     tag: 'Any web table. <em>Into Excel.</em>',
     tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
     say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
-    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month', { t: 'Lifetime: USD 19 or less, once, on AppSumo', href: 'https://appsumo.com/pl/list-table-scraper-your-website/', rel: 'sponsored', note: '(partner link)' }],
+    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month', { t: asbfOn() ? 'Black Friday: lifetime Pro USD 17.10 on AppSumo until 1 Dec, 18:00 UTC' : 'Lifetime: USD 19 or less, once, on AppSumo', href: 'https://appsumo.com/pl/list-table-scraper-your-website/', rel: 'sponsored', note: '(partner link)' }],
     cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
-    promo: ['Any table or list on the web, into Excel in one click.', 'Add to Firefox, free', AMO('list-table-scraper')],
+    promo: ['Tables and lists on a web page, into Excel, CSV or JSON.', 'Add to Firefox, free', AMO('list-table-scraper')],
     alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
   // Sealboard: its pages are built only when switches.json sealboard is true (gen.mjs). This entry changes no other page.
   sealboard: { cat: 'more', name: 'Sealboard', doc: 'tag', stamp: 'Not yet', hero: true,
@@ -115,9 +119,9 @@ const HUBS = {
     promo: ['Combine your monthly files into one clean sheet. Next month, run the recipe again.', 'How it works', '/rowrecipe/'] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
-    tag: 'DeepSeek chats, <em>saved properly.</em>',
-    tale: 'A long DeepSeek chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep saves the whole thing to a file on your own computer.',
-    say: 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Long chats are joined in order, and everything stays in your browser.',
+    tag: 'AI chats, <em>saved properly.</em>',
+    tale: 'An AI chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep keeps it in a library you can search, or saves it to a file on your own computer.',
+    say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox for ChatGPT, Claude, Gemini&trade; and DeepSeek; the Chrome update is in review. Everything stays in your browser.',
     facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
@@ -152,7 +156,7 @@ const SCHEMA = {
 const CARDS = [
   { k: 'sa-shipping-woocommerce', m: 'Shipping', b: 'Shipping for WooCommerce', p: 'Live courier rates and locker pickers. Pro adds booking and labels.', ft: 'Free / Pro', href: '/sa-shipping-woocommerce/' },
   { k: 'shopify-freeagent', m: 'Bookkeeping', b: 'Ledgerline for Shopify', p: 'Paid Shopify orders into FreeAgent, with VAT. In review at Shopify.', ft: 'In review', href: '/shopify-freeagent/' },
-  { k: 'list-table-scraper', m: 'Web tables', b: 'List & Table Scraper', p: 'Any web table or list into Excel in one click.', ft: 'Free / Pro', href: '/list-table-scraper/' },
+  { k: 'list-table-scraper', m: 'Web tables', b: 'List & Table Scraper', p: 'Web tables and lists into Excel, CSV or JSON.', ft: 'Free / Pro', href: '/list-table-scraper/' },
   { k: 'payfast-woocommerce', m: 'Payments', b: 'PayFast for WooCommerce', p: 'Card and EFT payments that mark orders paid by themselves.', ft: 'Free / Pro', href: '/payfast-woocommerce/' },
   { k: 'sage-accounting-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to Sage', p: 'Paid orders become Sage invoices with the right VAT.', ft: 'Free', href: '/sage-accounting-woocommerce/' },
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
@@ -174,7 +178,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
-    ['402', 'Save a DeepSeek chat as PDF, Markdown or Word', 'Threadkeep for Firefox and Chrome', '<b>Free.</b> Pro from USD 2.99 a month', 'live', 'Live', '/threadkeep/']]],
+    ['402', 'Save, search and export your AI chats', 'Threadkeep for Firefox and Chrome', '<b>Free.</b> Pro from USD 4.99 a month', 'live', 'Live', '/threadkeep/']]],
   ['Public data', `${nData} tools, 1 free list`, [
     ['501', 'Pull company filings, funding rounds and listings into a sheet', `${nData} data tools on Apify`, minPrice != null ? `From USD ${minPrice} per 1,000 rows` : 'Pay per result', 'live', 'Live', '#data'],
     ['502', 'See which companies raised money this week', 'SEC Form D filings, updated daily', '<b>Free</b>', 'live', 'Live', '/form-d/']]],
@@ -341,7 +345,7 @@ const PICKS = {
   shsage: ['Shopify to Sage Accounting', 'Your options for getting Shopify sales into Sage today, and what Ledgerline for Sage UK will do.', 'Read the options', '/shopify-sage-accounting/', ''],
   lts: ['List & Table Scraper', 'One click turns any table or list on a web page into Excel, CSV or JSON. Free up to 3 pages per run, in Firefox and Chrome.', 'Add to Firefox, free', AMO('list-table-scraper'), '/list-table-scraper/'],
   data: ['Data tools on Apify', 'Company filings, funding rounds and listings, straight into a spreadsheet. Pay per row.', 'Browse on Apify', 'https://apify.com/skillmerc', '/#data'],
-  tk: ['Threadkeep', 'Save the DeepSeek chat you have open as Markdown, text, JSON, PDF or Word. Free on Firefox and Chrome.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
+  tk: ['Threadkeep', 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Free on Firefox and Chrome.', 'Add to Firefox, free', AMO('threadkeep-deepseek'), '/threadkeep/'],
 };
 // In the in-tray: built and tested, waiting on a store's review. Update as reviews land.
 const LAB = [
@@ -432,7 +436,7 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
     ['#payments', 'Payments', 'chased', 'confirmed', 'WooCommerce'],
     ['#books', 'Invoices', 'retyped', 'filed', 'Sage, FreeAgent'],
     ['#tables', 'Web tables', 'copied', 'exported', 'Firefox, Chrome'],
-    ['#chats', 'DeepSeek chats', 'lost', 'saved', 'Firefox'],
+    ['#chats', 'DeepSeek chats', 'lost', 'saved', 'Firefox, Chrome'],
     ['#data', 'Public data', 'dug up', 'delivered', 'Apify'],
   ];
   const JOBS = [
@@ -453,11 +457,11 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']],
-  also: 'Lifetime deal: Pro is USD 19 or less, once, on AppSumo, under AppSumo\'s own 60-day refund policy. <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
-    { id: 'chats', n: '05', label: 'DeepSeek chats', plat: 'Firefox &middot; Chrome', h2: 'DeepSeek chats, saved properly.',
+  also: (asbfOn() ? 'Black Friday on AppSumo: lifetime Pro is USD 17.10 until 1 Dec 2026, 18:00 UTC. Sold by AppSumo under its own 60-day refund policy.' : 'Lifetime deal: Pro is USD 19 or less, once, on AppSumo, under AppSumo\'s own 60-day refund policy.') + ' <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
+    { id: 'chats', n: '05', label: 'AI chats', plat: 'Firefox &middot; Chrome', h2: 'AI chats, saved properly.',
   tale: HUBS.threadkeep.tale,
   say: HUBS.threadkeep.say,
-  fx: ['Free', '*Pro from USD 2.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', ''], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
+  fx: ['Free', '*Pro from USD 4.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', ''], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
     { id: 'data', n: '06', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
