@@ -121,7 +121,7 @@ const HUBS = {
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
     tag: 'AI chats, <em>saved properly.</em>',
     tale: 'An AI chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep keeps it in a library you can search, or saves it to a file on your own computer.',
-    say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox for ChatGPT, Claude, Gemini&trade; and DeepSeek; the Chrome update is in review. Everything stays in your browser.',
+    say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox for ChatGPT, Claude, Gemini™ and DeepSeek; the Chrome update is in review. Everything stays in your browser.',
     facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
