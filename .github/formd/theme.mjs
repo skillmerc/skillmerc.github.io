@@ -3,7 +3,7 @@
 // Look: the HQ dashboard's world at two volumes (plans/site-brand-v11-2026-11-21.md). Loud on the story pages
 // (home, /operations/, /about/: dusk scenes, the operations console). No company figures anywhere. Calm on
 // product, guide, privacy and support pages (same palette and type, no characters, no scenes behind text).
-// The brand: a real company that makes small tools. Products only, never consulting. Credit rule (.merc/rules.yaml credit_and_ai,
+// The brand: a real company that makes focused tools. Products only, never consulting. Credit rule (.merc/rules.yaml credit_and_ai,
 // CEO 22 Nov 2026): public copy says "Made by SKILLMERC" and does not advertise AI; never claim the work is done by people or without AI.
 // Page copy for content pages lives in gen.mjs and the help-*/ folders. This file owns the shell, the homepage,
 // the product headers on hub pages and the /guides/ index. Node builtins only (the Action copies this one file).
@@ -17,7 +17,7 @@ const esc = s => nod(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/
 // The page script shows it only from start to end; any build made after end leaves it out. Remove with revert.mjs.
 const BFCM = { start: '2026-11-27T00:00:00Z', end: '2026-12-01T23:59:59Z', pages: {
  "index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC): 35% off your first Pro payment for <a href=\"/list-table-scraper/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">List &amp; Table Scraper</a>, <a href=\"/sa-shipping-woocommerce/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Shipping Pro</a> and <a href=\"/payfast-woocommerce/\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">PayFast Pro</a> with code <b>FSBFCM2026</b>. Renewals are at the normal price.",
- "list-table-scraper/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC): 35% off your first List &amp; Table Scraper Pro payment with code <b>FSBFCM2026</b>. Lifetime USD 31.85 instead of USD 49. <a href=\"https://checkout.freemius.com/app/43817/plan/77163/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>.",
+ "list-table-scraper/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC): 35% off your first List &amp; Table Scraper Pro payment with code <b>FSBFCM2026</b>. First year USD 18.85 instead of USD 29, first month USD 2.60 instead of USD 4. <a href=\"https://checkout.freemius.com/app/43817/plan/77163/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>.",
  "sa-shipping-woocommerce/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC, which is 01:59 on 2 Dec in South Africa): 35% off your first Shipping Pro payment with code <b>FSBFCM2026</b>. First year USD 31.85, then USD 49 a year. Lifetime USD 96.85 instead of USD 149. <a href=\"https://checkout.freemius.com/plugin/43024/plan/74888/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>.",
  "payfast-woocommerce/index.html": "Black Friday, 27 Nov to 1 Dec 2026 (ends 23:59 UTC, which is 01:59 on 2 Dec in South Africa): 35% off your first PayFast Pro payment with code <b>FSBFCM2026</b>. First year USD 31.85, then USD 49 a year. Lifetime USD 96.85 instead of USD 149. <a href=\"https://checkout.freemius.com/plugin/40911/plan/70874/licenses/1/?coupon=FSBFCM2026\" rel=\"noopener\" style=\"color:inherit;text-decoration:underline\">Get Pro with the code</a>."
 } };
@@ -94,13 +94,14 @@ const HUBS = {
     say: 'Your options for getting Shopify orders into Sage Accounting today, and what Ledgerline for Sage UK will do.',
     facts: ['Guide', 'Ledgerline coming soon'], cta: [] },
   'list-table-scraper': { cat: 'tables', name: 'List & Table Scraper', doc: 'print', stamp: 'Exported', hero: true,
-    tag: 'Any web table. <em>Into Excel.</em>',
-    tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
-    say: 'One click finds the rows on a page. It follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
-    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month', { t: asbfOn() ? 'Black Friday: lifetime Pro USD 17.10 on AppSumo until 1 Dec, 18:00 UTC' : 'Lifetime: USD 19 or less, once, on AppSumo', href: 'https://appsumo.com/pl/list-table-scraper-your-website/', rel: 'sponsored', note: '(partner link)' }],
-    cta: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', 'up'], ['Watch the demo', '#demo', 'dn']],
+    tag: 'Web tables and lists. <em>Into Excel.</em>',
+    tale: 'You need that table, or that page of product cards, in Excel. You select it, copy it, paste it, and get one long column of soup. This add-on finds the rows and puts each field in its own column.',
+    say: 'It finds the rows in tables, search results and product cards, follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
+    facts: ['Free up to 3 pages', '*Pro up to 500 pages', 'From USD 4 a month'],
+    cta: [['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf?utm_source=skillmerc.com&utm_medium=site&utm_campaign=lt-hub-hero', 'up'], ['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Watch the demo', '#demo', 'dn']],
     promo: ['Tables and lists on a web page, into Excel, CSV or JSON.', 'Add to Firefox, free', AMO('list-table-scraper')],
-    alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'] },
+    alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf'],
+    hubAlt: ['Add to Firefox, free', AMO('list-table-scraper')] },
   // Sealboard: its pages are built only when switches.json sealboard is true (gen.mjs). This entry changes no other page.
   sealboard: { cat: 'more', name: 'Sealboard', doc: 'tag', stamp: 'Not yet', hero: true,
     tag: 'Your AI coding tool says done. <em>Sealboard checks first.</em>',
@@ -115,13 +116,13 @@ const HUBS = {
     tale: 'Rowrecipe cleans messy tables and combines many files into one sheet, in your browser. Next month, run the recipe on the new files: the same sheet, and a list of what changed.',
     say: 'For people who copy data into spreadsheets every month: branch reports, supplier price lists, bank and order exports.',
     facts: ['Runs in your browser', 'Excel and CSV', 'Coming soon'], cta: [['Open Rowrecipe', '#open', 'dn'], ['How it works', '#jobs', 'dn']],
-    img: { src: '/rowrecipe/img/month-two.png', w: 1232, h: 568, alt: 'Rowrecipe, month two of the sample recipe Monthly branch report: Rows: 13. Columns: 7. Files: 3. A card, What is different from last month: branch-pretoria-2026-11.csv has a new column "Discount". It is left out, so the sheet keeps last month\'s columns. Buttons Add column, Update recipe and Save as a new recipe.', cap: 'Month two of the sample recipe: one new column, named before you save.' },
+    img: { src: '/rowrecipe/img/month-two.png', w: 1232, h: 602, alt: 'Rowrecipe, month two of the sample recipe Monthly branch report: Rows: 13. Columns: 7. Files: 3. A card, What is different from last month: branch-pretoria-2026-11.csv has a new column "Discount". It is left out, so the sheet keeps last month\'s columns. Buttons Add column, Update recipe and Save as a new recipe.', cap: 'Month two of the sample recipe: one new column, named before you save.' },
     promo: ['Combine your monthly files into one clean sheet. Next month, run the recipe again.', 'How it works', '/rowrecipe/'] },
   privacy: { cat: 'more', name: 'Privacy' },
   threadkeep: { cat: 'more', name: 'Threadkeep', doc: 'chat', stamp: 'Saved', hero: true,
     tag: 'AI chats, <em>saved properly.</em>',
     tale: 'An AI chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep keeps it in a library you can search, or saves it to a file on your own computer.',
-    say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox for ChatGPT, Claude, Gemini™ and DeepSeek; the Chrome update is in review. Everything stays in your browser.',
+    say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox and Chrome for ChatGPT, Claude, Gemini and DeepSeek. Everything stays in your browser.',
     facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
@@ -212,7 +213,7 @@ const head = ({ title, desc, url, extra = '' }) => `<!doctype html><html lang="e
 const NAV = [['Tools', '/#kit', 'kit'], ['Operations', '/operations/', 'operations'], ['Guides', '/guides/', 'guides'], ['About', '/about/', 'about']];
 const navHtml = (here = '') => `<a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap nav-in">${brand}<nav class="nav-links" aria-label="Main">${NAV.map(([t, h, k]) => `<a href="${h}"${k === here ? ' aria-current="page"' : ''}>${t}</a>`).join('')}<a class="boxed" href="mailto:kyle@skillmerc.com">Contact</a></nav><button class="kbtn" type="button" data-k aria-label="Search tools and guides"><svg class="ki" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 3.5 3.5"/></svg><span>Search</span><kbd>&#8984;K</kbd></button><button class="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button></div></header>`;
 const footHtml = () => `<footer class="foot"><div class="wrap"><div class="foot-grid">
-<div class="foot-about">${brand}<p>Small tools for online stores, bookkeeping and data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
+<div class="foot-about">${brand}<p>Tools for online stores, bookkeeping and data.</p><p>SKILLMERC (Pty) Ltd, South Africa.<br>Reg. ${REG}<br><a href="mailto:kyle@skillmerc.com">kyle@skillmerc.com</a></p></div>
 <div><h2 class="fh">Tools</h2><ul><li><a href="/sa-shipping-woocommerce/">Shipping for WooCommerce</a></li><li><a href="/payfast-woocommerce/">PayFast for WooCommerce</a></li><li><a href="/sage-accounting-woocommerce/">WooCommerce to Sage</a></li><li><a href="/freeagent-woocommerce/">WooCommerce to FreeAgent</a></li><li><a href="/shopify-freeagent/">Ledgerline for Shopify</a></li><li><a href="/list-table-scraper/">List &amp; Table Scraper</a></li><li><a href="/threadkeep/">Threadkeep</a></li><li><a href="/#data">Data tools on Apify</a></li></ul></div>
 <div><h2 class="fh">The company</h2><ul><li><a href="/operations/">Operations</a></li><li><a href="/about/">About</a></li><li><a href="/support/">Support</a></li></ul></div>
 <div><h2 class="fh">Help and data</h2><ul><li><a href="/guides/">All guides</a></li><li><a href="/payfast-woocommerce/help/">PayFast fixes</a></li><li><a href="/form-d/">Form D filings this week</a></li><li><a href="/shopify-sage-accounting/">Shopify to Sage</a></li><li><a href="https://profiles.wordpress.org/skillmerc/">WordPress.org</a></li><li><a href="https://apify.com/skillmerc">Apify</a></li><li><a href="https://www.youtube.com/@skillmerc">YouTube</a></li></ul></div>
@@ -306,7 +307,7 @@ function docPage(rel, title, desc, body) {
   const offer = isHub ? (hub.cta[0] ? [hub.say, hub.cta[0][0], hub.cta[0][1]] : null) : (hub.promo || null);
   const ext = offer && /^https?:/.test(offer[2]);
   const promo = offer ? `<a class="promo" href="${offer[2]}"${ext ? ' rel="noopener"' : ''}><span class="ph">${isHub ? 'This tool' : 'The tool for this job'}</span><span class="pb"><b>${esc(hub.name)}</b><p>${esc(isHub ? (hub.promo ? hub.promo[0] : hub.say) : offer[0])}</p></span><span class="go">${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>` : '';
-  const alt = offer && hub.alt ? hub.alt : null;
+  const alt = !offer ? null : (isHub && hub.hubAlt) || hub.alt || null;
   const short = s => s.replace(/^Add to /, '').replace(/, free$/, '');
   const promoAlt = alt ? `<a class="promo-alt" href="${alt[1]}" rel="noopener">${esc(alt[0])} ${ARROW_UP}</a>` : '';
   const dock = !offer ? '' : alt ? `<div class="dock dock2" data-dock><b>${esc(hub.name)}</b><a href="${offer[2]}" rel="noopener" aria-label="${esc(offer[1])}"><span>${esc(short(offer[1]))} ${ARROW_UP}</span></a><a href="${alt[1]}" rel="noopener" aria-label="${esc(alt[0])}"><span>${esc(short(alt[0]))} ${ARROW_UP}</span></a></div>` : `<a class="dock" href="${offer[2]}"${ext ? ' rel="noopener"' : ''} data-dock><b>${esc(hub.name)}</b><span>${esc(offer[1])} ${ext ? ARROW_UP : ARROW}</span></a>`;
@@ -472,15 +473,15 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   return `<section class="tscreen" aria-labelledby="hero-h"><div class="hero-bg" aria-hidden="true"></div><div class="wrap hero-grid">
 <div class="hero-tx">
 <p class="eyebrow">SKILLMERC (Pty) Ltd &middot; South Africa</p>
-<h1 id="hero-h"><span class="ln">Small software,</span> <span class="ln hot">made by SKILLMERC.</span></h1>
-<p class="hero-sub">Small tools for online stores, bookkeeping and data. Each one does one boring job and is offered through a store you already use.</p>
+<h1 id="hero-h"><span class="ln">The boring parts,</span> <span class="ln hot">handled.</span></h1>
+<p class="hero-sub">Tools for online stores, bookkeeping and data. Made by SKILLMERC.</p>
 <div class="row-ctas">${btn([`See the ${nLive} tools`, '#tools', 'dn'], '')}${btn(['How we operate', '/operations/', ''], 'btn-line')}</div>
 </div>
 ${opsPanel({ id: 'ops-hero', cls: 'ops-hero' })}
 </div>${scoreStrip({ nLive, nFree, nReview })}</section>
 
 <section class="sec" id="tools"><div class="wrap">
-<div class="sh"><h2 class="hx">The boring parts, handled.</h2><span class="tag">One tool, one boring job</span></div>
+<div class="sh"><h2 class="hx">What we handle.</h2><span class="tag">One tool, one boring job</span></div>
 <p class="fact"><i></i><span><b>${nLive} tools live.</b> ${nFree} cost nothing. ${nReview} more in review.</span></p>
 <ul class="struck" data-struck>${STRUCK.map(([h, noun, was, now, where], i) => `<li><a href="${h}" style="--n:${i}" aria-label="${esc(noun)}: ${esc(now)}, not ${esc(was)}. For ${esc(where)}."><span class="sn">${esc(noun)}</span> <span class="sv"><del>${esc(was)}</del> <ins>${esc(now)}.</ins></span> <span class="sm">${esc(where)}</span>${ARROW}</a></li>`).join('')}</ul>
 </div></section>
