@@ -1,0 +1,41 @@
+/* My AI Year: page layout on top of the SKILLMERC kit. Kit tokens only: no new colours, fonts or radii. */
+.ay-main { max-width: 960px; margin: 0 auto; padding: var(--sk-space-8) var(--sk-space-4); }
+.ay-start { display: grid; gap: var(--sk-space-6); }
+.ay-hero { font-size: 56px; line-height: 1.02; font-weight: 800; letter-spacing: -0.02em; margin: 0; color: var(--sk-text); }
+.ay-accent { color: var(--sk-accent); }
+.ay-lede { font-size: var(--sk-text-lg); color: var(--sk-text-muted); margin: 0; }
+.ay-how { color: var(--sk-text-muted); font-size: var(--sk-text-md); }
+.ay-how summary { cursor: pointer; color: var(--sk-text); }
+.ay-how li { margin: var(--sk-space-2) 0; }
+
+.ay-story { display: grid; gap: var(--sk-space-6); min-height: 70vh; align-content: space-between; }
+.ay-progress { display: flex; gap: var(--sk-space-2); }
+.ay-progress span { flex: 1; height: 4px; background: var(--sk-line); border-radius: var(--sk-radius-pill); }
+.ay-progress span.is-on { background: var(--sk-accent); }
+.ay-screen { padding: var(--sk-space-10) 0; border-top: 3px solid var(--sk-accent); }
+.ay-kicker { font-family: var(--sk-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--sk-accent); font-size: var(--sk-text-md); margin: 0 0 var(--sk-space-4); }
+.ay-big { font-size: 140px; line-height: 0.95; font-weight: 800; letter-spacing: -0.03em; margin: 0; color: var(--sk-text); overflow-wrap: anywhere; }
+.ay-big--word { font-size: 88px; }
+.ay-line { font-size: var(--sk-text-xl); color: var(--sk-text); margin: var(--sk-space-4) 0 0; max-width: 36ch; }
+.ay-sub { font-size: var(--sk-text-lg); color: var(--sk-text-muted); margin: var(--sk-space-4) 0 0; max-width: 44ch; }
+.ay-nav { display: flex; gap: var(--sk-space-3); justify-content: space-between; align-items: center; }
+.ay-nav .sk-btn { flex: none; white-space: nowrap; }
+.ay-nav .sk-select { flex: 1 1 auto; width: auto; }
+
+.ay-final { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--sk-space-8); align-items: start; }
+.ay-card { width: 100%; height: auto; aspect-ratio: 9 / 16; border: 1px solid var(--sk-line); border-radius: var(--sk-radius); }
+.ay-final__side { display: grid; gap: var(--sk-space-3); }
+.ay-share { display: grid; gap: var(--sk-space-2); }
+.ay-share__text { width: 100%; min-height: 0; resize: none; font: inherit; line-height: 1.4; }
+.ay-share__status { margin: 0; font-size: var(--sk-text-xs); min-height: 1.4em; }
+.ay-funnel { margin-top: var(--sk-space-6); display: grid; gap: var(--sk-space-2); }
+.ay-funnel__title { font-weight: 700; color: var(--sk-text); margin: 0; font-size: var(--sk-text-md); }
+
+@media (max-width: 640px) {
+  .ay-hero { font-size: 40px; }
+  .ay-big { font-size: 96px; }
+  .ay-big--word { font-size: 56px; }
+  .ay-line { font-size: var(--sk-text-lg); }
+  .ay-final { grid-template-columns: 1fr; }
+  .ay-card { max-width: 320px; margin: 0 auto; }
+}

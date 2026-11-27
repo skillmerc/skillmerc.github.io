@@ -1,0 +1,11 @@
+{
+  "kit_commit": "92c3906cb0f6d7a17f4ab2499c7b4ce377a3cab8 2026-11-25",
+  "synced": "2026-11-26T11:16:07.958Z",
+  "files": {
+    "tokens.css": "d151f3d83c941ffdacd5133a3bf08c6ca16159ee761aa8d949f3f98ffdb29f0b",
+    "kit.css": "a544476a2906ac67a38c12d33fa98b223760446cf01efc0beab1f84d1e2da6d8",
+    "fonts/geist.woff2": "9b6f5ff45b278c744b5f379a2c4ecbaf858a842b8eaf82ac8d21b699ca16c608",
+    "fonts/geist-mono.woff2": "5f3d6ad60f29d6cb708414ec6887163d63bf197377ef5417d2483ff31ace6c3b",
+    "fonts/LICENSE.txt": "2c1fde963481de4cfe8fe8e0a8c0e4ede9f3c9ac77d7bb1722cbe7413d995eab"
+  }
+}

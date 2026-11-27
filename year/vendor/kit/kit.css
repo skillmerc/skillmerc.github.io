@@ -1,0 +1,397 @@
+/* SKILLMERC product kit v1: components. Needs tokens.css first.
+   is-hover and is-focus show those states in screenshots and the sample board only; never set them in a product.
+   Every class starts with sk- so nothing collides with a host page or a product's old CSS.
+   Rules held by every component: works at 320 px wide, in dark mode, by keyboard, and at 200 percent zoom.
+   Status is never shown by colour alone: every badge and notice has words, and most have a mark. */
+
+/* ---------- base ---------- */
+/* The focus ring is built here, not in tokens.css, so it picks up the product accent of the element it is on. */
+.sk-root, .sk-root * { --sk-focus-ring: 0 0 0 2px var(--sk-surface), 0 0 0 4px var(--sk-accent); }
+/* Inverted pair for the toast and the tooltip (dark bubble on a light page, light bubble on a dark page). Same selectors
+   as the theme blocks in tokens.css, so a light block inside a dark page (or the reverse) resolves like every token. */
+:root, .sk-root { --sk-invert-bg: var(--sk-n-900); --sk-invert-text: var(--sk-n-50); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]), .sk-root:not([data-theme="light"]) { --sk-invert-bg: var(--sk-n-0); --sk-invert-text: var(--sk-n-900); } }
+[data-theme="dark"], [data-theme="dark"] .sk-root:not([data-theme="light"]) { --sk-invert-bg: var(--sk-n-0); --sk-invert-text: var(--sk-n-900); }
+[data-theme="light"], [data-theme="light"] .sk-root:not([data-theme="dark"]) { --sk-invert-bg: var(--sk-n-900); --sk-invert-text: var(--sk-n-50); }
+.sk-root {
+  font-family: var(--sk-font); font-size: var(--sk-text-sm); line-height: var(--sk-leading); font-weight: var(--sk-weight);
+  color: var(--sk-text); background: var(--sk-bg); -webkit-font-smoothing: antialiased; text-size-adjust: 100%;
+  /* Linux and ChromeOS Chromium: subpixel positioning, no hinting. Unhinted Geist otherwise gets letters snapped apart ("T he"). Mac and Windows ignore it. Task 1823. */
+  text-rendering: geometricPrecision;
+}
+/* Chromium's own stylesheet sets form controls back to text-rendering: auto, so name them ("T idy" on a button). */
+.sk-root :where(button, input, select, textarea) { text-rendering: geometricPrecision; }
+.sk-root *, .sk-root *::before, .sk-root *::after { box-sizing: border-box; }
+.sk-root :where(h1, h2, h3, h4, p, ul, ol, figure) { margin: 0; }
+.sk-root :where(h1, h2, h3) { font-weight: var(--sk-weight-title); letter-spacing: var(--sk-tracking-title); line-height: var(--sk-leading-tight); }
+.sk-root :where(a) { color: var(--sk-accent); text-underline-offset: 2px; }
+.sk-root :where(a):hover { color: var(--sk-accent-hover); }
+.sk-root :where(code, kbd, pre) { font-family: var(--sk-mono); font-size: 0.92em; }
+.sk-root [hidden] { display: none !important; }
+.sk-root :focus { outline: none; }
+.sk-root :focus-visible, .sk-root .is-focus { outline: none; box-shadow: var(--sk-focus-ring); }
+/* Windows high contrast: box-shadow is dropped there, so keep a real outline. */
+@media (forced-colors: active) { .sk-root :focus-visible { outline: 2px solid CanvasText; outline-offset: 2px; } }
+.sk-muted { color: var(--sk-text-muted); }
+.sk-small { font-size: var(--sk-text-xs); }
+.sk-title { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); }
+.sk-h1 { font-size: var(--sk-text-lg); }
+.sk-stack { display: flex; flex-direction: column; gap: var(--sk-space-2); }
+.sk-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-2); }
+.sk-grow { flex: 1 1 auto; min-width: 0; }
+.sk-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- buttons ----------
+   .sk-btn alone = secondary. Add --primary (one per view), --quiet (low weight), --danger (deletes).
+   Loading: set aria-busy="true" and disabled; the label stays so the width does not jump. */
+.sk-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sk-space-2);
+  min-height: 32px; padding: 6px 12px; border-radius: var(--sk-radius); border: 1px solid var(--sk-line-strong);
+  background: var(--sk-surface); color: var(--sk-text); font: inherit; font-weight: var(--sk-weight-strong);
+  line-height: 1.2; text-align: center; text-decoration: none; cursor: pointer; white-space: normal; overflow-wrap: break-word;
+  transition: background-color var(--sk-fast) var(--sk-ease), border-color var(--sk-fast) var(--sk-ease), color var(--sk-fast) var(--sk-ease);
+}
+.sk-btn:hover:not(:disabled):not([aria-disabled="true"]), .sk-btn.is-hover { border-color: var(--sk-accent); color: var(--sk-text); background: var(--sk-accent-soft); }
+.sk-btn:active:not(:disabled) { transform: translateY(1px); }
+.sk-btn--primary { background: var(--sk-accent); border-color: var(--sk-accent); color: var(--sk-on-accent); }
+.sk-btn--primary:hover:not(:disabled):not([aria-disabled="true"]), .sk-btn--primary.is-hover { background: var(--sk-accent-hover); border-color: var(--sk-accent-hover); color: var(--sk-on-accent); }
+.sk-btn--quiet { border-color: transparent; background: transparent; color: var(--sk-accent); }
+.sk-btn--quiet:hover:not(:disabled):not([aria-disabled="true"]), .sk-btn--quiet.is-hover { background: var(--sk-accent-soft); border-color: transparent; color: var(--sk-accent); }
+.sk-btn--danger { color: var(--sk-danger); border-color: var(--sk-danger); }
+.sk-btn--danger:hover:not(:disabled):not([aria-disabled="true"]), .sk-btn--danger.is-hover { background: var(--sk-danger-soft); border-color: var(--sk-danger); color: var(--sk-danger); }
+.sk-btn--danger-solid { background: var(--sk-danger); border-color: var(--sk-danger); color: var(--sk-on-accent); }
+.sk-btn--sm { min-height: 28px; padding: 4px 10px; font-size: var(--sk-text-xs); }
+.sk-btn--block { display: flex; width: 100%; }
+/* A grid of equal buttons (export formats): as many columns as fit, never a word broken inside a button. */
+.sk-btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: var(--sk-space-2); }
+.sk-btn--icon { min-width: 32px; padding: 6px; border-color: transparent; background: transparent; color: var(--sk-text-muted); }
+.sk-btn:disabled, .sk-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.sk-btn[aria-busy="true"] { cursor: progress; opacity: 0.85; }
+.sk-btn[aria-busy="true"]::before {
+  content: ""; width: 12px; height: 12px; flex: none; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent; animation: sk-spin 0.8s linear infinite;
+}
+@keyframes sk-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sk-btn[aria-busy="true"]::before { animation: none; border-right-color: currentColor; opacity: 0.6; } .sk-btn:active:not(:disabled) { transform: none; } }
+
+/* ---------- fields ---------- */
+.sk-field { display: flex; flex-direction: column; gap: var(--sk-space-1); min-width: 0; }
+.sk-label { font-weight: var(--sk-weight-strong); color: var(--sk-text); }
+.sk-hint { font-size: var(--sk-text-xs); color: var(--sk-text-muted); }
+.sk-error-text { font-size: var(--sk-text-xs); color: var(--sk-danger); font-weight: var(--sk-weight-strong); }
+.sk-input, .sk-select {
+  width: 100%; min-width: 0; min-height: 32px; padding: 6px 10px; border-radius: var(--sk-radius);
+  border: 1px solid var(--sk-line-strong); background: var(--sk-surface); color: var(--sk-text); font: inherit;
+}
+.sk-input::placeholder { color: var(--sk-text-faint); opacity: 1; }
+.sk-input:focus-visible, .sk-select:focus-visible, .sk-input.is-focus { border-color: var(--sk-accent); border-radius: var(--sk-radius); }
+.sk-input[aria-invalid="true"] { border-color: var(--sk-danger); }
+.sk-input:disabled, .sk-select:disabled { opacity: 0.55; cursor: not-allowed; }
+.sk-input--num { width: 72px; }
+.sk-select { appearance: none; padding-right: 28px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.sk-check { display: inline-flex; align-items: flex-start; gap: var(--sk-space-2); cursor: pointer; }
+.sk-check input { width: 16px; height: 16px; margin: 1px 0 0; flex: none; accent-color: var(--sk-accent); cursor: pointer; }
+.sk-check input:focus-visible { box-shadow: var(--sk-focus-ring); border-radius: 3px; }
+/* Switch: <button class="sk-switch" role="switch" aria-checked="true"><span class="sk-switch__track"></span>Label</button> */
+.sk-switch { display: inline-flex; align-items: center; gap: var(--sk-space-2); padding: 2px 0; border: 0; background: none; color: var(--sk-text); font: inherit; cursor: pointer; text-align: left; }
+.sk-switch__track { position: relative; width: 34px; height: 20px; flex: none; border-radius: var(--sk-radius-pill); background: var(--sk-n-400); transition: background-color var(--sk-base) var(--sk-ease); }
+.sk-switch__track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--sk-n-0); box-shadow: var(--sk-shadow-1); transition: transform var(--sk-base) var(--sk-ease); }
+.sk-switch[aria-checked="true"] .sk-switch__track { background: var(--sk-accent); }
+.sk-switch[aria-checked="true"] .sk-switch__track::after { transform: translateX(14px); }
+.sk-switch:focus-visible, .sk-switch.is-focus { box-shadow: none; }
+.sk-switch:focus-visible .sk-switch__track, .sk-switch.is-focus .sk-switch__track { box-shadow: var(--sk-focus-ring); }
+.sk-switch[aria-checked="true"] .sk-switch__state::before { content: "On"; }
+.sk-switch[aria-checked="false"] .sk-switch__state::before { content: "Off"; }
+.sk-switch__state { font-size: var(--sk-text-xs); color: var(--sk-text-muted); }
+
+/* ---------- badge and pill ----------
+   Pill = plan (Free, Pro). Badge = status, always with a mark and a word. */
+.sk-pill { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: var(--sk-radius-pill); font-size: var(--sk-text-xs); font-weight: var(--sk-weight-title); line-height: 1.5; letter-spacing: 0.02em; white-space: nowrap; border: 1px solid transparent; }
+.sk-pill--free { background: var(--sk-bg-sunken); color: var(--sk-text-muted); border-color: var(--sk-line); }
+.sk-pill--pro { background: var(--sk-accent-soft); color: var(--sk-accent); border-color: var(--sk-accent); }
+.sk-badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: var(--sk-radius-pill); font-size: var(--sk-text-xs); font-weight: var(--sk-weight-strong); line-height: 1.5; border: 1px solid var(--sk-line-strong); color: var(--sk-text); background: var(--sk-surface); white-space: nowrap; }
+.sk-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.sk-badge--ok { color: var(--sk-success); border-color: currentColor; background: var(--sk-success-soft); }
+.sk-badge--changed { color: var(--sk-accent); border-color: currentColor; background: var(--sk-accent-soft); }
+.sk-badge--warn { color: var(--sk-warning); border-color: currentColor; background: var(--sk-warning-soft); }
+.sk-badge--error { color: var(--sk-danger); border-color: currentColor; background: var(--sk-danger-soft); }
+.sk-badge--off { color: var(--sk-text-muted); border-style: dashed; }
+.sk-badge--off::before { background: transparent; border: 1.5px solid currentColor; width: 6px; height: 6px; }
+/* Each status has its own mark shape, so status never rests on colour (Reviewer 1148): Changed = dot, No change = tick,
+   Needs attention = triangle, Problem = diamond, Paused = ring. */
+.sk-badge--ok::before { width: 4px; height: 8px; margin: 0 2px 2px 1px; border-radius: 0; background: transparent; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.sk-badge--warn::before { width: 9px; height: 8px; border-radius: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.sk-badge--error::before { width: 7px; height: 7px; border-radius: 0; transform: rotate(45deg); }
+
+/* ---------- notice ----------
+   Shape: title = what happened (one short sentence). Body = what to do next. Optional actions row. */
+.sk-notice { --sk-notice-c: var(--sk-text-muted); display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 2px var(--sk-space-2); padding: 10px 12px; border-radius: var(--sk-radius); border: 1px solid var(--sk-line); border-left-width: 4px; background: var(--sk-bg-sunken); color: var(--sk-text); }
+.sk-notice__icon { width: 18px; height: 18px; margin-top: 1px; color: var(--sk-notice-c); }
+.sk-notice__title { font-weight: var(--sk-weight-strong); grid-column: 2; }
+.sk-notice__body { grid-column: 2; color: var(--sk-text); }
+.sk-notice__actions { grid-column: 2; display: flex; flex-wrap: wrap; gap: var(--sk-space-2); margin-top: var(--sk-space-2); }
+.sk-notice--info { --sk-notice-c: var(--sk-info); background: var(--sk-info-soft); border-color: var(--sk-info); }
+.sk-notice--success { --sk-notice-c: var(--sk-success); background: var(--sk-success-soft); border-color: var(--sk-success); }
+.sk-notice--warning { --sk-notice-c: var(--sk-warning); background: var(--sk-warning-soft); border-color: var(--sk-warning); }
+.sk-notice--error { --sk-notice-c: var(--sk-danger); background: var(--sk-danger-soft); border-color: var(--sk-danger); }
+.sk-notice--info, .sk-notice--success, .sk-notice--warning, .sk-notice--error { border-top-color: transparent; border-right-color: transparent; border-bottom-color: transparent; }
+
+/* ---------- card ---------- */
+.sk-card { background: var(--sk-surface); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); padding: var(--sk-space-3) var(--sk-space-4); }
+.sk-card--sunken { background: var(--sk-bg-sunken); }
+.sk-card__head { display: flex; align-items: center; gap: var(--sk-space-2); margin-bottom: var(--sk-space-2); }
+.sk-card__label { color: var(--sk-text-muted); font-size: var(--sk-text-xs); font-weight: var(--sk-weight-strong); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ---------- table ---------- */
+.sk-table-wrap { overflow: auto; max-width: 100%; border: 1px solid var(--sk-line); border-radius: var(--sk-radius); background: var(--sk-surface); }
+.sk-table-wrap:focus-visible { box-shadow: var(--sk-focus-ring); }
+.sk-table { border-collapse: collapse; width: 100%; font-size: var(--sk-text-xs); font-variant-numeric: tabular-nums; }
+.sk-table th { position: sticky; top: 0; z-index: 1; text-align: left; font-weight: var(--sk-weight-strong); color: var(--sk-text-muted); background: var(--sk-bg-sunken); border-bottom: 1px solid var(--sk-line); padding: 6px 8px; white-space: nowrap; }
+.sk-table td { padding: 5px 8px; border-bottom: 1px solid var(--sk-line); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: top; }
+.sk-table tr:last-child td { border-bottom: 0; }
+/* .sk-fill on the one long column: it takes the spare width and ends in "..." instead of pushing the table wider. */
+.sk-table .sk-fill { max-width: 0; width: 100%; }
+.sk-table td.sk-num, .sk-table th.sk-num { text-align: right; color: var(--sk-text-muted); width: 1%; }
+
+/* ---------- empty state ----------
+   Shape: what this place is for, one sentence on how to fill it, one primary action, optional sample. */
+.sk-empty { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sk-space-2); padding: var(--sk-space-5); border: 1px dashed var(--sk-line-strong); border-radius: var(--sk-radius-lg); background: var(--sk-bg-sunken); }
+.sk-empty__icon { width: 28px; height: 28px; color: var(--sk-accent); }
+.sk-empty__title { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); }
+
+/* ---------- modal confirm ----------
+   Use <dialog class="sk-modal"> with showModal(): it traps focus and Escape closes it.
+   The safe choice (Cancel) gets first focus; the risky one is on the right. */
+.sk-modal { width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; padding: var(--sk-space-5); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); background: var(--sk-surface-raised); color: var(--sk-text); box-shadow: var(--sk-shadow-panel); }
+.sk-modal::backdrop { background: var(--sk-backdrop); }
+.sk-modal__title { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); margin-bottom: var(--sk-space-2); }
+.sk-modal__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--sk-space-2); margin-top: var(--sk-space-4); }
+
+/* ---------- toast ----------
+   role="status" (polite). Stays at least 5 seconds, longer than that when it has an Undo. Never the only place an error is shown. */
+.sk-toast { display: flex; align-items: center; gap: var(--sk-space-3); max-width: min(380px, calc(100vw - 24px)); padding: 10px 12px 10px 14px; border-radius: var(--sk-radius); background: var(--sk-invert-bg); color: var(--sk-invert-text); box-shadow: var(--sk-shadow-2); font-size: var(--sk-text-sm); animation: sk-rise var(--sk-base) var(--sk-ease); }
+.sk-toast .sk-btn--quiet { color: inherit; text-decoration: underline; padding: 4px 6px; min-height: 28px; }
+@keyframes sk-rise { from { transform: translateY(6px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- panel shell (injected into someone else's page) ----------
+   Isolation, all three, every time:
+   1. Mount in a closed shadow root on a host element the product creates: host.attachShadow({ mode: "closed" }).
+      Page CSS cannot select inside it; our CSS cannot leak out.
+   2. :host { all: initial } resets every inherited property the page sets on the host (font, color, line-height,
+      letter-spacing, text-transform, direction...). Custom properties are NOT reset by all, so the panel's root
+      element carries class sk-root, which redefines every --sk-* token itself.
+   3. direction: ltr and unicode-bidi: isolate on :host and the panel, so a right-to-left page (Arabic, Hebrew)
+      does not flip our panel (Threadkeep screen review F1, Nov 2026).
+   Fonts: @font-face inside a shadow root is ignored by Chrome, and loading our font into a stranger's page
+   would expose a web-accessible file. So panels use --sk-font-system. Pages the product owns use --sk-font.
+   Sizes are px so a page's html { font-size } cannot shrink the panel. */
+/* !important on :host: a page's own rule on the host element (a plain "div { letter-spacing: 4px }" or "* { all: unset }")
+   beats a normal :host rule, but an important :host rule beats every page rule (Reviewer 1148 hostile-page test). */
+:host { all: initial !important; display: block !important; direction: ltr !important; unicode-bidi: isolate !important; }
+.sk-panel {
+  direction: ltr; unicode-bidi: isolate; font-family: var(--sk-font-system);
+  /* second lock: reset what a page could still pass down if a product mounts without a shadow root */
+  text-align: left; text-indent: 0; text-transform: none; text-shadow: none; letter-spacing: normal; word-spacing: normal;
+  white-space: normal; font-style: normal; cursor: auto; visibility: visible;
+  position: fixed; top: 12px; right: 12px; z-index: 2147483647;
+  width: 380px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--sk-surface); color: var(--sk-text); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); box-shadow: var(--sk-shadow-panel);
+}
+.sk-panel--static { position: static; max-height: none; }
+.sk-panel--wide { width: 560px; }
+.sk-panel__head { min-height: 52px; display: flex; align-items: center; gap: var(--sk-space-2); padding: 6px 10px 6px 14px; border-bottom: 1px solid var(--sk-line); }
+.sk-panel__icon { width: 22px; height: 22px; flex: none; border-radius: var(--sk-radius-sm); background: var(--sk-accent); color: var(--sk-on-accent); display: grid; place-items: center; }
+.sk-panel__icon svg { width: 14px; height: 14px; }
+.sk-panel__name { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); letter-spacing: var(--sk-tracking-title); }
+.sk-panel__body { display: flex; flex-direction: column; gap: var(--sk-space-3); padding: var(--sk-space-3) 14px; overflow: auto; min-height: 0; }
+.sk-panel__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-2) var(--sk-space-3); padding: 8px 14px; border-top: 1px solid var(--sk-line); background: var(--sk-bg-sunken); font-size: var(--sk-text-xs); color: var(--sk-text-muted); }
+/* Launcher button a product may float on the page (Threadkeep's Export button). */
+.sk-fab { position: fixed; right: 18px; bottom: 96px; z-index: 2147483646; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 8px 14px; border-radius: var(--sk-radius-pill); border: 1px solid var(--sk-accent-hover); background: var(--sk-accent); color: var(--sk-on-accent); font-family: var(--sk-font-system); font-size: var(--sk-text-sm); font-weight: var(--sk-weight-strong); line-height: 1; box-shadow: var(--sk-shadow-2); cursor: pointer; direction: ltr; unicode-bidi: isolate; }
+.sk-fab:hover { background: var(--sk-accent-hover); }
+
+/* ---------- footer: the mark and "Made by SKILLMERC" ----------
+   Same place in every product: the last line of the injected panel and of the settings or about page.
+   Markup: <footer class="sk-made"><svg class="sk-mark">...the mark...</svg><span>Made by SKILLMERC</span></footer> */
+.sk-made { display: inline-flex; align-items: center; gap: 6px; font-size: var(--sk-text-xs); color: var(--sk-text-muted); white-space: nowrap; }
+.sk-made a { color: inherit; text-decoration: none; }
+.sk-made a:hover { color: var(--sk-text); text-decoration: underline; }
+/* The mark's tile is the darkest neutral, the same as a dark footer or page: a hairline keeps its edge visible on
+   dark surfaces (lifted from Rowrecipe, task 1199). On light surfaces the hairline is a faint grey ring. */
+.sk-mark { width: 16px; height: 16px; flex: none; display: block; border-radius: var(--sk-radius-sm); box-shadow: 0 0 0 1px var(--sk-line); }
+.sk-foot-links { display: flex; flex-wrap: wrap; gap: var(--sk-space-3); margin-left: auto; }
+.sk-foot-links a { color: var(--sk-text-muted); }
+
+/* ---------- page shell (options, library, watch list: pages the product owns) ---------- */
+.sk-page { max-width: 760px; margin: 0 auto; padding: var(--sk-space-6) var(--sk-space-4) var(--sk-space-8); font-size: var(--sk-text-md); }
+.sk-page__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-3); margin-bottom: var(--sk-space-5); }
+.sk-page__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-3); margin-top: var(--sk-space-8); padding-top: var(--sk-space-4); border-top: 1px solid var(--sk-line); }
+
+/* ---------- web app parts (a full page the product owns: header, main, footer) ----------
+   Lifted from Rowrecipe's kit additions (task 1199). Values are Rowrecipe's own, so renaming its skx- classes to these
+   changes nothing on screen. Notes and markup: README.md "Web app parts"; every part on sample.html in light and dark. */
+/* App frame: header on top, main that grows, footer at the bottom. .sk-page is a 760 px settings column; a data
+   app needs the width for wide tables. */
+.sk-app { min-height: 100vh; display: flex; flex-direction: column; background: var(--sk-bg); }
+.sk-app__main { flex: 1 0 auto; width: 100%; max-width: 1120px; margin: 0 auto; padding: var(--sk-space-8) var(--sk-space-5) var(--sk-space-10); display: flex; flex-direction: column; gap: var(--sk-space-6); }
+.sk-icon { width: 16px; height: 16px; flex: none; }
+/* App header: product icon and name on the left, one quiet action (theme, Pro) on the right. */
+.sk-app-header { display: flex; align-items: center; gap: var(--sk-space-3); min-height: 56px; padding: var(--sk-space-2) var(--sk-space-5); border-bottom: 1px solid var(--sk-line); background: var(--sk-surface); }
+.sk-app-brand { display: inline-flex; align-items: center; gap: var(--sk-space-2); color: var(--sk-text); text-decoration: none; border-radius: var(--sk-radius-sm); }
+.sk-app-brand:hover { color: var(--sk-text); }
+.sk-app-brand__name { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); letter-spacing: var(--sk-tracking-title); }
+.sk-app-header__end { margin-left: auto; }
+/* App footer: a full-width bar. The mark and "Made by SKILLMERC" (.sk-made) come first, then the links. */
+.sk-app-footer { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-2) var(--sk-space-4); padding: var(--sk-space-3) var(--sk-space-5); border-top: 1px solid var(--sk-line); background: var(--sk-bg-sunken); font-size: var(--sk-text-xs); color: var(--sk-text-muted); }
+.sk-app-footer__link { color: var(--sk-text-muted); }
+
+/* Drop zone: a dashed box (the empty-state border) that turns to the accent while a file is over it.
+   The product sets .is-over on dragenter and removes it on dragleave and drop. The file button inside is the keyboard path. */
+.sk-drop { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sk-space-2); padding: var(--sk-space-8) var(--sk-space-5); border: 2px dashed var(--sk-line-strong); border-radius: var(--sk-radius-lg); background: var(--sk-bg-sunken); transition: border-color var(--sk-fast) var(--sk-ease), background-color var(--sk-fast) var(--sk-ease); }
+.sk-drop.is-over { border-color: var(--sk-accent); background: var(--sk-accent-soft); }
+.sk-drop__icon { width: 28px; height: 28px; color: var(--sk-accent); }
+.sk-drop__title { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); }
+.sk-drop__hint { color: var(--sk-text-muted); max-width: 520px; }
+.sk-drop__file { margin-top: var(--sk-space-2); }
+.sk-drop__file:focus-within { box-shadow: var(--sk-focus-ring); }
+
+/* Progress with cancel: what is happening, the share done, and a Cancel button on the same row.
+   Set the bar's width (0 to 100%) and aria-valuenow on the track. Work with no steps to count: --busy, no number. */
+.sk-progress { display: flex; flex-direction: column; gap: var(--sk-space-2); padding: var(--sk-space-4); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); background: var(--sk-surface); }
+.sk-progress__row { display: flex; align-items: center; gap: var(--sk-space-3); }
+.sk-progress__label { flex: 1 1 auto; min-width: 0; font-weight: var(--sk-weight-strong); overflow-wrap: anywhere; }
+.sk-progress__track { height: 8px; border-radius: var(--sk-radius-pill); background: var(--sk-bg-sunken); border: 1px solid var(--sk-line); overflow: hidden; }
+.sk-progress__bar { height: 100%; width: 0; background: var(--sk-accent); transition: width var(--sk-base) var(--sk-ease); }
+.sk-progress__bar--busy { width: 30%; animation: sk-busy 1.6s var(--sk-ease) infinite alternate; }
+@keyframes sk-busy { from { margin-left: 0; } to { margin-left: 70%; } }
+@media (prefers-reduced-motion: reduce) { .sk-progress__bar--busy { animation: none; width: 100%; opacity: 0.5; } }
+
+/* Wide data table: .sk-table inside .sk-table-wrap.sk-datagrid. The wrap scrolls both ways inside a fixed height,
+   the header row stays on top (from .sk-table) and the row-number column stays on the left. .sk-changed marks a
+   cell the product changed; it always comes with words elsewhere (a fix list or a count), never colour alone. */
+.sk-tableview { display: flex; flex-direction: column; gap: var(--sk-space-3); }
+.sk-tableview__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-2) var(--sk-space-4); }
+.sk-tableview__name { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); overflow-wrap: anywhere; }
+.sk-tableview__actions { display: flex; gap: var(--sk-space-2); margin-left: auto; }
+.sk-datagrid { max-height: 60vh; }
+.sk-datagrid .sk-table th.sk-rownum, .sk-datagrid .sk-table td.sk-rownum { position: sticky; left: 0; background: var(--sk-bg-sunken); color: var(--sk-text-faint); text-align: right; width: 1%; }
+.sk-datagrid .sk-table th.sk-rownum { z-index: 2; }
+.sk-datagrid .sk-table td.sk-changed { background: var(--sk-accent-soft); }
+
+/* Error page: a whole page that says what went wrong and the way back (404, a missing file). Code, one sentence,
+   one primary button home. Goes inside .sk-app__main between the app header and footer. */
+.sk-errorpage { display: flex; flex-direction: column; gap: var(--sk-space-3); max-width: 560px; padding-top: var(--sk-space-10); }
+.sk-errorpage__code { font-family: var(--sk-mono); font-size: var(--sk-text-2xl); color: var(--sk-accent); font-weight: var(--sk-weight-strong); }
+
+/* ---------- web app parts, kit v1.1 (task 1164): sort, sticky column, column menu, Pro panel, tabs, tooltip, toast stack ----------
+   Behaviour for the menu, tabs and tooltip is in menu.js (no dependencies). Notes and markup: README.md "Web app parts". */
+/* Sortable header: a real button inside the th; aria-sort on the th says the order (ascending, descending, none).
+   The arrow is a glyph next to the words, so the order never rests on colour. The product sorts the rows. */
+.sk-sort { display: inline-flex; align-items: center; gap: var(--sk-space-1); padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: inherit; white-space: nowrap; cursor: pointer; border-radius: var(--sk-radius-sm); }
+.sk-sort:hover { color: var(--sk-text); }
+.sk-sort__icon { display: inline-block; width: 1em; text-align: center; color: var(--sk-text-faint); }
+.sk-sort__icon::before { content: "\2195"; }
+th[aria-sort="ascending"] .sk-sort, th[aria-sort="descending"] .sk-sort { color: var(--sk-text); }
+th[aria-sort="ascending"] .sk-sort__icon, th[aria-sort="descending"] .sk-sort__icon { color: var(--sk-accent); }
+th[aria-sort="ascending"] .sk-sort__icon::before { content: "\2191"; }
+th[aria-sort="descending"] .sk-sort__icon::before { content: "\2193"; }
+th.sk-num .sk-sort { flex-direction: row-reverse; }
+/* Sticky first column for a table with no row numbers: put .sk-sticky on the first th and td of each row.
+   Use it or .sk-rownum, not both (both stick at left 0). The line on its right shows where the scroll starts. */
+.sk-datagrid .sk-table .sk-sticky { position: sticky; left: 0; z-index: 1; background: var(--sk-surface); box-shadow: inset -1px 0 0 var(--sk-line); }
+.sk-datagrid .sk-table th.sk-sticky { z-index: 2; background: var(--sk-bg-sunken); }
+
+/* Column menu: a menu button and a popover menu below it. menu.js opens and closes it, moves focus with the arrow keys,
+   Home and End, closes it on Escape (focus back on the button), on Tab and on a click outside.
+   Put the menu outside any scroll box (.sk-table-wrap clips it): in the table bar, or a header button outside the grid. */
+.sk-menu-wrap { position: relative; display: inline-flex; }
+.sk-menu-btn::after { content: ""; width: 6px; height: 6px; flex: none; margin: -3px 2px 0 2px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.sk-menu-btn[aria-expanded="true"]::after { margin-top: 3px; transform: rotate(-135deg); }
+.sk-menu { position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; display: flex; flex-direction: column; gap: 2px; min-width: 200px; max-width: min(280px, calc(100vw - 24px)); padding: var(--sk-space-1); border: 1px solid var(--sk-line); border-radius: var(--sk-radius); background: var(--sk-surface-raised); color: var(--sk-text); box-shadow: var(--sk-shadow-2); }
+.sk-menu--end { left: auto; right: 0; }
+/* Set by menu.js when the menu would run past a screen edge. */
+.sk-menu.is-start { left: 0; right: auto; }
+.sk-menu.is-end { left: auto; right: 0; }
+.sk-menu__item { display: flex; align-items: center; gap: var(--sk-space-2); width: 100%; min-height: 32px; padding: 6px 10px; border: 0; border-radius: var(--sk-radius-sm); background: transparent; color: var(--sk-text); font: inherit; text-align: left; cursor: pointer; }
+.sk-menu__item:hover, .sk-menu__item.is-hover { background: var(--sk-accent-soft); }
+/* Inside the menu the ring is drawn inward, so the menu edge never cuts it. */
+.sk-menu__item:focus-visible, .sk-menu__item.is-focus { background: var(--sk-accent-soft); box-shadow: inset 0 0 0 2px var(--sk-accent); }
+.sk-menu__item:disabled, .sk-menu__item[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.sk-menu__item--danger { color: var(--sk-danger); }
+/* Radio items (sort order): role="menuitemradio" aria-checked. The tick shows the choice. */
+.sk-menu__item[role="menuitemradio"]::before { content: ""; width: 4px; height: 8px; flex: none; margin: 0 4px 2px 2px; border: solid transparent; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.sk-menu__item[aria-checked="true"]::before { border-color: var(--sk-accent); }
+.sk-menu__sep { height: 1px; margin: var(--sk-space-1) 0; border: 0; background: var(--sk-line); }
+.sk-menu__label { padding: 4px 10px 2px; font-size: var(--sk-text-xs); font-weight: var(--sk-weight-strong); color: var(--sk-text-muted); }
+
+/* Pro panel (paywall): the limit in the shape of WORDING.md 3, the "nothing you made is lost" line, Free and Pro side
+   by side with numbers, Get Pro, Not now. The numbers on sample.html are placeholders: a product fills in its own. */
+.sk-paywall { display: flex; flex-direction: column; gap: var(--sk-space-3); padding: var(--sk-space-4); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); background: var(--sk-surface); }
+.sk-paywall__title { font-size: var(--sk-text-md); font-weight: var(--sk-weight-title); letter-spacing: var(--sk-tracking-title); }
+.sk-paywall__safe { display: flex; align-items: flex-start; gap: var(--sk-space-2); padding: var(--sk-space-2) var(--sk-space-3); border-radius: var(--sk-radius); background: var(--sk-success-soft); color: var(--sk-text); font-weight: var(--sk-weight-strong); }
+.sk-paywall__safe .sk-icon { margin-top: 1px; color: var(--sk-success); }
+.sk-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: var(--sk-space-3); }
+.sk-plan { display: flex; flex-direction: column; gap: var(--sk-space-2); min-width: 0; padding: var(--sk-space-3) var(--sk-space-4); border: 1px solid var(--sk-line); border-radius: var(--sk-radius-lg); background: var(--sk-bg-sunken); }
+.sk-plan--pro { border-color: var(--sk-accent); background: var(--sk-surface); box-shadow: inset 0 0 0 1px var(--sk-accent); }
+.sk-plan__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sk-space-2); }
+.sk-plan__price { font-size: var(--sk-text-lg); font-weight: var(--sk-weight-title); font-variant-numeric: tabular-nums; }
+.sk-plan__per { font-size: var(--sk-text-sm); font-weight: var(--sk-weight); color: var(--sk-text-muted); }
+.sk-plan__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.sk-plan__list li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: var(--sk-space-2); }
+.sk-plan__list li::before { content: ""; width: 4px; height: 8px; margin: 3px 0 0 4px; border: solid var(--sk-text-muted); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.sk-plan--pro .sk-plan__list li::before { border-color: var(--sk-accent); }
+
+/* Tabs: role="tablist" with role="tab" buttons and role="tabpanel" panels. menu.js gives the roving tabindex: Tab enters
+   the selected tab, the arrow keys (and Home, End) move and select, Tab again goes into the panel.
+   Selected = text colour, bold and an accent bar under it, so it never rests on colour alone. */
+.sk-tabs { display: flex; flex-direction: column; gap: var(--sk-space-3); min-width: 0; }
+.sk-tablist { display: flex; gap: var(--sk-space-1); overflow-x: auto; box-shadow: inset 0 -1px 0 var(--sk-line); scrollbar-width: thin; }
+.sk-tab { position: relative; flex: none; min-height: 36px; padding: 8px 12px; border: 0; border-radius: var(--sk-radius-sm) var(--sk-radius-sm) 0 0; background: transparent; color: var(--sk-text-muted); font: inherit; font-weight: var(--sk-weight-strong); white-space: nowrap; cursor: pointer; }
+.sk-tab:hover, .sk-tab.is-hover { color: var(--sk-text); background: var(--sk-bg-sunken); }
+.sk-tab[aria-selected="true"] { color: var(--sk-text); }
+.sk-tab[aria-selected="true"]::after { content: ""; position: absolute; left: var(--sk-space-2); right: var(--sk-space-2); bottom: 0; height: 2px; border-radius: var(--sk-radius-pill); background: var(--sk-accent); }
+/* The tab list scrolls on a narrow screen, which would cut an outer ring: the tab ring is drawn inward. */
+.sk-tab:focus-visible, .sk-tab.is-focus { box-shadow: inset 0 0 0 2px var(--sk-accent); }
+.sk-tabpanel { min-width: 0; border-radius: var(--sk-radius); }
+
+/* Scroll cue: menu.js sets .is-more-end on a wide table (.sk-datagrid) or a tab list while more sits past the right
+   edge, and the last 32 px fade out, so a hidden tab or column reads as "scroll for more". A mask, not a shadow: flat.
+   Dropped while the grid has keyboard focus, because the mask would also clip its outer focus ring. */
+.sk-datagrid.is-more-end:not(:focus-visible), .sk-tablist.is-more-end { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
+
+/* Tooltip: extra words on hover and keyboard focus. Never the only label: the trigger has its own visible text or
+   aria-label; the bubble (role="tooltip") is tied with aria-describedby. Escape hides it (menu.js) until the pointer
+   or focus leaves. .sk-tip--start and --end line the bubble up with the trigger's edge near a screen edge. */
+.sk-tip { position: relative; display: inline-flex; }
+.sk-tip__bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; z-index: 30; width: max-content; max-width: min(240px, calc(100vw - 24px)); padding: 6px 10px; border-radius: var(--sk-radius-sm); background: var(--sk-invert-bg); color: var(--sk-invert-text); box-shadow: var(--sk-shadow-2); font-size: var(--sk-text-xs); font-weight: var(--sk-weight); line-height: var(--sk-leading); text-align: left; white-space: normal; pointer-events: none; opacity: 0; visibility: hidden; transform: translate(-50%, 2px); transition: opacity var(--sk-fast) var(--sk-ease), transform var(--sk-fast) var(--sk-ease), visibility 0s linear var(--sk-fast); }
+.sk-tip:hover .sk-tip__bubble, .sk-tip:focus-within .sk-tip__bubble, .sk-tip.is-open .sk-tip__bubble { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+.sk-tip--start .sk-tip__bubble { left: 0; transform: translateY(2px); }
+.sk-tip--start:hover .sk-tip__bubble, .sk-tip--start:focus-within .sk-tip__bubble, .sk-tip--start.is-open .sk-tip__bubble { transform: none; }
+.sk-tip--end .sk-tip__bubble { left: auto; right: 0; transform: translateY(2px); }
+.sk-tip--end:hover .sk-tip__bubble, .sk-tip--end:focus-within .sk-tip__bubble, .sk-tip--end.is-open .sk-tip__bubble { transform: none; }
+.sk-tip.is-dismissed .sk-tip__bubble { opacity: 0; visibility: hidden; }
+
+/* Toast stack: one container per page, fixed bottom right; new toasts are appended at the end (bottom).
+   Three show at most: the product removes older ones, and the kit hides any fourth as a backstop.
+   Under 420 px the stack spans the bottom of the screen. */
+.sk-toasts { position: fixed; right: var(--sk-space-4); bottom: var(--sk-space-4); z-index: 2147483000; display: flex; flex-direction: column; align-items: flex-end; gap: var(--sk-space-2); max-width: calc(100vw - 32px); pointer-events: none; }
+.sk-toasts > .sk-toast { pointer-events: auto; }
+.sk-toasts > .sk-toast:nth-last-child(n+4) { display: none; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 420px) {
+  .sk-panel, .sk-panel--wide { top: 8px; right: 8px; left: 8px; width: auto; max-width: none; }
+  .sk-panel--static { width: 100%; }
+  .sk-modal__actions { flex-direction: column-reverse; }
+  .sk-modal__actions .sk-btn { width: 100%; }
+  .sk-app__main { padding: var(--sk-space-5) var(--sk-space-4) var(--sk-space-8); }
+  .sk-app-header, .sk-app-footer { padding-left: var(--sk-space-4); padding-right: var(--sk-space-4); }
+  .sk-drop { padding: var(--sk-space-6) var(--sk-space-4); }
+  .sk-tableview__actions { margin-left: 0; width: 100%; }
+  .sk-toasts { left: var(--sk-space-2); right: var(--sk-space-2); bottom: var(--sk-space-2); align-items: stretch; max-width: none; }
+  .sk-toasts > .sk-toast { max-width: none; }
+  .sk-paywall { padding: var(--sk-space-3); }
+}
+@media (prefers-reduced-motion: reduce) { .sk-tip__bubble { transition: none; } .sk-toasts > .sk-toast { animation: none; } }

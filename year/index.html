@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" class="sk-root sk-accent-rose" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' blob: data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>My AI Year: your ChatGPT, Claude and Gemini year in one card</title>
+<meta name="description" content="Drop your ChatGPT, Claude or Gemini export and see your year in a few screens and one card to share. Read in this browser, sent nowhere.">
+<link rel="stylesheet" href="vendor/kit/tokens.css">
+<link rel="stylesheet" href="vendor/kit/kit.css">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<div class="sk-app">
+  <header class="sk-app-header"><span class="sk-app-brand"><span class="sk-app-brand__name">My AI Year</span></span></header>
+  <main class="sk-app__main ay-main">
+
+    <section id="start" class="ay-start">
+      <h1 class="ay-hero">My AI Year, <span class="ay-accent">wrapped.</span></h1>
+      <p class="ay-lede">Your ChatGPT, Claude and Gemini year, in a few screens and one card to share.</p>
+      <div id="drop" class="sk-drop">
+        <p class="sk-drop__title">Drop your export here</p>
+        <p class="sk-drop__hint">Your file is read in this browser and sent nowhere. The page has no upload code, and its security policy blocks it from opening connections to any server.</p>
+        <label class="sk-btn sk-btn--primary sk-drop__file">Choose files<input id="file" type="file" class="sk-sr" accept=".zip,.json,.html,application/zip,application/json" multiple></label>
+      </div>
+      <div id="notice" role="alert" aria-live="polite"></div>
+      <details class="ay-how">
+        <summary>How do I get my export?</summary>
+        <ol>
+          <li><strong>ChatGPT:</strong> Settings, Data controls, Export data. The zip arrives by email.</li>
+          <li><strong>Claude:</strong> Settings, Privacy, Export data (web or desktop app). The zip arrives by email.</li>
+          <li><strong>Gemini:</strong> Google Takeout, Deselect all, tick My Activity, keep only Gemini Apps. The zip arrives by email; the HTML or JSON format both work. Gemini's export has no chats, only prompts, so here prompts less than 30 minutes apart count as one chat.</li>
+        </ol>
+        <p class="sk-muted">Drop more than one to see them side by side. Exports can take from minutes to a few days to arrive.</p>
+      </details>
+    </section>
+
+    <section id="story" class="ay-story" hidden>
+      <div class="ay-progress" id="dots" aria-hidden="true"></div>
+      <div class="ay-screen" id="screen" aria-live="polite">
+        <p class="ay-kicker" id="kicker"></p>
+        <p class="ay-big" id="big"></p>
+        <p class="ay-line" id="line"></p>
+        <p class="ay-sub" id="sub"></p>
+      </div>
+      <div class="ay-nav">
+        <button class="sk-btn" id="prev" type="button">Back</button>
+        <select class="sk-select" id="year" aria-label="Year"></select>
+        <button class="sk-btn sk-btn--primary" id="next" type="button">Next</button>
+      </div>
+    </section>
+
+    <section id="final" class="ay-final" hidden>
+      <canvas id="card" width="1080" height="1920" class="ay-card" aria-label="Your share card"></canvas>
+      <div class="ay-final__side">
+        <label class="sk-check"><input type="checkbox" id="topics" checked> Show my top topics on the card</label>
+        <button class="sk-btn sk-btn--primary sk-btn--block" id="download" type="button">Download PNG</button>
+        <div class="ay-share">
+          <label class="sk-label" for="share-text">Post it with this line</label>
+          <textarea class="sk-input ay-share__text" id="share-text" rows="3" readonly spellcheck="false"></textarea>
+          <button class="sk-btn sk-btn--block" id="copy-share" type="button">Copy</button>
+          <p class="sk-muted ay-share__status" id="share-status" aria-live="polite"></p>
+        </div>
+        <button class="sk-btn sk-btn--block" id="again" type="button">Watch it again</button>
+        <button class="sk-btn sk-btn--quiet sk-btn--block" id="reset" type="button">Start over with other files</button>
+        <div class="sk-card ay-funnel">
+          <p class="ay-funnel__title">Keep the chats behind the numbers.</p>
+          <p class="sk-muted">Threadkeep saves the ChatGPT, Claude and Gemini chats you choose to a library in your browser, so you can search them later.</p>
+          <a class="sk-btn sk-btn--sm" id="threadkeep" href="https://skillmerc.com/threadkeep/" rel="noopener">Get Threadkeep</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <footer class="sk-app-footer"><span class="sk-made"><svg class="sk-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#050506"/><circle cx="14" cy="18" r="10.2" fill="#fff"/><circle cx="23.4" cy="9.2" r="6.2" fill="#050506"/><circle cx="23.4" cy="9.2" r="4.5" fill="#ff5a36"/></svg>Made by SKILLMERC</span><span class="sk-muted">Not made by or linked to OpenAI, Anthropic or Google. ChatGPT, Claude and Gemini are their owners' trademarks.</span></footer>
+</div>
+</body>
+</html>
