@@ -123,7 +123,8 @@ const HUBS = {
     tag: 'AI chats, <em>saved properly.</em>',
     tale: 'An AI chat that finally got somewhere. Close the tab and it becomes a scroll you will never find again. Threadkeep keeps it in a library you can search, or saves it to a file on your own computer.',
     say: 'Save, search and export your AI chats as Markdown, text, JSON, PDF or Word. Version 2.0 is on Firefox and Chrome for ChatGPT, Claude, Gemini and DeepSeek. Everything stays in your browser.',
-    facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']] },
+    facts: ['Free on Firefox', 'Free on Chrome', 'Stays in your browser'], cta: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-ai-chat-export/ljgbggaigllccpkekifimabljmneaiec', 'up'], ['Ask a question', 'mailto:kyle@skillmerc.com', '']],
+    alt: ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-ai-chat-export/ljgbggaigllccpkekifimabljmneaiec'] },
   riskwell: { cat: 'more', name: 'Riskwell for Jira', doc: 'risk', stamp: 'Reviewed', hero: true,
     tag: 'Every project risk, <em>in one register.</em>',
     tale: 'The risk register is a spreadsheet. It was last opened at kickoff. Riskwell keeps it inside the Jira project, next to the work, and emails the risk owner when a review is due.',
@@ -163,7 +164,7 @@ const CARDS = [
   { k: 'freeagent-woocommerce', m: 'Bookkeeping', b: 'WooCommerce to FreeAgent', p: 'Paid orders become FreeAgent invoices with the right VAT.', ft: 'Free', href: '/freeagent-woocommerce/' },
   { k: 'form-d', m: 'Data', b: 'Who raised money this week', p: 'New SEC Form D filings, largest first. Updated daily.', ft: 'Free', href: '/form-d/' },
 ];
-const GUIDE_GROUPS = [['sealboard', 'Sealboard for AI coding tools'], ['rowrecipe', 'Rowrecipe: clean and combine tables'], ['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'Saving AI chats'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
+const GUIDE_GROUPS = [['sealboard', 'Sealboard for AI coding tools'], ['rowrecipe', 'Rowrecipe: clean and combine tables'], ['sa-shipping-woocommerce', 'Shipping in South Africa'], ['payfast-woocommerce', 'PayFast'], ['shopify-freeagent', 'Shopify and FreeAgent'], ['list-table-scraper', 'Web tables to spreadsheets'], ['threadkeep', 'Saving AI chats'], ['changekeep', 'Page change alerts'], ['sage-accounting-woocommerce', 'WooCommerce and Sage'], ['freeagent-woocommerce', 'WooCommerce and FreeAgent'], ['wayback-machine', 'Wayback Machine'], ['youtube-transcripts', 'YouTube transcripts']];
 // The price list on the homepage. st: live | review. Prices and statuses must match the product pages and the Board.
 const PLIST = ({ nData, minPrice }) => [
   ['WooCommerce', '4 plugins', [
@@ -175,7 +176,7 @@ const PLIST = ({ nData, minPrice }) => [
     ['201', 'Send paid Shopify orders to FreeAgent as invoices', 'Ledgerline', 'From USD 9 a month, planned', 'review', 'In review at Shopify', '/shopify-freeagent/']]],
   ['Jira and Confluence', '3 apps', [
     ['301', 'Keep a risk register and heat map in each Jira project', 'Riskwell', 'Not on sale yet', 'review', 'In review at Atlassian', '/riskwell/'],
-    ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', 'Not on sale yet', 'review', 'In review at Atlassian', '/decision-log-confluence/'],
+    ['302', 'Write decisions down where the team already works', 'Decision Keeper for Confluence', '<b>Free</b> for up to 10 live decisions', 'live', 'Live', '/decision-log-confluence/'],
     ['303', 'Ask for proof before a Jira work item ships', 'Ship Rules', 'Not on sale yet', 'review', 'In review at Atlassian', '/ship-rules/']]],
   ['Browser', '2 add-ons', [
     ['401', 'Turn any web table or list into Excel', 'List & Table Scraper for Firefox and Chrome', '<b>Free.</b> Pro from USD 4 a month', 'live', 'Live', '/list-table-scraper/'],
@@ -273,10 +274,12 @@ const fold = (html) => { const nodes = topNodes(html); if (!nodes) return html; 
     return `<details class="fold"${x.id ? ` id="${x.id}"` : ''}${open ? ' open' : ''}><summary><h2${x.attrs}>${x.title}</h2></summary><div class="fold-b">${body}</div></details>`; }).join(''); };
 
 // ---------- content page shell ----------
+// Help pages of a product with no HUBS entry (task 1724): the breadcrumb and the meta line name the product, not SKILLMERC. Only /<seg>/help/ pages use it.
+const HELP_HUBS = { changekeep: { cat: 'more', name: 'Changekeep' } };
 function docPage(rel, title, desc, body) {
   const url = BASE + '/' + rel.replace(/index\.html$/, '');
   const segs = rel.replace(/\/?index\.html$/, '').split('/').filter(Boolean);
-  const hub = HUBS[segs[0]] || { cat: 'more', name: 'SKILLMERC' }; const cat = CATS[hub.cat];
+  const hub = HUBS[segs[0]] || (segs[1] === 'help' && HELP_HUBS[segs[0]]) || { cat: 'more', name: 'SKILLMERC' }; const cat = CATS[hub.cat];
   const isHub = segs.length === 1 && hub.hero; const isGuide = segs[1] === 'help' && segs.length > 2;
   let rest = nod(body); let h1;
   const m = rest.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
@@ -287,7 +290,7 @@ function docPage(rel, title, desc, body) {
   registry.push({ rel, segs, h1: strip(h1), url: '/' + rel.replace(/index\.html$/, '') });
   const crumbs = [['Home', '/']];
   if (hub.cat !== 'more') crumbs.push([cat.label, cat.a]);
-  if (segs.length > 1 && !['privacy'].includes(segs[0])) crumbs.push([hub.name, hub.link || `/${segs[0]}/`]);
+  if (segs.length > 1 && !['privacy', 'affiliates'].includes(segs[0])) crumbs.push([hub.name, hub.link || `/${segs[0]}/`]);
   if (isGuide) crumbs.push(['Guide', '/guides/']);
   const here = strip(h1); crumbs.push([here.length > 54 ? here.slice(0, 52).replace(/\s+\S*$/, '') + '...' : here, null]);
   const crumbHtml = `<ol class="crumbs">${crumbs.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
@@ -352,7 +355,6 @@ const PICKS = {
 const LAB = [
   ['/shopify-freeagent/', 'Ledgerline', 'Paid Shopify orders into FreeAgent, with VAT. From USD 9 a month, planned.', 'In review', 'Shopify'],
   ['/riskwell/', 'Riskwell', 'A risk register and risk matrix inside Jira.', 'In review', 'Atlassian'],
-  ['/decision-log-confluence/', 'Decision Keeper', 'Decision records and a register in Confluence.', 'In review', 'Atlassian'],
   ['/ship-rules/', 'Ship Rules', 'Proof before a Jira work item ships.', 'In review', 'Atlassian'],
 ];
 // How the company is organised (theme v11 "operations", 21 Nov 2026). Keep the focus on the operational setup, not on the
@@ -454,15 +456,15 @@ export function homeBody({ actors = [], priceLine = () => '', fdDays = [] } = {}
   say: 'Paid orders become invoices with the right VAT, plus the payment, in Sage or FreeAgent. No retyping at month end.',
   fx: ['Free for WooCommerce', 'Sage Accounting', 'FreeAgent'], ctas: [['Sage plugin', '/sage-accounting-woocommerce/', ''], ['FreeAgent plugin', '/freeagent-woocommerce/', '']],
   also: 'On Shopify? FreeAgent switched off its own Shopify link in 2025. <a href="/shopify-freeagent/">Ledgerline</a> is coming to fill it.', doc: orbFig('inv') },
-    { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox &middot; Chrome', h2: 'Any web table. Into Excel.',
-  tale: 'You need that table in Excel. You select it, copy it, paste it, and get one long column of soup. One click on this add-on finds the rows and keeps the columns.',
+    { id: 'tables', n: '04', label: 'Web tables', plat: 'Firefox &middot; Chrome', h2: 'Web tables and lists. Into Excel.',
+  tale: 'You need that table, or that page of product cards, in Excel. You select it, copy it, paste it, and get one long column of soup. This add-on finds the rows and puts each field in its own column.',
   say: 'List &amp; Table Scraper follows the Next button and exports CSV, Excel or JSON. Scraped data stays in your browser.',
   fx: ['Free up to 3 pages', '*Pro up to 500', 'From USD 4 a month'], ctas: [['Add to Firefox, free', AMO('list-table-scraper'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/list-table-web-scraper-ex/jikilncomjfjaphhffkghehnackohggf', ''], ['Watch the demo', '/list-table-scraper/#demo', '']],
   also: (asbfOn() ? 'Black Friday on AppSumo: lifetime Pro is USD 17.10 until 1 Dec 2026, 18:00 UTC. Sold by AppSumo under its own 60-day refund policy.' : 'Lifetime deal: Pro is USD 19 or less, once, on AppSumo, under AppSumo\'s own 60-day refund policy.') + ' <a href="https://appsumo.com/pl/list-table-scraper-your-website/" rel="sponsored">See the deal on AppSumo</a>. Partner link: AppSumo pays us a larger share when you buy through it, and your price is the same.', doc: orbFig('print') },
     { id: 'chats', n: '05', label: 'AI chats', plat: 'Firefox &middot; Chrome', h2: 'AI chats, saved properly.',
   tale: HUBS.threadkeep.tale,
   say: HUBS.threadkeep.say,
-  fx: ['Free', '*Pro from USD 4.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-chat-exporter/ljgbggaigllccpkekifimabljmneaiec', ''], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
+  fx: ['Free', '*Pro from USD 4.99 a month', 'Stays in your browser'], ctas: [['Add to Firefox, free', AMO('threadkeep-deepseek'), 'up'], ['Add to Chrome, free', 'https://chromewebstore.google.com/detail/threadkeep-ai-chat-export/ljgbggaigllccpkekifimabljmneaiec', ''], ['How it works', '/threadkeep/', '', 'How Threadkeep works']], doc: orbFig('chat') },
     { id: 'data', n: '06', label: 'Public data', plat: 'Apify', h2: 'Public data, by the row.',
   tale: 'Public records are free. Getting them into a spreadsheet is the part that eats the afternoon. These tools run on Apify, and you pay only for the rows you get.',
   say: 'Company filings, funding rounds, transcripts and car listings, pulled straight into a spreadsheet.',
