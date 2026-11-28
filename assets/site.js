@@ -233,8 +233,8 @@ void main(){
     const qs = new URLSearchParams(location.search);
     send({ e: 'view', r: ref, us: qs.get('utm_source') || '', um: qs.get('utm_medium') || '', uc: qs.get('utm_campaign') || '', nf: /^Page not found/.test(d.title) ? 1 : 0 });
     addEventListener('scroll', () => { const h = d.documentElement.scrollHeight - innerHeight; if (h > 0) maxD = Math.max(maxD, Math.round(scrollY / h * 100)); }, { passive: true });
-    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a,button'); if (!a) return; const href = a.getAttribute('href') || ''; const ext = /^(https?:|mailto:)/.test(href) && !href.includes('//' + location.hostname);
-      if (!ext && !a.matches('.btn,.cta,.promo,.dock,.prow,.tcard,.orb,.tlink,.tray a,.toc-list a,.opts2 button,.cc,.nx,.lead,.struck a')) return;
+    d.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a,button'); if (!a) return; const href = a.getAttribute('href') || a.getAttribute('data-yt') || ''; const ext = /^(https?:|mailto:)/.test(href) && !a.hasAttribute('data-yt') && !href.includes('//' + location.hostname);
+      if (!ext && !a.matches('.btn,.cta,.promo,.dock,.prow,.tcard,.orb,.tlink,.tray a,.toc-list a,.opts2 button,.cc,.nx,.lead,.struck a,.yt button')) return;
       const zone = a.closest('.dock,.promo,.hero,.tscreen,.crew-grid,.next-grid,.struck,.plist,.pform,.exhibit,.band,.tray,.toc-list,.side,.prose,.more,.foot,.nav,.pal');
       send({ e: ext ? 'out' : 'click', h: href.slice(0, 200), t: (a.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60), z: zone ? zone.className.split(' ')[0] : '' }); }, true);
     let left = false; const leave = () => { if (left) return; left = true; send({ e: 'leave', d: maxD, ms: Date.now() - t0 }); };
